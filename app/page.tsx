@@ -1,13 +1,19 @@
+import { Suspense } from "react";
 import { getProducts } from "@/lib/api";
 import ProductCard from "@/components/ProductCard";
+import ProductFilters from "@/components/ProductFilters";
 import { Product } from "@/lib/types";
 
-export default async function Home() {
+export default async function Home(props: PageProps<"/">) {
+  const { search, sort } = await props.searchParams;
+  const searchTerm = typeof search === "string" ? search : undefined;
+  const sortOption = typeof sort === "string" ? sort : undefined;
+
   let products: Product[] = [];
   let loadError = false;
 
   try {
-    products = await getProducts();
+    products = await getProducts({ search: searchTerm, sort: sortOption });
   } catch {
     loadError = true;
   }
@@ -36,12 +42,18 @@ export default async function Home() {
       ) : (
         <section className="pb-16">
           <h2 className="mb-6 text-2xl font-semibold text-zinc-900 dark:text-zinc-50">
-            Shop all sarees
+            {searchTerm ? `Results for "${searchTerm}"` : "Shop all sarees"}
           </h2>
+
+          <Suspense fallback={null}>
+            <ProductFilters />
+          </Suspense>
 
           {products.length === 0 ? (
             <p className="text-zinc-500 dark:text-zinc-400">
-              No products yet. Run the seed script in coovi-api.
+              {searchTerm
+                ? "No sarees matched your search. Try a different word."
+                : "No products yet. Run the seed script in coovi-api."}
             </p>
           ) : (
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
