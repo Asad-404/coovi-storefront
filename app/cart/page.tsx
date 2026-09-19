@@ -124,14 +124,12 @@ export default function CartPage() {
             <span>Calculated at checkout</span>
           </div>
 
-          <button
-            type="button"
-            disabled
-            className="mt-6 w-full rounded-full bg-zinc-300 py-3 font-semibold text-zinc-500 dark:bg-zinc-700 dark:text-zinc-400"
-            title="Coming in the next task"
+          <Link
+            href="/checkout"
+            className="mt-6 block w-full rounded-full bg-rose-700 py-3 text-center font-semibold text-white transition-colors hover:bg-rose-800"
           >
             Proceed to Checkout
-          </button>
+          </Link>
 
           <button
             type="button"

@@ -23,3 +23,28 @@ export interface CartItem {
   image: string;
   quantity: number;
 }
+
+export interface OrderItem {
+  productId: string;
+  name: string;
+  price: number;
+  quantity: number;
+  image: string;
+  size?: string;
+}
+
+export interface Order {
+  _id: string;
+  orderNumber: string;
+  customerName: string;
+  phone: string;
+  address: string;
+  items: OrderItem[];
+  subtotal: number;
+  deliveryFee: number;
+  total: number;
+  status: "Pending" | "Processing" | "Shipped" | "Delivered" | "Cancelled";
+  paymentMethod: string;
+  notes?: string;
+  createdAt: string;
+}
