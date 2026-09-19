@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { getProductBySlug } from "@/lib/api";
 import { formatPrice } from "@/lib/utils";
+import AddToCartButton from "@/components/AddToCartButton";
 
 type Props = PageProps<"/products/[slug]">;
 
@@ -137,13 +138,16 @@ export default async function ProductDetailPage(props: Props) {
             </div>
           </dl>
 
-          <button
-            type="button"
-            disabled={!product.inStock}
-            className="mt-4 h-12 rounded-full bg-rose-700 px-8 text-base font-semibold text-white transition-colors hover:bg-rose-800 disabled:cursor-not-allowed disabled:bg-zinc-300 dark:disabled:bg-zinc-700"
-          >
-            {product.inStock ? "Add to Cart" : "Out of Stock"}
-          </button>
+          <AddToCartButton
+            product={{
+              _id: product._id,
+              slug: product.slug,
+              name: product.name,
+              price: product.price,
+              image: product.images[0] ?? "",
+            }}
+            inStock={product.inStock}
+          />
         </div>
       </div>
     </main>

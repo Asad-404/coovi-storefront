@@ -1,4 +1,5 @@
 import Link from "next/link";
+import CartBadge from "@/components/CartBadge";
 
 export default function Header() {
   return (
@@ -12,12 +13,7 @@ export default function Header() {
           <Link href="/" className="hover:text-rose-700 dark:hover:text-rose-400">
             Shop
           </Link>
-          <Link
-            href="/cart"
-            className="rounded-full bg-rose-700 px-4 py-2 text-white transition-colors hover:bg-rose-800"
-          >
-            Cart
-          </Link>
+          <CartBadge />
         </nav>
       </div>
     </header>
