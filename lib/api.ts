@@ -31,8 +31,20 @@ export async function getProductBySlug(slug: string): Promise<Product> {
   return json.data as Product;
 }
 
-export async function getOrderByNumber(orderNumber: string): Promise<Order> {
-  const res = await fetch(`${API_URL}/orders/${orderNumber}`);
+export async function getDeliveryFee(): Promise<number> {
+  const res = await fetch(`${API_URL}/orders/delivery-fee`);
+
+  if (!res.ok) {
+    throw new Error(`API request failed with status ${res.status}`);
+  }
+
+  const json = await res.json();
+  return json.data.deliveryFee as number;
+}
+
+export async function getOrderByNumber(orderNumber: string, phone: string): Promise<Order> {
+  const params = new URLSearchParams({ phone });
+  const res = await fetch(`${API_URL}/orders/${orderNumber}?${params}`);
 
   if (!res.ok) {
     throw new Error(`API request failed with status ${res.status}`);
@@ -42,15 +54,15 @@ export async function getOrderByNumber(orderNumber: string): Promise<Order> {
   return json.data as Order;
 }
 
+// The order body sends ONLY what the customer actually chose: who they are,
+// where to deliver, and how many of each product. No prices, no totals —
+// those belong to the server, which recomputes them from its own database.
 export interface OrderInput {
   customerName: string;
   phone: string;
   address: string;
   notes?: string;
-  items: { productId: string; name: string; price: number; quantity: number; image: string }[];
-  subtotal: number;
-  deliveryFee: number;
-  total: number;
+  items: { productId: string; quantity: number }[];
 }
 
 export async function postOrder(order: OrderInput): Promise<Order> {

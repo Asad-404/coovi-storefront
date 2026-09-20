@@ -9,15 +9,58 @@ type Props = PageProps<"/order-confirmation/[orderNumber]">;
 
 export async function generateMetadata(props: Props): Promise<Metadata> {
   const { orderNumber } = await props.params;
-  return { title: `Order ${orderNumber} - Coovi` };
+  return {
+    title: `Order ${orderNumber} - Coovi`,
+    // A guest's order details must never end up in a search engine
+    robots: { index: false, follow: false },
+  };
 }
 
 export default async function OrderConfirmationPage(props: Props) {
   const { orderNumber } = await props.params;
+  const { phone } = await props.searchParams;
+
+  // ?phone= can be a single value or a repeated ?phone=a&phone=b — take one
+  const phoneValue = Array.isArray(phone) ? phone[0] : phone;
+
+  // The order number alone must NOT be enough to see the order: number +
+  // phone together act as the guest's credentials. Without a phone we ask
+  // for it instead of revealing anything.
+  if (!phoneValue) {
+    return (
+      <main className="mx-auto flex w-full max-w-md flex-1 flex-col items-center justify-center gap-6 px-4 py-24 text-center sm:px-6">
+        <h1 className="text-2xl font-semibold text-zinc-900 dark:text-zinc-50">
+          Check your order
+        </h1>
+        <p className="text-zinc-500 dark:text-zinc-400">
+          Enter the phone number you used at checkout to view order{" "}
+          <span className="font-mono">{orderNumber}</span>.
+        </p>
+        {/* A plain GET form re-submits to this same URL with ?phone=... */}
+        <form method="get" className="flex w-full flex-col gap-3">
+          <input
+            type="tel"
+            name="phone"
+            required
+            pattern="01[0-9]{9}"
+            inputMode="numeric"
+            placeholder="e.g. 01712345678"
+            className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-zinc-900 placeholder-zinc-400 focus:border-rose-700 focus:outline-none dark:border-zinc-700 dark:bg-zinc-950 dark:text-zinc-50"
+          />
+          <button
+            type="submit"
+            className="h-12 rounded-full bg-rose-700 font-semibold text-white transition-colors hover:bg-rose-800"
+          >
+            View my order
+          </button>
+        </form>
+      </main>
+    );
+  }
 
   let order;
   try {
-    order = await getOrderByNumber(orderNumber);
+    order = await getOrderByNumber(orderNumber, phoneValue);
   } catch {
     notFound();
   }

@@ -1,11 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCartStore, cartTotal } from "@/lib/cartStore";
-import { postOrder } from "@/lib/api";
-import { DELIVERY_FEE, formatPrice } from "@/lib/utils";
+import { getDeliveryFee, getProducts, postOrder } from "@/lib/api";
+import { formatPrice } from "@/lib/utils";
 
 const inputClass =
   "w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-zinc-900 placeholder-zinc-400 focus:border-rose-700 focus:outline-none dark:border-zinc-700 dark:bg-zinc-950 dark:text-zinc-50";
@@ -23,9 +23,47 @@ export default function CheckoutPage() {
   });
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
+  const [deliveryFee, setDeliveryFee] = useState<number | null>(null);
+  const [stockIssues, setStockIssues] = useState<string[]>([]);
+
+  // Delivery fee and live stock both come from the API — the browser's copy
+  // of either could be stale or spoofed
+  useEffect(() => {
+    let active = true;
+
+    getDeliveryFee()
+      .then((fee) => {
+        if (active) setDeliveryFee(fee);
+      })
+      .catch(() => {
+        if (active) setError("Could not load the delivery fee — please refresh the page");
+      });
+
+    getProducts()
+      .then((products) => {
+        if (!active) return;
+        const issues: string[] = [];
+        for (const item of items) {
+          const product = products.find((p) => p._id === item.productId);
+          if (product && product.stock < item.quantity) {
+            issues.push(
+              `Only ${product.stock} left of "${item.name}" — please reduce the quantity in your cart`
+            );
+          }
+        }
+        setStockIssues(issues);
+      })
+      .catch(() => {
+        // Not fatal: the API re-checks stock again when the order is submitted
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [items]);
 
   const subtotal = cartTotal(items);
-  const total = subtotal + DELIVERY_FEE;
+  const total = deliveryFee === null ? null : subtotal + deliveryFee;
 
   if (items.length === 0) {
     return (
@@ -52,25 +90,21 @@ export default function CheckoutPage() {
     setError("");
 
     try {
+      // Only WHAT the customer chose is sent — the server decides all prices
       const order = await postOrder({
         customerName: form.customerName,
         phone: form.phone,
         address: form.address,
         notes: form.notes || undefined,
-        items: items.map(({ productId, name, price, quantity, image }) => ({
-          productId,
-          name,
-          price,
-          quantity,
-          image,
-        })),
-        subtotal,
-        deliveryFee: DELIVERY_FEE,
-        total,
+        items: items.map(({ productId, quantity }) => ({ productId, quantity })),
       });
 
       clearCart();
-      router.push(`/order-confirmation/${order.orderNumber}`);
+      // The phone travels with the link: order number + phone together act
+      // as the guest's credentials on the confirmation page
+      router.push(
+        `/order-confirmation/${order.orderNumber}?phone=${encodeURIComponent(form.phone)}`
+      );
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong");
       setSubmitting(false);
@@ -144,12 +178,24 @@ export default function CheckoutPage() {
             </p>
           )}
 
+          {stockIssues.length > 0 && (
+            <ul className="mt-4 flex list-disc flex-col gap-1 rounded-lg border border-amber-300 bg-amber-50 p-3 pl-8 text-sm text-amber-800 dark:border-amber-800 dark:bg-amber-950 dark:text-amber-300">
+              {stockIssues.map((issue) => (
+                <li key={issue}>{issue}</li>
+              ))}
+            </ul>
+          )}
+
           <button
             type="submit"
-            disabled={submitting}
+            disabled={submitting || total === null || stockIssues.length > 0}
             className="mt-6 h-12 w-full rounded-full bg-rose-700 text-base font-semibold text-white transition-colors hover:bg-rose-800 disabled:cursor-not-allowed disabled:bg-zinc-300 dark:disabled:bg-zinc-700 sm:w-auto sm:px-12"
           >
-            {submitting ? "Placing order..." : `Place Order - ${formatPrice(total)}`}
+            {submitting
+              ? "Placing order..."
+              : total === null
+                ? "Loading..."
+                : `Place Order - ${formatPrice(total)}`}
           </button>
 
           <p className="mt-4 text-sm text-zinc-500 dark:text-zinc-400">
@@ -186,11 +232,13 @@ export default function CheckoutPage() {
             </div>
             <div className="mt-2 flex justify-between text-zinc-600 dark:text-zinc-300">
               <span>Delivery</span>
-              <span className="font-medium">{formatPrice(DELIVERY_FEE)}</span>
+              <span className="font-medium">
+                {deliveryFee === null ? "Loading..." : formatPrice(deliveryFee)}
+              </span>
             </div>
             <div className="mt-4 flex justify-between text-lg font-semibold text-zinc-900 dark:text-zinc-50">
               <span>Total</span>
-              <span>{formatPrice(total)}</span>
+              <span>{total === null ? "Loading..." : formatPrice(total)}</span>
             </div>
           </div>
         </aside>
