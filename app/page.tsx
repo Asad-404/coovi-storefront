@@ -32,12 +32,14 @@ export default async function Home(props: PageProps<"/">) {
       {loadError ? (
         <div className="mx-auto mb-16 max-w-md rounded-xl border border-amber-300 bg-amber-50 p-6 text-center text-amber-800 dark:border-amber-800 dark:bg-amber-950 dark:text-amber-300">
           <p className="font-medium">Could not load products.</p>
-          <p className="mt-1 text-sm">
-            Is the backend running? Start it with{" "}
-            <code className="rounded bg-amber-100 px-1.5 py-0.5 font-mono text-xs dark:bg-amber-900">
-              cd coovi-api && pnpm dev
-            </code>
-          </p>
+          {process.env.NODE_ENV === "development" && (
+            <p className="mt-1 text-sm">
+              Is the backend running? Start it with{" "}
+              <code className="rounded bg-amber-100 px-1.5 py-0.5 font-mono text-xs dark:bg-amber-900">
+                cd coovi-api && pnpm dev
+              </code>
+            </p>
+          )}
         </div>
       ) : (
         <section className="pb-16">

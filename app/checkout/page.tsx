@@ -4,9 +4,8 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCartStore, cartTotal } from "@/lib/cartStore";
+import { postOrder } from "@/lib/api";
 import { DELIVERY_FEE, formatPrice } from "@/lib/utils";
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5000/api";
 
 const inputClass =
   "w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-zinc-900 placeholder-zinc-400 focus:border-rose-700 focus:outline-none dark:border-zinc-700 dark:bg-zinc-950 dark:text-zinc-50";
@@ -53,34 +52,25 @@ export default function CheckoutPage() {
     setError("");
 
     try {
-      const res = await fetch(`${API_URL}/orders`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          customerName: form.customerName,
-          phone: form.phone,
-          address: form.address,
-          notes: form.notes || undefined,
-          items: items.map(({ productId, name, price, quantity, image }) => ({
-            productId,
-            name,
-            price,
-            quantity,
-            image,
-          })),
-          subtotal,
-          deliveryFee: DELIVERY_FEE,
-          total,
-        }),
+      const order = await postOrder({
+        customerName: form.customerName,
+        phone: form.phone,
+        address: form.address,
+        notes: form.notes || undefined,
+        items: items.map(({ productId, name, price, quantity, image }) => ({
+          productId,
+          name,
+          price,
+          quantity,
+          image,
+        })),
+        subtotal,
+        deliveryFee: DELIVERY_FEE,
+        total,
       });
 
-      const json = await res.json();
-      if (!res.ok || !json.success) {
-        throw new Error(json.message ?? "Failed to place order");
-      }
-
       clearCart();
-      router.push(`/order-confirmation/${json.data.orderNumber}`);
+      router.push(`/order-confirmation/${order.orderNumber}`);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong");
       setSubmitting(false);

@@ -41,3 +41,28 @@ export async function getOrderByNumber(orderNumber: string): Promise<Order> {
   const json = await res.json();
   return json.data as Order;
 }
+
+export interface OrderInput {
+  customerName: string;
+  phone: string;
+  address: string;
+  notes?: string;
+  items: { productId: string; name: string; price: number; quantity: number; image: string }[];
+  subtotal: number;
+  deliveryFee: number;
+  total: number;
+}
+
+export async function postOrder(order: OrderInput): Promise<Order> {
+  const res = await fetch(`${API_URL}/orders`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(order),
+  });
+
+  const json = await res.json();
+  if (!res.ok || !json.success) {
+    throw new Error(json.message ?? "Failed to place order");
+  }
+  return json.data as Order;
+}
