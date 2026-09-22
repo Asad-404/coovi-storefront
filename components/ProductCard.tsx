@@ -1,20 +1,28 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
+import { useState } from "react";
 import { Product } from "@/lib/types";
 import { formatPrice } from "@/lib/utils";
 
 export default function ProductCard({ product }: { product: Product }) {
-  const image = product.images[0];
+  const [isHovered, setIsHovered] = useState(false);
+  const primaryImage = product.images[0];
+  const secondaryImage = product.images[1];
+  const displayImage = isHovered && secondaryImage ? secondaryImage : primaryImage;
 
   return (
     <Link
       href={`/products/${product.slug}`}
       className="group flex flex-col overflow-hidden rounded-xl border border-zinc-200 bg-white transition-shadow hover:shadow-lg dark:border-zinc-800 dark:bg-zinc-950"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
     >
       <div className="relative aspect-[3/4] overflow-hidden bg-zinc-100 dark:bg-zinc-800">
-        {image ? (
+        {displayImage ? (
           <Image
-            src={image}
+            src={displayImage}
             alt={product.name}
             fill
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"

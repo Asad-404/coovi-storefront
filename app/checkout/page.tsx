@@ -40,11 +40,11 @@ export default function CheckoutPage() {
       });
 
     getProducts()
-      .then((products) => {
+      .then((productsResponse) => {
         if (!active) return;
         const issues: string[] = [];
         for (const item of items) {
-          const product = products.find((p) => p._id === item.productId);
+          const product = productsResponse.data.find((p) => p._id === item.productId);
           if (product && product.stock < item.quantity) {
             issues.push(
               `Only ${product.stock} left of "${item.name}" — please reduce the quantity in your cart`
@@ -129,6 +129,8 @@ export default function CheckoutPage() {
               <input
                 type="text"
                 required
+                minLength={1}
+                maxLength={100}
                 value={form.customerName}
                 onChange={(e) => setForm({ ...form, customerName: e.target.value })}
                 placeholder="e.g. Fatima Rahman"
@@ -141,9 +143,13 @@ export default function CheckoutPage() {
               <input
                 type="tel"
                 required
+                pattern="01[0-9]{9}"
+                minLength={11}
+                maxLength={11}
+                inputMode="numeric"
                 value={form.phone}
                 onChange={(e) => setForm({ ...form, phone: e.target.value })}
-                placeholder="e.g. 01712345678"
+                placeholder="01712345678 (11 digits)"
                 className={inputClass}
               />
             </label>
@@ -152,10 +158,12 @@ export default function CheckoutPage() {
               Full address
               <textarea
                 required
+                minLength={5}
+                maxLength={500}
                 rows={3}
                 value={form.address}
                 onChange={(e) => setForm({ ...form, address: e.target.value })}
-                placeholder="House, road, area, city"
+                placeholder="House number, road, area, city (minimum 5 characters)"
                 className={inputClass}
               />
             </label>
@@ -164,6 +172,7 @@ export default function CheckoutPage() {
               Order notes (optional)
               <textarea
                 rows={2}
+                maxLength={500}
                 value={form.notes}
                 onChange={(e) => setForm({ ...form, notes: e.target.value })}
                 placeholder="Anything we should know?"

@@ -13,6 +13,9 @@ export default function Header() {
           <Link href="/" className="hover:text-rose-700 dark:hover:text-rose-400">
             Shop
           </Link>
+          <Link href="/track-order" className="hover:text-rose-700 dark:hover:text-rose-400">
+            Track Order
+          </Link>
           <CartBadge />
         </nav>
       </div>

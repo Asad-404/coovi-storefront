@@ -5,6 +5,7 @@ import type { Metadata } from "next";
 import { getProductBySlug } from "@/lib/api";
 import { formatPrice } from "@/lib/utils";
 import AddToCartButton from "@/components/AddToCartButton";
+import ProductImageGallery from "@/components/ProductImageGallery";
 
 type Props = PageProps<"/products/[slug]">;
 
@@ -15,6 +16,12 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
     return {
       title: `${product.name} - Coovi`,
       description: product.description,
+      openGraph: {
+        title: product.name,
+        description: product.description ?? undefined,
+        images: product.images.length > 0 ? [product.images[0]] : undefined,
+        type: "website",
+      },
     };
   } catch {
     return { title: "Product not found - Coovi" };
@@ -27,8 +34,12 @@ export default async function ProductDetailPage(props: Props) {
   let product;
   try {
     product = await getProductBySlug(slug);
-  } catch {
-    notFound();
+  } catch (error) {
+    // Only call notFound() for actual 404s; let other errors bubble to error.tsx
+    if (error instanceof Error && error.message.includes("status 404")) {
+      notFound();
+    }
+    throw error;
   }
 
   const [primaryImage, ...otherImages] = product.images;
@@ -42,43 +53,7 @@ export default async function ProductDetailPage(props: Props) {
       </nav>
 
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
-        <div className="flex flex-col gap-4">
-          <div className="relative aspect-[3/4] overflow-hidden rounded-xl bg-zinc-100 dark:bg-zinc-800">
-            {primaryImage ? (
-              <Image
-                src={primaryImage}
-                alt={product.name}
-                fill
-                priority
-                sizes="(max-width: 1024px) 100vw, 50vw"
-                className="object-cover"
-              />
-            ) : (
-              <div className="flex h-full items-center justify-center text-zinc-400">
-                No image
-              </div>
-            )}
-          </div>
-
-          {otherImages.length > 0 && (
-            <div className="grid grid-cols-4 gap-4">
-              {otherImages.slice(0, 4).map((image) => (
-                <div
-                  key={image}
-                  className="relative aspect-[3/4] overflow-hidden rounded-lg bg-zinc-100 dark:bg-zinc-800"
-                >
-                  <Image
-                    src={image}
-                    alt={product.name}
-                    fill
-                    sizes="20vw"
-                    className="object-cover"
-                  />
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
+        <ProductImageGallery images={product.images} productName={product.name} />
 
         <div className="flex flex-col gap-4">
           <div>
@@ -148,6 +123,18 @@ export default async function ProductDetailPage(props: Props) {
             }}
             inStock={product.inStock}
           />
+
+          <a
+            href={`https://wa.me/8801700000000?text=${encodeURIComponent(
+              `Hi! I'm interested in ${product.name} - ${process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"}/products/${product.slug}`
+            )}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex h-12 items-center justify-center gap-2 rounded-full border-2 border-green-600 font-semibold text-green-600 transition-colors hover:bg-green-600 hover:text-white dark:border-green-500 dark:text-green-500 dark:hover:bg-green-500"
+          >
+            <span>💬</span>
+            <span>Ask on WhatsApp</span>
+          </a>
         </div>
       </div>
     </main>

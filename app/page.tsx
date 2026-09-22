@@ -2,18 +2,24 @@ import { Suspense } from "react";
 import { getProducts } from "@/lib/api";
 import ProductCard from "@/components/ProductCard";
 import ProductFilters from "@/components/ProductFilters";
-import { Product } from "@/lib/types";
+import LoadMoreButton from "@/components/LoadMoreButton";
 
 export default async function Home(props: PageProps<"/">) {
-  const { search, sort } = await props.searchParams;
+  const { search, sort, page } = await props.searchParams;
   const searchTerm = typeof search === "string" ? search : undefined;
   const sortOption = typeof sort === "string" ? sort : undefined;
+  const currentPage = typeof page === "string" ? parseInt(page, 10) : 1;
 
-  let products: Product[] = [];
+  let productsData = null;
   let loadError = false;
 
   try {
-    products = await getProducts({ search: searchTerm, sort: sortOption });
+    productsData = await getProducts({
+      search: searchTerm,
+      sort: sortOption,
+      page: currentPage,
+      limit: 12,
+    });
   } catch {
     loadError = true;
   }
@@ -51,19 +57,34 @@ export default async function Home(props: PageProps<"/">) {
             <ProductFilters />
           </Suspense>
 
-          {products.length === 0 ? (
+          {productsData && productsData.data.length === 0 ? (
             <p className="text-zinc-500 dark:text-zinc-400">
               {searchTerm
                 ? "No sarees matched your search. Try a different word."
                 : "No products yet. Run the seed script in coovi-api."}
             </p>
-          ) : (
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {products.map((product) => (
-                <ProductCard key={product._id} product={product} />
-              ))}
-            </div>
-          )}
+          ) : productsData ? (
+            <>
+              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                {productsData.data.map((product) => (
+                  <ProductCard key={product._id} product={product} />
+                ))}
+              </div>
+
+              {productsData.pagination.hasMore && (
+                <div className="mt-8 flex justify-center">
+                  <LoadMoreButton
+                    currentPage={currentPage}
+                    hasMore={productsData.pagination.hasMore}
+                  />
+                </div>
+              )}
+
+              <p className="mt-6 text-center text-sm text-zinc-500 dark:text-zinc-400">
+                Showing {productsData.data.length} of {productsData.pagination.total} products
+              </p>
+            </>
+          ) : null}
         </section>
       )}
     </main>
