@@ -1,12 +1,14 @@
-import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { getProductBySlug } from "@/lib/api";
-import { discountPercent, isOnSale } from "@/lib/utils";
-import PriceTag from "@/components/PriceTag";
+import { getDeliveryFee, getProductBySlug, getProducts } from "@/lib/api";
+import { discountPercent, formatPrice, isOnSale } from "@/lib/utils";
+import type { Product } from "@/lib/types";
 import AddToCartButton from "@/components/AddToCartButton";
 import ProductImageGallery from "@/components/ProductImageGallery";
+import ProductTabs from "@/components/ProductTabs";
+import ProductCard from "@/components/ProductCard";
+import PriceTag from "@/components/PriceTag";
 
 type Props = PageProps<"/products/[slug]">;
 
@@ -29,10 +31,24 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
   }
 }
 
+function Accordion({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <details className="group border-b border-zinc-200">
+      <summary className="flex cursor-pointer list-none items-center justify-between py-3 text-xs font-semibold uppercase tracking-wide text-ink">
+        {title}
+        <svg viewBox="0 0 24 24" className="h-4 w-4 transition-transform group-open:rotate-180" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+          <path d="m6 9 6 6 6-6" />
+        </svg>
+      </summary>
+      <div className="pb-4 text-sm leading-6 text-zinc-600">{children}</div>
+    </details>
+  );
+}
+
 export default async function ProductDetailPage(props: Props) {
   const { slug } = await props.params;
 
-  let product;
+  let product: Product;
   try {
     product = await getProductBySlug(slug);
   } catch (error) {
@@ -43,106 +59,137 @@ export default async function ProductDetailPage(props: Props) {
     throw error;
   }
 
-  const [primaryImage, ...otherImages] = product.images;
+  const [deliveryFee, relatedResponse] = await Promise.all([
+    getDeliveryFee().catch(() => null),
+    getProducts({ limit: 4 }).catch(() => null),
+  ]);
+  const related = (relatedResponse?.data ?? []).filter((item) => item._id !== product._id).slice(0, 3);
+  const title = product.nameBn ? `${product.nameBn} – ${product.name}` : product.name;
+
+  const details = [
+    { label: "Category", value: product.category },
+    ...(product.size ? [{ label: "Size", value: product.size }] : []),
+    { label: "Availability", value: product.inStock ? `In stock (${product.stock} available)` : "Out of stock" },
+  ];
 
   return (
-    <main className="mx-auto w-full max-w-6xl px-4 pb-16 sm:px-6">
-      <nav className="py-4 text-sm text-zinc-500">
-        <Link href="/shop" className="hover:text-brand">
-          ← Back to all sarees
-        </Link>
-      </nav>
+    <main className="w-full">
+      <section className="bg-zinc-50">
+        <div className="mx-auto max-w-[1170px] px-4 pb-14">
+          <nav className="py-4 text-xs text-zinc-600" aria-label="Breadcrumb">
+            <Link href="/" className="text-ink hover:text-brand">Home</Link>
+            <span className="mx-2 text-zinc-300">/</span>
+            <Link href="/shop" className="text-ink hover:text-brand">Saree</Link>
+            <span className="mx-2 text-zinc-300">/</span>
+            <span>{title}</span>
+          </nav>
 
-      <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
-        <ProductImageGallery images={product.images} productName={product.name} />
+          <div className="grid gap-8 lg:grid-cols-[1.65fr_1fr] lg:gap-12">
+            <ProductImageGallery images={product.images} productName={product.name} />
 
-        <div className="flex flex-col gap-4">
-          <div>
-            <p className="text-sm uppercase tracking-wide text-zinc-500">
-              {product.category}
-            </p>
-            <h1 className="mt-1 text-3xl font-bold text-zinc-900">
-              {product.name}
-            </h1>
-            {product.nameBn && (
-              <p className="mt-1 text-lg text-zinc-500">
-                {product.nameBn}
-              </p>
-            )}
-          </div>
+            <div className="flex flex-col gap-4">
+              <h1 className="text-[28px] font-semibold leading-tight text-ink sm:text-[34px]">{title}</h1>
 
-          <div className="flex items-center gap-3">
-            <PriceTag product={product} className="text-3xl font-semibold text-brand" />
-            {isOnSale(product) && (
-              <span className="bg-accent px-2.5 py-1 text-xs font-bold uppercase tracking-wide text-white">
-                Save {discountPercent(product)}%
-              </span>
-            )}
-          </div>
-
-          {product.inStock ? (
-            <p className="text-sm font-medium text-green-700">
-              In stock ({product.stock} available)
-            </p>
-          ) : (
-            <p className="text-sm font-medium text-red-600">
-              Out of stock
-            </p>
-          )}
-
-          {product.description && (
-            <p className="leading-7 text-zinc-700">
-              {product.description}
-            </p>
-          )}
-
-          {product.descriptionBn && (
-            <p className="leading-7 text-zinc-500">
-              {product.descriptionBn}
-            </p>
-          )}
-
-          <dl className="grid grid-cols-2 gap-4 border-t border-zinc-200 pt-4 text-sm">
-            {product.size && (
-              <div>
-                <dt className="text-zinc-500">Size</dt>
-                <dd className="font-medium text-zinc-900">
-                  {product.size}
-                </dd>
+              <div className="flex flex-wrap items-center gap-3">
+                <PriceTag product={product} className="text-lg font-medium text-gold" />
+                {isOnSale(product) && (
+                  <span className="bg-accent px-2.5 py-1 text-xs font-bold uppercase tracking-wide text-white">
+                    Save {discountPercent(product)}%
+                  </span>
+                )}
               </div>
-            )}
-            <div>
-              <dt className="text-zinc-500">Category</dt>
-              <dd className="font-medium text-zinc-900">
-                {product.category}
-              </dd>
+
+              <dl className="grid grid-cols-[80px_1fr] gap-x-4 gap-y-3 py-2 text-sm">
+                <dt className="font-semibold text-ink">Category:</dt>
+                <dd className="text-zinc-600">{product.category}</dd>
+                {product.size && (
+                  <>
+                    <dt className="font-semibold text-ink">Size:</dt>
+                    <dd className="text-zinc-600">{product.size}</dd>
+                  </>
+                )}
+                <dt className="font-semibold text-ink">Stock:</dt>
+                <dd className={product.inStock ? "text-green-700" : "text-red-600"}>
+                  {product.inStock ? `In stock (${product.stock} available)` : "Out of stock"}
+                </dd>
+              </dl>
+
+              {product.description && <p className="text-sm leading-6 text-zinc-600">{product.description}</p>}
+
+              <div className="mt-2">
+                <AddToCartButton
+                  product={{
+                    _id: product._id,
+                    slug: product.slug,
+                    name: product.name,
+                    price: product.price,
+                    image: product.images[0] ?? "",
+                  }}
+                  inStock={product.inStock}
+                  maxQuantity={product.stock}
+                />
+              </div>
+
+              <a
+                href={`https://wa.me/8801700000000?text=${encodeURIComponent(
+                  `Hi! I'm interested in ${product.name} - ${process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"}/products/${product.slug}`
+                )}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex h-12 items-center justify-center gap-2 rounded border border-green-600 text-sm font-semibold text-green-700 transition-colors hover:bg-green-600 hover:text-white"
+              >
+                Ask on WhatsApp
+              </a>
+
+              <div className="rounded border border-accent/40 bg-white p-4">
+                <p className="text-sm font-semibold text-accent">Pay on delivery, risk nothing</p>
+                <p className="mt-1 text-sm text-zinc-600">
+                  Order with just your name, phone and address. You pay the rider in cash when your saree arrives.
+                </p>
+              </div>
+
+              <div className="mt-2 border-t border-zinc-200">
+                <Accordion title="Delivery charge">
+                  {deliveryFee !== null
+                    ? `Delivery across Bangladesh costs ${formatPrice(deliveryFee)} per order. It is added at checkout.`
+                    : "The delivery charge is shown at checkout."}
+                </Accordion>
+                <Accordion title="Payment">
+                  Cash on delivery only. No online payment is needed to place an order.
+                </Accordion>
+                <Accordion title="Check before you pay">
+                  Please open the parcel and check the saree in front of the delivery person before you pay. For any
+                  problem, message us on WhatsApp or use the Contact page.
+                </Accordion>
+              </div>
             </div>
-          </dl>
-
-          <AddToCartButton
-            product={{
-              _id: product._id,
-              slug: product.slug,
-              name: product.name,
-              price: product.price,
-              image: product.images[0] ?? "",
-            }}
-            inStock={product.inStock}
-          />
-
-          <a
-            href={`https://wa.me/8801700000000?text=${encodeURIComponent(
-              `Hi! I'm interested in ${product.name} - ${process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"}/products/${product.slug}`
-            )}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex h-12 items-center justify-center gap-2 rounded-full border-2 border-green-600 font-semibold text-green-600 transition-colors hover:bg-green-600 hover:text-white"
-          >
-            <span>💬</span>
-            <span>Ask on WhatsApp</span>
-          </a>
+          </div>
         </div>
-      </div>
+      </section>
+
+      <section className="mx-auto max-w-[1170px] px-4">
+        <ProductTabs description={product.description} descriptionBn={product.descriptionBn} details={details} />
+
+        <p className="border-t border-zinc-200 py-6 text-center text-xs text-zinc-600">
+          Category:{" "}
+          <Link href="/shop" className="underline hover:text-brand">
+            {product.category}
+          </Link>
+        </p>
+
+        {related.length > 0 && (
+          <div className="pb-16 pt-6">
+            <h2 className="mb-6 text-xl font-semibold text-zinc-700">Related products</h2>
+            <div className="grid grid-cols-2 gap-x-4 gap-y-10 sm:gap-x-[30px] md:grid-cols-3">
+              {related.map((item, index) => (
+                <div key={item._id} className={index === 2 ? "hidden md:block" : undefined}>
+                  <ProductCard product={item} />
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </section>
     </main>
   );
 }

@@ -39,7 +39,7 @@ export default async function ProductListing({ search, sort, page, onSale, empty
   return (
     <>
       <Suspense fallback={null}>
-        <ProductFilters />
+        <ProductFilters total={data.pagination.total} shown={data.data.length} />
       </Suspense>
 
       {data.data.length === 0 ? (
@@ -58,9 +58,6 @@ export default async function ProductListing({ search, sort, page, onSale, empty
             </div>
           )}
 
-          <p className="mt-6 text-center text-sm text-zinc-500">
-            Showing {data.data.length} of {data.pagination.total} products
-          </p>
         </>
       )}
     </>

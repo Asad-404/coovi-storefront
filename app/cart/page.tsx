@@ -13,18 +13,19 @@ export default function CartPage() {
 
   if (items.length === 0) {
     return (
-      <main className="mx-auto flex w-full max-w-6xl flex-1 flex-col items-center justify-center gap-4 px-4 py-24 text-center sm:px-6">
-        <h1 className="text-2xl font-semibold text-zinc-900">
-          Your cart is empty
-        </h1>
-        <p className="text-zinc-500">
-          Browse our collection and find something you love.
-        </p>
+      <main className="mx-auto flex w-full max-w-6xl flex-1 flex-col items-center justify-center gap-6 px-4 py-20 text-center sm:px-6">
+        <svg viewBox="0 0 64 64" className="h-32 w-32 text-zinc-200" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+          <path d="M6 14h8l5 28h28l6-20H17" />
+          <circle cx="24" cy="52" r="3.5" />
+          <circle cx="44" cy="52" r="3.5" />
+          <path d="M26 4l2 6M36 3v7M46 4l-2 6" />
+        </svg>
+        <h1 className="text-3xl font-bold text-ink sm:text-4xl">Your cart is currently empty.</h1>
         <Link
-          href="/"
-          className="rounded-full bg-brand px-6 py-3 font-semibold text-white transition-colors hover:bg-brand-dark"
+          href="/shop"
+          className="rounded bg-gold px-8 py-3.5 font-bold text-white transition-colors hover:bg-gold/85"
         >
-          Continue shopping
+          Return to shop
         </Link>
       </main>
     );
@@ -126,7 +127,7 @@ export default function CartPage() {
 
           <Link
             href="/checkout"
-            className="mt-6 block w-full rounded-full bg-brand py-3 text-center font-semibold text-white transition-colors hover:bg-brand-dark"
+            className="mt-6 block w-full rounded bg-gold py-3.5 text-center font-bold text-white transition-colors hover:bg-gold/85"
           >
             Proceed to Checkout
           </Link>
