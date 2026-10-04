@@ -2,6 +2,8 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { useCartStore, cartTotal, cartCount } from "@/lib/cartStore";
 import { formatPrice } from "@/lib/utils";
 
@@ -15,10 +17,18 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
   const updateQuantity = useCartStore((state) => state.updateQuantity);
   const removeItem = useCartStore((state) => state.removeItem);
 
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   const total = cartTotal(items);
   const count = cartCount(items);
 
-  return (
+  // Portal to <body>: the sticky header uses backdrop-blur, which would otherwise make this fixed panel size itself to the header
+  if (!mounted) return null;
+
+  return createPortal(
     <>
       {/* Backdrop */}
       {isOpen && (
@@ -144,14 +154,14 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
             <Link
               href="/checkout"
               onClick={onClose}
-              className="flex h-12 items-center justify-center rounded-full bg-brand font-semibold text-white transition-colors hover:bg-brand-dark"
+              className="flex h-12 items-center justify-center rounded bg-gold font-bold text-white transition-colors hover:bg-gold/85"
             >
               Proceed to Checkout
             </Link>
             <Link
               href="/cart"
               onClick={onClose}
-              className="mt-2 flex h-12 items-center justify-center rounded-full border-2 border-zinc-200 font-semibold text-zinc-900 transition-colors hover:bg-zinc-100"
+              className="mt-2 flex h-12 items-center justify-center rounded border-2 border-zinc-200 font-semibold text-zinc-900 transition-colors hover:bg-zinc-100"
             >
               View Full Cart
             </Link>
@@ -159,6 +169,7 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
         )}
       </div>
       </div>
-    </>
+    </>,
+    document.body
   );
 }
