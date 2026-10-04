@@ -198,7 +198,7 @@ export default function CheckoutPage() {
           <button
             type="submit"
             disabled={submitting || total === null || stockIssues.length > 0}
-            className="mt-6 h-12 w-full rounded-full bg-brand text-base font-semibold text-white transition-colors hover:bg-brand-dark disabled:cursor-not-allowed disabled:bg-zinc-300 sm:w-auto sm:px-12"
+            className="mt-6 h-12 w-full rounded bg-highlight text-base font-bold text-white transition-colors hover:bg-highlight/85 disabled:cursor-not-allowed disabled:bg-zinc-300 sm:w-auto sm:px-12"
           >
             {submitting
               ? "Placing order..."
@@ -209,6 +209,21 @@ export default function CheckoutPage() {
 
           <p className="mt-4 text-sm text-zinc-500">
             Payment: Cash on Delivery. We will call you to confirm your order.
+          </p>
+          <p className="mt-2 text-sm text-zinc-500">
+            By placing your order you agree to our{" "}
+            <Link href="/terms" className="underline hover:text-brand">
+              Terms
+            </Link>
+            ,{" "}
+            <Link href="/return-policy" className="underline hover:text-brand">
+              Return &amp; Exchange
+            </Link>{" "}
+            and{" "}
+            <Link href="/privacy-policy" className="underline hover:text-brand">
+              Privacy Policy
+            </Link>
+            .
           </p>
         </form>
 

@@ -198,7 +198,11 @@ export default async function ProductDetailPage(props: Props) {
                 </Accordion>
                 <Accordion title="Check before you pay">
                   Please open the parcel and check the saree in front of the delivery person before you pay. For any
-                  problem, message us on WhatsApp or use the Contact page.
+                  problem, message us on WhatsApp or read our{" "}
+                  <Link href="/return-policy" className="underline hover:text-brand">
+                    return and exchange policy
+                  </Link>
+                  .
                 </Accordion>
               </div>
             </div>

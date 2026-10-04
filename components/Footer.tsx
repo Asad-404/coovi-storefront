@@ -13,6 +13,12 @@ export default function Footer() {
           <Link href="/about" className="hover:text-brand">About</Link>
           <Link href="/contact" className="hover:text-brand">Contact</Link>
         </nav>
+        <nav className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs text-zinc-500">
+          <Link href="/return-policy" className="hover:text-brand">Return &amp; Exchange</Link>
+          <Link href="/delivery-policy" className="hover:text-brand">Delivery &amp; Payment</Link>
+          <Link href="/privacy-policy" className="hover:text-brand">Privacy Policy</Link>
+          <Link href="/terms" className="hover:text-brand">Terms of Service</Link>
+        </nav>
       </div>
 
       <div className="bg-brand py-7 text-center text-base font-medium text-white">

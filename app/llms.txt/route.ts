@@ -31,6 +31,10 @@ ${SITE_NAME} is an online saree shop in Bangladesh. Prices are in Bangladeshi ta
 - [On sale](${SITE_URL}/sale): sarees with a reduced price
 - [About](${SITE_URL}/about)
 - [Contact](${SITE_URL}/contact)
+- [Return and exchange policy](${SITE_URL}/return-policy)
+- [Delivery and payment](${SITE_URL}/delivery-policy)
+- [Privacy policy](${SITE_URL}/privacy-policy)
+- [Terms of service](${SITE_URL}/terms)
 - [Track an order](${SITE_URL}/track-order): needs the order number and the phone number used at checkout
 - [Sitemap](${SITE_URL}/sitemap.xml)
 
