@@ -3,16 +3,18 @@
 /* Light-only storefront: `dark:` utilities only apply under an explicit .dark class. */
 @custom-variant dark (&:where(.dark, .dark *));
 
+/* Palette taken from the Coovi logo: navy wordmark (#0c2953) and cyan dot (#06b5e4) */
 @theme inline {
-  --color-brand: #5f3d11;
-  --color-brand-dark: #48300c;
-  --color-accent: #8a4b2a;
-  --color-gold: #d4903a;
-  --color-cream: #faf6f0;
-  --color-sand: #f1e4cf;
-  --color-ink: #1f1a1a;
+  --color-brand: #0c2953;
+  --color-brand-dark: #081c3b;
+  --color-accent: #0878a3;
+  --color-highlight: #0788b8;
+  --color-logo-dot: #06b5e4;
+  --color-mist: #f3f7fc;
+  --color-frost: #dbe8f5;
+  --color-ink: #0f1b33;
   --font-sans: var(--font-inter), system-ui, sans-serif;
-  --font-display: var(--font-playfair), Georgia, serif;
+  --font-display: var(--font-nunito), system-ui, sans-serif;
 }
 
 body {

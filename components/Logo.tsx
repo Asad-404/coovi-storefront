@@ -1,17 +1,19 @@
 import Link from "next/link";
 
+// Wordmark from the Coovi brand kit: navy "Coovi" with the i's dot replaced by a cyan dot
 export default function Logo({ size = "md" }: { size?: "md" | "lg" }) {
-  const circle = size === "lg" ? "h-16 w-16" : "h-10 w-10 sm:h-14 sm:w-14";
-  const text = size === "lg" ? "text-4xl" : "text-[26px] sm:text-3xl";
+  const text = size === "lg" ? "text-5xl" : "text-[30px] sm:text-4xl";
 
   return (
-    <Link href="/" className="inline-flex items-center gap-3" aria-label="Coovi home">
-      <span className={`${circle} flex items-center justify-center rounded-full bg-brand`}>
-        <span className="flex h-[62%] w-[62%] items-center justify-center border-2 border-white/90 font-display text-lg font-bold leading-none text-white">
-          C
-        </span>
+    <Link href="/" aria-label="Coovi home" className={`${text} inline-block font-display font-black leading-none tracking-tight text-brand`}>
+      Coov
+      <span className="relative inline-block">
+        ı
+        <span
+          aria-hidden="true"
+          className="absolute left-[0.04em] top-[-0.04em] h-[0.2em] w-[0.2em] rounded-full bg-logo-dot"
+        />
       </span>
-      <span className={`${text} font-display font-bold tracking-wide text-brand`}>Coovi</span>
     </Link>
   );
 }

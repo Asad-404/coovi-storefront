@@ -23,7 +23,7 @@ export default function CartPage() {
         <h1 className="text-3xl font-bold text-ink sm:text-4xl">Your cart is currently empty.</h1>
         <Link
           href="/shop"
-          className="rounded bg-gold px-8 py-3.5 font-bold text-white transition-colors hover:bg-gold/85"
+          className="rounded bg-highlight px-8 py-3.5 font-bold text-white transition-colors hover:bg-highlight/85"
         >
           Return to shop
         </Link>
@@ -127,7 +127,7 @@ export default function CartPage() {
 
           <Link
             href="/checkout"
-            className="mt-6 block w-full rounded bg-gold py-3.5 text-center font-bold text-white transition-colors hover:bg-gold/85"
+            className="mt-6 block w-full rounded bg-highlight py-3.5 text-center font-bold text-white transition-colors hover:bg-highlight/85"
           >
             Proceed to Checkout
           </Link>

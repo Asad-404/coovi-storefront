@@ -8,8 +8,8 @@ export default function NewArrivalCard({ product }: { product: Product }) {
   const title = product.nameBn ? `${product.nameBn} - ${product.name}` : product.name;
 
   return (
-    <article className="flex flex-col rounded-xl border border-sand bg-white p-2.5">
-      <Link href={`/products/${product.slug}`} className="relative block aspect-3/4 overflow-hidden rounded-lg bg-cream">
+    <article className="flex flex-col rounded-xl border border-frost bg-white p-2.5">
+      <Link href={`/products/${product.slug}`} className="relative block aspect-3/4 overflow-hidden rounded-lg bg-mist">
         {image && (
           <Image
             src={image}

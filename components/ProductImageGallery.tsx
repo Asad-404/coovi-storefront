@@ -17,7 +17,7 @@ export default function ProductImageGallery({ images, productName }: ProductImag
   return (
     <>
       <div className="flex flex-col gap-3">
-        <div className="relative aspect-3/4 overflow-hidden bg-cream">
+        <div className="relative aspect-3/4 overflow-hidden bg-mist">
           {primaryImage ? (
             <Image
               src={primaryImage}
@@ -53,7 +53,7 @@ export default function ProductImageGallery({ images, productName }: ProductImag
                 type="button"
                 onClick={() => setSelectedIndex(index)}
                 aria-label={`Show image ${index + 1}`}
-                className={`relative aspect-3/4 w-16 shrink-0 overflow-hidden bg-cream transition-opacity sm:w-20 ${
+                className={`relative aspect-3/4 w-16 shrink-0 overflow-hidden bg-mist transition-opacity sm:w-20 ${
                   selectedIndex === index ? "ring-2 ring-brand" : "opacity-70 hover:opacity-100"
                 }`}
               >

@@ -154,7 +154,7 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
             <Link
               href="/checkout"
               onClick={onClose}
-              className="flex h-12 items-center justify-center rounded bg-gold font-bold text-white transition-colors hover:bg-gold/85"
+              className="flex h-12 items-center justify-center rounded bg-highlight font-bold text-white transition-colors hover:bg-highlight/85"
             >
               Proceed to Checkout
             </Link>

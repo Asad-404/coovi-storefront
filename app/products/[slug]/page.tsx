@@ -91,7 +91,7 @@ export default async function ProductDetailPage(props: Props) {
               <h1 className="text-[28px] font-semibold leading-tight text-ink sm:text-[34px]">{title}</h1>
 
               <div className="flex flex-wrap items-center gap-3">
-                <PriceTag product={product} className="text-lg font-medium text-gold" />
+                <PriceTag product={product} className="text-lg font-medium text-highlight" />
                 {isOnSale(product) && (
                   <span className="bg-accent px-2.5 py-1 text-xs font-bold uppercase tracking-wide text-white">
                     Save {discountPercent(product)}%

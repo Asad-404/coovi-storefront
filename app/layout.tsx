@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
-import { Inter, Playfair_Display } from "next/font/google";
+import { Inter, Nunito } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
-const playfair = Playfair_Display({
-  variable: "--font-playfair",
+const nunito = Nunito({
+  variable: "--font-nunito",
   subsets: ["latin"],
+  weight: ["700", "800", "900"],
 });
 
 const inter = Inter({
@@ -36,7 +37,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${playfair.variable} h-full antialiased`}
+      className={`${inter.variable} ${nunito.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col">
         <Header />

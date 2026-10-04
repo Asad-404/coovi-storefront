@@ -31,7 +31,7 @@ export default async function Home(props: PageProps<"/">) {
 
       {newArrivals.length > 0 && (
         <section className="mx-auto max-w-[1120px] px-4">
-          <div className="rounded-2xl border border-sand bg-cream px-4 py-10 sm:px-6">
+          <div className="rounded-2xl border border-frost bg-mist px-4 py-10 sm:px-6">
             <SectionTitle
               eyebrow="Festive collection"
               title="New Arrivals"

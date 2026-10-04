@@ -53,7 +53,7 @@ export default function ProductTabs({ description, descriptionBn, details }: Pro
             aria-selected={active === tab}
             onClick={() => setActive(tab)}
             className={`-mb-px shrink-0 border-b-2 px-1 py-3 font-medium transition-colors sm:py-4 ${
-              active === tab ? "border-gold text-ink" : "border-transparent text-zinc-600 hover:text-ink"
+              active === tab ? "border-highlight text-ink" : "border-transparent text-zinc-600 hover:text-ink"
             }`}
           >
             {tab}
