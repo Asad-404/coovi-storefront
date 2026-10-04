@@ -28,9 +28,10 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
         />
       )}
 
-      {/* Drawer */}
+      {/* The wrapper clips the closed drawer so it cannot widen the page on phones */}
+      <div className={`fixed inset-0 z-50 overflow-hidden ${isOpen ? "" : "pointer-events-none"}`} aria-hidden={!isOpen}>
       <div
-        className={`fixed right-0 top-0 z-50 flex h-full w-full max-w-md transform flex-col bg-white shadow-xl transition-transform duration-300 ${
+        className={`absolute right-0 top-0 flex h-full w-full max-w-md transform flex-col bg-white shadow-xl transition-transform duration-300 ${
           isOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
@@ -156,6 +157,7 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
             </Link>
           </div>
         )}
+      </div>
       </div>
     </>
   );

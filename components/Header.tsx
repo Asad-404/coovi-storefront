@@ -2,6 +2,7 @@ import Link from "next/link";
 import CartBadge from "@/components/CartBadge";
 import Logo from "@/components/Logo";
 import SearchBar from "@/components/SearchBar";
+import MobileMenu from "@/components/MobileMenu";
 
 const navLinks = [
   { href: "/", label: "Home" },
@@ -13,7 +14,7 @@ const navLinks = [
 export default function Header() {
   return (
     <>
-      <div className="border-b border-zinc-100 bg-white text-xs text-zinc-700 sm:text-sm">
+      <div className="hidden border-b border-zinc-100 bg-white text-sm text-zinc-700 md:block">
         <div className="mx-auto flex h-9 max-w-[1170px] items-center justify-between px-4">
           <p>Handcrafted Elegance, Woven with Tradition.</p>
           <a
@@ -33,12 +34,22 @@ export default function Header() {
       </div>
 
       <header className="sticky top-0 z-20 border-b border-zinc-100 bg-white/95 backdrop-blur">
-        <div className="mx-auto grid h-[72px] max-w-[1170px] grid-cols-[1fr_auto] items-center gap-4 px-4 sm:h-[90px] md:grid-cols-[1fr_auto_1fr]">
+        <div className="grid h-[68px] grid-cols-[1fr_auto_1fr] items-center px-4 md:hidden">
+          <div className="justify-self-start">
+            <MobileMenu />
+          </div>
+          <Logo />
+          <div className="justify-self-end">
+            <CartBadge showTotal={false} />
+          </div>
+        </div>
+
+        <div className="mx-auto hidden h-[90px] max-w-[1170px] grid-cols-[1fr_auto_1fr] items-center gap-4 px-4 md:grid">
           <div className="justify-self-start">
             <Logo />
           </div>
 
-          <nav className="hidden items-center gap-6 text-sm font-semibold uppercase text-ink md:flex">
+          <nav className="flex items-center gap-6 text-sm font-semibold uppercase text-ink">
             {navLinks.map((link) => (
               <Link key={link.label} href={link.href} className="transition-colors hover:text-brand">
                 {link.label}
@@ -52,14 +63,6 @@ export default function Header() {
             <CartBadge />
           </div>
         </div>
-
-        <nav className="flex justify-center gap-6 border-t border-zinc-100 py-2 text-xs font-semibold uppercase text-ink md:hidden">
-          {navLinks.map((link) => (
-            <Link key={link.label} href={link.href} className="hover:text-brand">
-              {link.label}
-            </Link>
-          ))}
-        </nav>
       </header>
 
       <div className="bg-brand py-3.5 text-center text-sm font-semibold text-white">

@@ -16,7 +16,7 @@ export default function PriceTag({
     <span className={`inline-flex flex-wrap items-baseline gap-x-2 ${className}`}>
       <span className="font-bold text-accent">{formatPrice(product.price)}</span>
       <s className="text-[0.85em] font-normal text-zinc-400">{formatPrice(product.compareAtPrice as number)}</s>
-      <span className="text-[0.75em] font-semibold text-accent">-{discountPercent(product)}%</span>
+      <span className="hidden text-[0.75em] font-semibold text-accent sm:inline">-{discountPercent(product)}%</span>
     </span>
   );
 }

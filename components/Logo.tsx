@@ -1,8 +1,8 @@
 import Link from "next/link";
 
 export default function Logo({ size = "md" }: { size?: "md" | "lg" }) {
-  const circle = size === "lg" ? "h-16 w-16" : "h-11 w-11 sm:h-14 sm:w-14";
-  const text = size === "lg" ? "text-4xl" : "text-2xl sm:text-3xl";
+  const circle = size === "lg" ? "h-16 w-16" : "h-10 w-10 sm:h-14 sm:w-14";
+  const text = size === "lg" ? "text-4xl" : "text-[26px] sm:text-3xl";
 
   return (
     <Link href="/" className="inline-flex items-center gap-3" aria-label="Coovi home">
