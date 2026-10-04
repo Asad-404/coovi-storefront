@@ -1,0 +1,74 @@
+import Image from "next/image";
+import Link from "next/link";
+
+const slant = "polygon(7% 0, 100% 0, 93% 100%, 0 100%)";
+
+export default function HomeHero({ images }: { images: string[] }) {
+  return (
+    <section className="px-2.5 pt-2.5">
+      <div className="relative overflow-hidden border border-sand bg-gradient-to-r from-sand via-[#f6ecdc] to-[#efe3d0]">
+        <svg
+          aria-hidden="true"
+          viewBox="0 0 200 300"
+          className="pointer-events-none absolute -left-4 bottom-0 hidden h-[85%] text-gold/30 lg:block"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.5"
+        >
+          <path d="M20 300 C 40 200, 60 120, 130 20" />
+          <path d="M45 220 C 20 190, 25 150, 60 140 C 75 175, 70 200, 45 220Z" />
+          <path d="M65 170 C 40 140, 50 100, 85 95 C 95 130, 90 150, 65 170Z" />
+          <path d="M90 120 C 70 90, 80 55, 115 55 C 122 85, 115 105, 90 120Z" />
+        </svg>
+
+        <div className="relative flex flex-col lg:min-h-[600px] lg:flex-row lg:items-stretch">
+          <div className="flex flex-1 flex-col items-start justify-center gap-5 px-6 py-12 sm:px-12 lg:pl-[11%] lg:pr-8">
+            <span className="rounded-full border border-gold/50 bg-white/60 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.2em] text-accent">
+              Festive collection
+            </span>
+            <h1 className="font-display text-4xl font-medium leading-[1.3] text-brand sm:text-5xl lg:text-[56px]">
+              In every festive colour,
+              <br />
+              Coovi is with you.
+            </h1>
+            <div className="flex w-56 items-center gap-2 text-gold" aria-hidden="true">
+              <span className="h-px flex-1 bg-gold/60" />
+              <span className="text-xs">✦</span>
+              <span className="h-px flex-1 bg-gold/60" />
+            </div>
+            <p className="max-w-md text-lg leading-8 text-brand/70">
+              Handpicked cotton, silk and georgette sarees — a little festive spirit in every drape.
+            </p>
+            <Link
+              href="/#shop"
+              className="mt-2 bg-brand px-8 py-4 text-sm font-semibold text-white shadow-lg shadow-brand/30 transition-colors hover:bg-brand-dark"
+            >
+              Explore the collection &nbsp;→
+            </Link>
+          </div>
+
+          {images.length > 0 && (
+            <div className="flex h-[360px] w-full overflow-hidden lg:mr-[8%] lg:h-auto lg:w-[46%]">
+              {images.slice(0, 3).map((src, index) => (
+                <div
+                  key={src}
+                  className="relative h-full flex-1"
+                  style={{ clipPath: slant }}
+                >
+                  <Image
+                    src={src}
+                    alt=""
+                    fill
+                    priority={index === 0}
+                    sizes="(max-width: 1024px) 33vw, 16vw"
+                    className="object-cover"
+                  />
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    </section>
+  );
+}

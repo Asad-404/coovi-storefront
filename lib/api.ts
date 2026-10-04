@@ -15,13 +15,22 @@ export interface ProductsResponse {
 }
 
 export async function getProducts(
-  options: { search?: string; sort?: string; page?: number; limit?: number } = {}
+  options: {
+    search?: string;
+    sort?: string;
+    page?: number;
+    limit?: number;
+    category?: string;
+    onSale?: boolean;
+  } = {}
 ): Promise<ProductsResponse> {
   const params = new URLSearchParams();
   if (options.search) params.set("search", options.search);
   if (options.sort) params.set("sort", options.sort);
   if (options.page) params.set("page", options.page.toString());
   if (options.limit) params.set("limit", options.limit.toString());
+  if (options.category) params.set("category", options.category);
+  if (options.onSale) params.set("onSale", "true");
   const queryString = params.toString();
 
   try {

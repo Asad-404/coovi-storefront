@@ -1,15 +1,17 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { getProducts } from "@/lib/api";
 import type { Product } from "@/lib/types";
 
 const inputClass =
-  "rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 placeholder-zinc-400 focus:border-rose-700 focus:outline-none dark:border-zinc-700 dark:bg-zinc-950 dark:text-zinc-50";
+  "border border-zinc-300 bg-white px-3 py-2 text-sm text-ink placeholder-zinc-400 focus:border-brand focus:outline-none";
 
 export default function ProductFilters() {
   const router = useRouter();
+  const pathname = usePathname();
+  const onSalePage = pathname === "/sale";
   const searchParams = useSearchParams();
   const currentSearch = searchParams.get("search") ?? "";
   const [search, setSearch] = useState(currentSearch);
@@ -51,7 +53,9 @@ export default function ProductFilters() {
 
   function pushParams(params: URLSearchParams) {
     const queryString = params.toString();
-    router.push(queryString ? `/?${queryString}` : "/");
+    // Filters and sorting always act on the page the shopper is on (/shop or /sale)
+    const target = onSalePage ? "/sale" : "/shop";
+    router.push(queryString ? `${target}?${queryString}` : target);
   }
 
   function handleSearchSubmit(event: React.FormEvent) {
@@ -63,6 +67,7 @@ export default function ProductFilters() {
     } else {
       params.delete("search");
     }
+    params.delete("page");
     pushParams(params);
   }
 
@@ -78,6 +83,7 @@ export default function ProductFilters() {
     } else {
       params.set("sort", event.target.value);
     }
+    params.delete("page");
     pushParams(params);
   }
 
@@ -96,7 +102,7 @@ export default function ProductFilters() {
           />
           <button
             type="submit"
-            className="rounded-lg bg-rose-700 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-rose-800"
+            className="bg-brand px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-brand-dark"
           >
             Search
           </button>
@@ -104,18 +110,18 @@ export default function ProductFilters() {
 
         {/* Autocomplete dropdown */}
         {showSuggestions && suggestions.length > 0 && (
-          <div className="absolute left-0 top-full z-10 mt-1 w-full rounded-lg border border-zinc-200 bg-white shadow-lg dark:border-zinc-800 dark:bg-zinc-950 sm:w-64">
+          <div className="absolute left-0 top-full z-10 mt-1 w-full border border-zinc-200 bg-white shadow-lg sm:w-64">
             <ul className="py-1">
               {suggestions.map((product) => (
                 <li key={product._id}>
                   <button
                     onClick={() => handleSuggestionClick(product.slug)}
-                    className="flex w-full items-center gap-3 px-4 py-2 text-left text-sm transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-900"
+                    className="flex w-full items-center gap-3 px-4 py-2 text-left text-sm transition-colors hover:bg-cream"
                   >
-                    <span className="flex-1 truncate text-zinc-900 dark:text-zinc-50">
+                    <span className="flex-1 truncate text-zinc-900">
                       {product.name}
                     </span>
-                    <span className="text-xs text-zinc-500 dark:text-zinc-400">
+                    <span className="text-xs text-zinc-500">
                       ৳{product.price}
                     </span>
                   </button>
@@ -126,7 +132,7 @@ export default function ProductFilters() {
         )}
       </div>
 
-      <label className="flex items-center gap-2 text-sm text-zinc-600 dark:text-zinc-300">
+      <label className="flex items-center gap-2 text-sm text-zinc-600">
         Sort by
         <select
           value={searchParams.get("sort") ?? "newest"}

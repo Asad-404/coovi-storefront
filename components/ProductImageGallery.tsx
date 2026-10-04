@@ -19,7 +19,7 @@ export default function ProductImageGallery({ images, productName }: ProductImag
       <div className="flex flex-col gap-4">
         <button
           onClick={() => setIsModalOpen(true)}
-          className="relative aspect-[3/4] overflow-hidden rounded-xl bg-zinc-100 transition-opacity hover:opacity-95 dark:bg-zinc-800"
+          className="relative aspect-[3/4] overflow-hidden rounded-xl bg-zinc-100 transition-opacity hover:opacity-95"
         >
           {primaryImage ? (
             <Image
@@ -43,9 +43,9 @@ export default function ProductImageGallery({ images, productName }: ProductImag
               <button
                 key={image}
                 onClick={() => setSelectedIndex(index)}
-                className={`relative aspect-[3/4] overflow-hidden rounded-lg bg-zinc-100 transition-all dark:bg-zinc-800 ${
+                className={`relative aspect-[3/4] overflow-hidden rounded-lg bg-zinc-100 transition-all ${
                   selectedIndex === index
-                    ? "ring-2 ring-rose-700 dark:ring-rose-400"
+                    ? "ring-2 ring-brand"
                     : "hover:opacity-80"
                 }`}
               >

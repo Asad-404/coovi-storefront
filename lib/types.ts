@@ -6,6 +6,7 @@ export interface Product {
   description?: string;
   descriptionBn?: string;
   price: number;
+  compareAtPrice?: number;
   images: string[];
   size?: string;
   category: string;

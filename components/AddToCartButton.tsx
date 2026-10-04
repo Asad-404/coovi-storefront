@@ -35,7 +35,7 @@ export default function AddToCartButton({ product, inStock }: AddToCartButtonPro
       type="button"
       onClick={handleAdd}
       disabled={!inStock}
-      className="mt-4 h-12 rounded-full bg-rose-700 px-8 text-base font-semibold text-white transition-colors hover:bg-rose-800 disabled:cursor-not-allowed disabled:bg-zinc-300 dark:disabled:bg-zinc-700"
+      className="mt-4 h-12 rounded-full bg-brand px-8 text-base font-semibold text-white transition-colors hover:bg-brand-dark disabled:cursor-not-allowed disabled:bg-zinc-300"
     >
       {!inStock ? "Out of Stock" : added ? "Added ✓" : "Add to Cart"}
     </button>

@@ -1,24 +1,70 @@
 import Link from "next/link";
 import CartBadge from "@/components/CartBadge";
+import Logo from "@/components/Logo";
+import SearchBar from "@/components/SearchBar";
+
+const navLinks = [
+  { href: "/", label: "Home" },
+  { href: "/shop", label: "Saree" },
+  { href: "/sale", label: "On Sale" },
+  { href: "/track-order", label: "Track Order" },
+];
 
 export default function Header() {
   return (
-    <header className="sticky top-0 z-10 border-b border-zinc-200 bg-white/90 backdrop-blur dark:border-zinc-800 dark:bg-zinc-950/90">
-      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
-        <Link href="/" className="text-xl font-bold tracking-widest text-rose-700 dark:text-rose-400">
-          COOVI
-        </Link>
-
-        <nav className="flex items-center gap-6 text-sm font-medium text-zinc-600 dark:text-zinc-300">
-          <Link href="/" className="hover:text-rose-700 dark:hover:text-rose-400">
-            Shop
-          </Link>
-          <Link href="/track-order" className="hover:text-rose-700 dark:hover:text-rose-400">
-            Track Order
-          </Link>
-          <CartBadge />
-        </nav>
+    <>
+      <div className="border-b border-zinc-100 bg-white text-xs text-zinc-700 sm:text-sm">
+        <div className="mx-auto flex h-9 max-w-[1170px] items-center justify-between px-4">
+          <p>Handcrafted Elegance, Woven with Tradition.</p>
+          <a
+            href="https://wa.me/8801700000000"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-2 font-semibold hover:text-brand"
+          >
+            Chat:
+            <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[#25d366] text-white">
+              <svg viewBox="0 0 24 24" className="h-3 w-3" fill="currentColor" aria-hidden="true">
+                <path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm5.2 14.1c-.2.6-1.3 1.2-1.8 1.2-.5.1-1 .2-3.3-.7-2.8-1.2-4.6-4-4.7-4.2-.1-.2-1.1-1.5-1.1-2.8s.7-2 .9-2.3c.2-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.8 2c.1.2.1.4 0 .5l-.3.5-.4.4c-.1.2-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1 2.1 1.3 2.4 1.5.3.1.5.1.6-.1l.9-1.1c.2-.3.4-.2.6-.1l1.9.9c.3.1.5.2.5.3.1.1.1.6-.1 1.1Z" />
+              </svg>
+            </span>
+          </a>
+        </div>
       </div>
-    </header>
+
+      <header className="sticky top-0 z-20 border-b border-zinc-100 bg-white/95 backdrop-blur">
+        <div className="mx-auto grid h-[72px] max-w-[1170px] grid-cols-[1fr_auto] items-center gap-4 px-4 sm:h-[90px] md:grid-cols-[1fr_auto_1fr]">
+          <div className="justify-self-start">
+            <Logo />
+          </div>
+
+          <nav className="hidden items-center gap-6 text-sm font-semibold uppercase text-ink md:flex">
+            {navLinks.map((link) => (
+              <Link key={link.label} href={link.href} className="transition-colors hover:text-brand">
+                {link.label}
+              </Link>
+            ))}
+          </nav>
+
+          <div className="flex items-center justify-end gap-4">
+            <SearchBar />
+            <span className="h-8 w-px bg-zinc-200" aria-hidden="true" />
+            <CartBadge />
+          </div>
+        </div>
+
+        <nav className="flex justify-center gap-6 border-t border-zinc-100 py-2 text-xs font-semibold uppercase text-ink md:hidden">
+          {navLinks.map((link) => (
+            <Link key={link.label} href={link.href} className="hover:text-brand">
+              {link.label}
+            </Link>
+          ))}
+        </nav>
+      </header>
+
+      <div className="bg-brand py-3.5 text-center text-sm font-semibold text-white">
+        <span className="text-gold">✦</span> Coovi Festive Collection <span className="text-gold">✦</span>
+      </div>
+    </>
   );
 }
