@@ -10,7 +10,7 @@ type Props = PageProps<"/order-confirmation/[orderNumber]">;
 export async function generateMetadata(props: Props): Promise<Metadata> {
   const { orderNumber } = await props.params;
   return {
-    title: `Order ${orderNumber} - Coovi`,
+    title: `Order ${orderNumber}`,
     // A guest's order details must never end up in a search engine
     robots: { index: false, follow: false },
   };

@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
+import { pageOpenGraph } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "About Us - Coovi",
+  title: "About us",
+  alternates: { canonical: "/about" },
+  openGraph: pageOpenGraph("/about", "About us | Coovi"),
   description: "Learn about Coovi, your trusted source for premium sarees in Bangladesh.",
 };
 

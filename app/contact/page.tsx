@@ -1,8 +1,11 @@
 import type { Metadata } from "next";
+import { pageOpenGraph } from "@/lib/site";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Contact Us - Coovi",
+  title: "Contact us",
+  alternates: { canonical: "/contact" },
+  openGraph: pageOpenGraph("/contact", "Contact us | Coovi"),
   description: "Get in touch with Coovi for questions about orders, products, or support.",
 };
 

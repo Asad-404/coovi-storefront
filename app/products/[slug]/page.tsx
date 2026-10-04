@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
+import { SITE_NAME, SITE_URL, pageOpenGraph } from "@/lib/site";
+import JsonLd from "@/components/JsonLd";
 import { getDeliveryFee, getProductBySlug, getProducts } from "@/lib/api";
 import { discountPercent, formatPrice, isOnSale } from "@/lib/utils";
 import type { Product } from "@/lib/types";
@@ -16,18 +18,23 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
   const { slug } = await props.params;
   try {
     const product = await getProductBySlug(slug);
+    const description = (product.description ?? `Buy ${product.name} at ${SITE_NAME}. Cash on delivery anywhere in Bangladesh.`).slice(0, 200);
+    const path = `/products/${product.slug}`;
+    const images = product.images.slice(0, 4);
     return {
-      title: `${product.name} - Coovi`,
-      description: product.description,
-      openGraph: {
-        title: product.name,
-        description: product.description ?? undefined,
-        images: product.images.length > 0 ? [product.images[0]] : undefined,
-        type: "website",
+      title: product.name,
+      description,
+      alternates: { canonical: path },
+      openGraph: pageOpenGraph(path, `${product.name} | ${SITE_NAME}`, { description, images }),
+      twitter: { card: "summary_large_image", title: `${product.name} | ${SITE_NAME}`, description, images },
+      other: {
+        "product:price:amount": String(product.price),
+        "product:price:currency": "BDT",
+        "product:availability": product.inStock ? "in stock" : "out of stock",
       },
     };
   } catch {
-    return { title: "Product not found - Coovi" };
+    return { title: "Product not found" };
   }
 }
 
@@ -72,8 +79,40 @@ export default async function ProductDetailPage(props: Props) {
     { label: "Availability", value: product.inStock ? `In stock (${product.stock} available)` : "Out of stock" },
   ];
 
+  const productUrl = `${SITE_URL}/products/${product.slug}`;
+  const structuredData = [
+    {
+      "@context": "https://schema.org",
+      "@type": "Product",
+      name: product.name,
+      description: product.description ?? undefined,
+      image: product.images,
+      sku: product.slug,
+      category: product.category,
+      brand: { "@type": "Brand", name: SITE_NAME },
+      offers: {
+        "@type": "Offer",
+        url: productUrl,
+        priceCurrency: "BDT",
+        price: product.price,
+        itemCondition: "https://schema.org/NewCondition",
+        availability: product.inStock ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+      },
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        { "@type": "ListItem", position: 1, name: "Home", item: SITE_URL },
+        { "@type": "ListItem", position: 2, name: "Saree", item: `${SITE_URL}/shop` },
+        { "@type": "ListItem", position: 3, name: product.name, item: productUrl },
+      ],
+    },
+  ];
+
   return (
     <main className="w-full">
+      <JsonLd data={structuredData} />
       <section className="bg-zinc-50">
         <div className="mx-auto max-w-[1170px] px-4 pb-14">
           <nav className="py-4 text-xs text-zinc-600" aria-label="Breadcrumb">

@@ -1,8 +1,9 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter, Nunito } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { BRAND_NAVY, SITE_DESCRIPTION, SITE_NAME, SITE_TAGLINE, SITE_URL } from "@/lib/site";
 
 const nunito = Nunito({
   variable: "--font-nunito",
@@ -16,21 +17,26 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"),
-  title: "Coovi - Premium Sarees Online",
-  description: "Shop beautiful cotton, silk, and georgette sarees at Coovi.",
+  metadataBase: new URL(SITE_URL),
+  title: { default: `${SITE_NAME} | ${SITE_TAGLINE}`, template: `%s | ${SITE_NAME}` },
+  description: SITE_DESCRIPTION,
+  applicationName: SITE_NAME,
   openGraph: {
-    title: "Coovi - Premium Sarees Online",
-    description: "Shop beautiful cotton, silk, and georgette sarees at Coovi.",
+    title: `${SITE_NAME} | ${SITE_TAGLINE}`,
+    description: SITE_DESCRIPTION,
     type: "website",
-    locale: "en_US",
-    siteName: "Coovi",
+    locale: "en_BD",
+    siteName: SITE_NAME,
   },
   twitter: {
     card: "summary_large_image",
-    title: "Coovi - Premium Sarees Online",
-    description: "Shop beautiful cotton, silk, and georgette sarees at Coovi.",
+    title: `${SITE_NAME} | ${SITE_TAGLINE}`,
+    description: SITE_DESCRIPTION,
   },
+};
+
+export const viewport: Viewport = {
+  themeColor: BRAND_NAVY,
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

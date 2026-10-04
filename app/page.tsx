@@ -1,11 +1,42 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import type { Metadata } from "next";
+import { SITE_DESCRIPTION, SITE_NAME, SITE_TAGLINE, SITE_URL, pageOpenGraph } from "@/lib/site";
+import JsonLd from "@/components/JsonLd";
 import { getProducts } from "@/lib/api";
 import ProductCard from "@/components/ProductCard";
 import NewArrivalCard from "@/components/NewArrivalCard";
 import HomeHero from "@/components/HomeHero";
 import PromoBanner from "@/components/PromoBanner";
 import WhyCoovi from "@/components/WhyCoovi";
+
+export const metadata: Metadata = {
+  alternates: { canonical: "/" },
+  openGraph: pageOpenGraph("/", `${SITE_NAME} | ${SITE_TAGLINE}`, { description: SITE_DESCRIPTION }),
+};
+
+const siteStructuredData = [
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    name: SITE_NAME,
+    url: SITE_URL,
+    logo: `${SITE_URL}/apple-icon`,
+    description: SITE_DESCRIPTION,
+    areaServed: "BD",
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: SITE_NAME,
+    url: SITE_URL,
+    potentialAction: {
+      "@type": "SearchAction",
+      target: `${SITE_URL}/shop?search={search_term_string}`,
+      "query-input": "required name=search_term_string",
+    },
+  },
+];
 
 export default async function Home(props: PageProps<"/">) {
   const { search } = await props.searchParams;
@@ -26,6 +57,7 @@ export default async function Home(props: PageProps<"/">) {
 
   return (
     <main className="w-full">
+      <JsonLd data={siteStructuredData} />
       <HomeHero images={heroImages} />
       <PromoBanner />
 

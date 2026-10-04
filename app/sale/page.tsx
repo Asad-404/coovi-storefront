@@ -1,11 +1,19 @@
 import type { Metadata } from "next";
+import { pageOpenGraph } from "@/lib/site";
 import PageHeading from "@/components/PageHeading";
 import ProductListing from "@/components/ProductListing";
 
-export const metadata: Metadata = {
-  title: "On Sale - Coovi",
-  description: "Coovi sarees at reduced prices.",
-};
+export async function generateMetadata(props: PageProps<"/sale">): Promise<Metadata> {
+  const { search, page } = await props.searchParams;
+  const isFiltered = (typeof search === "string" && search.length > 0) || (typeof page === "string" && page !== "1");
+  return {
+    title: "On Sale",
+    description: "Coovi sarees at reduced prices. Cash on delivery anywhere in Bangladesh.",
+    alternates: { canonical: "/sale" },
+    openGraph: pageOpenGraph("/sale", "On Sale | Coovi"),
+    robots: isFiltered ? { index: false, follow: true } : undefined,
+  };
+}
 
 export default async function SalePage(props: PageProps<"/sale">) {
   const { search, sort, page } = await props.searchParams;
