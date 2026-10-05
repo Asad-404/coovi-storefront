@@ -43,7 +43,7 @@ export default async function ProductListing({ search, sort, page, onSale, empty
       </Suspense>
 
       {data.data.length === 0 ? (
-        <p className="border-l-4 border-sky-500 bg-sky-500 px-6 py-3.5 text-sm text-white">{emptyMessage}</p>
+        <p className="border-l-4 border-brand bg-mist px-6 py-3.5 text-sm text-ink">{emptyMessage}</p>
       ) : (
         <>
           <div className="grid grid-cols-2 gap-x-4 gap-y-10 sm:gap-x-[30px] md:grid-cols-3">

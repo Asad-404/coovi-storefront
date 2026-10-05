@@ -6,7 +6,7 @@ const slant = "polygon(7% 0, 100% 0, 93% 100%, 0 100%)";
 export default function HomeHero({ images }: { images: string[] }) {
   return (
     <section className="px-2.5 pt-2.5">
-      <div className="relative overflow-hidden border border-frost bg-gradient-to-r from-frost via-[#e7f0fa] to-[#dde9f6]">
+      <div className="relative overflow-hidden border border-frost bg-mist">
         <svg
           aria-hidden="true"
           viewBox="0 0 200 300"

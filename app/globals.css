@@ -3,15 +3,15 @@
 /* Light-only storefront: `dark:` utilities only apply under an explicit .dark class. */
 @custom-variant dark (&:where(.dark, .dark *));
 
-/* Palette taken from the Coovi logo: navy wordmark (#0c2953) and cyan dot (#06b5e4) */
+/* Navy and cyan come from the Coovi logo. Surfaces (mist, frost) are neutral so the saree photos carry the colour. */
 @theme inline {
   --color-brand: #0c2953;
   --color-brand-dark: #081c3b;
   --color-accent: #0878a3;
   --color-highlight: #0788b8;
   --color-logo-dot: #06b5e4;
-  --color-mist: #f3f7fc;
-  --color-frost: #dbe8f5;
+  --color-mist: #f6f5f2;
+  --color-frost: #e6e3dc;
   --color-ink: #0f1b33;
   --font-sans: var(--font-hind-siliguri), system-ui, sans-serif;
   --font-display: var(--font-tiro-bangla), Georgia, serif;
