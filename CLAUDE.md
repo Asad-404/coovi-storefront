@@ -10,6 +10,8 @@ pnpm dev
 pnpm build
 pnpm start
 pnpm lint
+pnpm test
+pnpm coverage
 ```
 
 ## Project rules
