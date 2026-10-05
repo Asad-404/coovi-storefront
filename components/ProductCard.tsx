@@ -92,7 +92,7 @@ export default function ProductCard({ product }: { product: Product }) {
           href={`/products/${product.slug}`}
           className="btn btn-secondary mt-3 py-2.5 md:opacity-0 md:transition-opacity md:focus:opacity-100 md:group-hover:opacity-100"
         >
-          Read more
+          View details
         </Link>
       )}
     </div>

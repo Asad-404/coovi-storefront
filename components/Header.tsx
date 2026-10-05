@@ -16,7 +16,7 @@ export default function Header() {
     <>
       <div className="hidden border-b border-zinc-100 bg-white text-sm text-zinc-700 md:block">
         <div className="mx-auto flex h-9 max-w-page items-center justify-between px-4">
-          <p>Handcrafted Elegance, Woven with Tradition.</p>
+          <p>Cash on delivery across Bangladesh</p>
           <a
             href="https://wa.me/8801700000000"
             target="_blank"

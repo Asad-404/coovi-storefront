@@ -1,11 +1,11 @@
 const reasons = [
   {
-    title: "Handpicked Fabrics",
+    title: "Handpicked fabrics",
     text: "Every saree is chosen for the feel of its fabric and the finish of its weave, so what arrives matches what you saw.",
     icon: <path d="M4 20c0-8 4-14 16-16-1 12-7 16-16 16Zm0 0c4-5 7-8 10-10" />,
   },
   {
-    title: "Honest Prices",
+    title: "Honest prices",
     text: "Clear prices in BDT, and the delivery fee is shown before you place your order. No surprises at the door.",
     icon: (
       <>
@@ -17,7 +17,7 @@ const reasons = [
     ),
   },
   {
-    title: "Cash on Delivery",
+    title: "Cash on delivery",
     text: "Order as a guest with just your name, phone and address, then pay when your saree arrives.",
     icon: (
       <>
@@ -35,9 +35,7 @@ export default function WhyCoovi() {
         <div className="mx-auto max-w-3xl text-center">
           <h2 className="text-2xl text-zinc-700">Why Coovi?</h2>
           <p className="mt-4 leading-7 text-zinc-700">
-            We believe in celebrating tradition, craftsmanship and timeless elegance. Our sarees are
-            chosen with care, priced honestly and delivered across Bangladesh, so you can embrace
-            elegance with confidence.
+            Buying a saree online takes trust. Here is how we earn it.
           </p>
         </div>
 
