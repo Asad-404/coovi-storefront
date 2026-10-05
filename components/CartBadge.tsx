@@ -1,32 +1,33 @@
 "use client";
 
 import { useState, useSyncExternalStore } from "react";
-import { useCartStore, cartCount } from "@/lib/cartStore";
+import { useCartStore, cartCount, cartTotal } from "@/lib/cartStore";
+import { formatPrice } from "@/lib/utils";
 import CartDrawer from "./CartDrawer";
 
 const subscribeNoop = () => () => {};
 
-export default function CartBadge() {
+export default function CartBadge({ showTotal = true }: { showTotal?: boolean }) {
   const items = useCartStore((state) => state.items);
   // The cart lives in localStorage, so the server always renders an empty
   // cart. Only show the count once hydrated to avoid a hydration mismatch.
   const mounted = useSyncExternalStore(subscribeNoop, () => true, () => false);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
-  const count = cartCount(items);
+  const count = mounted ? cartCount(items) : 0;
+  const total = mounted ? cartTotal(items) : 0;
 
   return (
     <>
       <button
         onClick={() => setIsDrawerOpen(true)}
-        className="relative rounded-full bg-rose-700 px-4 py-2 text-white transition-colors hover:bg-rose-800"
+        aria-label={`Open cart, ${count} items`}
+        className="flex items-center gap-2 text-sm font-semibold text-ink transition-colors hover:text-brand"
       >
-        Cart
-        {mounted && count > 0 && (
-          <span className="absolute -right-2 -top-2 flex h-5 min-w-5 items-center justify-center rounded-full bg-zinc-900 px-1 text-xs font-bold text-white ring-2 ring-white dark:bg-white dark:text-zinc-900 dark:ring-zinc-950">
-            {count}
-          </span>
-        )}
+        {showTotal && <span>{formatPrice(total)}</span>}
+        <span className="flex h-7 min-w-7 items-center justify-center rounded-sm border border-highlight px-1.5 text-xs font-semibold text-highlight">
+          {count}
+        </span>
       </button>
 
       <CartDrawer isOpen={isDrawerOpen} onClose={() => setIsDrawerOpen(false)} />

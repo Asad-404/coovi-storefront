@@ -10,7 +10,7 @@ type Props = PageProps<"/order-confirmation/[orderNumber]">;
 export async function generateMetadata(props: Props): Promise<Metadata> {
   const { orderNumber } = await props.params;
   return {
-    title: `Order ${orderNumber} - Coovi`,
+    title: `Order ${orderNumber}`,
     // A guest's order details must never end up in a search engine
     robots: { index: false, follow: false },
   };
@@ -29,10 +29,10 @@ export default async function OrderConfirmationPage(props: Props) {
   if (!phoneValue) {
     return (
       <main className="mx-auto flex w-full max-w-md flex-1 flex-col items-center justify-center gap-6 px-4 py-24 text-center sm:px-6">
-        <h1 className="text-2xl font-semibold text-zinc-900 dark:text-zinc-50">
+        <h1 className="text-2xl text-zinc-900">
           Check your order
         </h1>
-        <p className="text-zinc-500 dark:text-zinc-400">
+        <p className="text-zinc-500">
           Enter the phone number you used at checkout to view order{" "}
           <span className="font-mono">{orderNumber}</span>.
         </p>
@@ -45,11 +45,11 @@ export default async function OrderConfirmationPage(props: Props) {
             pattern="01[0-9]{9}"
             inputMode="numeric"
             placeholder="e.g. 01712345678"
-            className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-zinc-900 placeholder-zinc-400 focus:border-rose-700 focus:outline-none dark:border-zinc-700 dark:bg-zinc-950 dark:text-zinc-50"
+            className="w-full rounded-sm border border-zinc-300 bg-white px-3 py-2 text-zinc-900 placeholder-zinc-400 focus:border-brand"
           />
           <button
             type="submit"
-            className="h-12 rounded-full bg-rose-700 font-semibold text-white transition-colors hover:bg-rose-800"
+            className="btn btn-primary h-12"
           >
             View my order
           </button>
@@ -68,26 +68,26 @@ export default async function OrderConfirmationPage(props: Props) {
   return (
     <main className="mx-auto w-full max-w-3xl px-4 pb-16 sm:px-6">
       <div className="flex flex-col items-center gap-3 py-12 text-center">
-        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-green-100 text-3xl text-green-700 dark:bg-green-900 dark:text-green-300">
+        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-green-100 text-3xl text-green-700">
           ✓
         </div>
-        <h1 className="text-3xl font-bold text-zinc-900 dark:text-zinc-50">
+        <h1 className="text-3xl text-zinc-900">
           Order placed!
         </h1>
-        <p className="text-zinc-600 dark:text-zinc-400">
+        <p className="text-zinc-600">
           Thank you, {order.customerName.split(" ")[0]}! We will call you at{" "}
           <span className="font-medium">{order.phone}</span> to confirm.
         </p>
-        <p className="rounded-full bg-zinc-100 px-4 py-1 font-mono text-sm text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300">
+        <p className="rounded-full bg-zinc-100 px-4 py-1 font-mono text-sm text-zinc-700">
           {order.orderNumber}
         </p>
       </div>
 
-      <div className="rounded-xl border border-zinc-200 dark:border-zinc-800">
-        <ul className="flex flex-col divide-y divide-zinc-200 dark:divide-zinc-800">
+      <div className="rounded-sm border border-zinc-200">
+        <ul className="flex flex-col divide-y divide-zinc-200">
           {order.items.map((item) => (
             <li key={item.productId} className="flex items-center gap-4 p-4">
-              <div className="relative h-16 w-12 shrink-0 overflow-hidden rounded-md bg-zinc-100 dark:bg-zinc-800">
+              <div className="relative h-16 w-12 shrink-0 overflow-hidden rounded-sm bg-zinc-100">
                 {item.image ? (
                   <Image
                     src={item.image}
@@ -103,21 +103,21 @@ export default async function OrderConfirmationPage(props: Props) {
                 )}
               </div>
               <div className="flex-1">
-                <p className="font-medium text-zinc-900 dark:text-zinc-50">
+                <p className="font-medium text-zinc-900">
                   {item.name}
                 </p>
-                <p className="text-sm text-zinc-500 dark:text-zinc-400">
+                <p className="text-sm text-zinc-500">
                   {formatPrice(item.price)} × {item.quantity}
                 </p>
               </div>
-              <p className="font-semibold text-zinc-900 dark:text-zinc-50">
+              <p className="font-semibold text-zinc-900">
                 {formatPrice(item.price * item.quantity)}
               </p>
             </li>
           ))}
         </ul>
 
-        <div className="flex flex-col gap-2 border-t border-zinc-200 p-4 text-zinc-600 dark:border-zinc-800 dark:text-zinc-300">
+        <div className="flex flex-col gap-2 border-t border-zinc-200 p-4 text-zinc-600">
           <div className="flex justify-between">
             <span>Subtotal</span>
             <span>{formatPrice(order.subtotal)}</span>
@@ -126,13 +126,13 @@ export default async function OrderConfirmationPage(props: Props) {
             <span>Delivery</span>
             <span>{formatPrice(order.deliveryFee)}</span>
           </div>
-          <div className="flex justify-between text-lg font-semibold text-zinc-900 dark:text-zinc-50">
+          <div className="flex justify-between text-lg font-semibold text-zinc-900">
             <span>Total (Cash on Delivery)</span>
             <span>{formatPrice(order.total)}</span>
           </div>
         </div>
 
-        <div className="border-t border-zinc-200 p-4 text-sm text-zinc-500 dark:border-zinc-800 dark:text-zinc-400">
+        <div className="border-t border-zinc-200 p-4 text-sm text-zinc-500">
           <p>
             <span className="font-medium">Status:</span> {order.status}
           </p>
@@ -145,7 +145,7 @@ export default async function OrderConfirmationPage(props: Props) {
       <div className="mt-8 text-center">
         <Link
           href="/"
-          className="rounded-full bg-rose-700 px-6 py-3 font-semibold text-white transition-colors hover:bg-rose-800"
+          className="btn btn-primary"
         >
           Continue shopping
         </Link>

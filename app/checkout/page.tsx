@@ -8,7 +8,7 @@ import { getDeliveryFee, getProducts, postOrder } from "@/lib/api";
 import { formatPrice } from "@/lib/utils";
 
 const inputClass =
-  "w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-zinc-900 placeholder-zinc-400 focus:border-rose-700 focus:outline-none dark:border-zinc-700 dark:bg-zinc-950 dark:text-zinc-50";
+  "w-full rounded-sm border border-zinc-300 bg-white px-3 py-2 text-zinc-900 placeholder-zinc-400 focus:border-brand";
 
 export default function CheckoutPage() {
   const items = useCartStore((state) => state.items);
@@ -68,15 +68,15 @@ export default function CheckoutPage() {
   if (items.length === 0) {
     return (
       <main className="mx-auto flex w-full max-w-6xl flex-1 flex-col items-center justify-center gap-4 px-4 py-24 text-center sm:px-6">
-        <h1 className="text-2xl font-semibold text-zinc-900 dark:text-zinc-50">
+        <h1 className="text-2xl text-zinc-900">
           Nothing to check out
         </h1>
-        <p className="text-zinc-500 dark:text-zinc-400">
+        <p className="text-zinc-500">
           Your cart is empty. Add a saree first!
         </p>
         <Link
           href="/"
-          className="rounded-full bg-rose-700 px-6 py-3 font-semibold text-white transition-colors hover:bg-rose-800"
+          className="btn btn-primary"
         >
           Continue shopping
         </Link>
@@ -113,18 +113,18 @@ export default function CheckoutPage() {
 
   return (
     <main className="mx-auto w-full max-w-6xl px-4 pb-16 sm:px-6">
-      <h1 className="py-8 text-3xl font-bold text-zinc-900 dark:text-zinc-50">
+      <h1 className="py-8 text-3xl text-zinc-900">
         Checkout
       </h1>
 
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
         <form onSubmit={handleSubmit} className="lg:col-span-2">
           <fieldset className="flex flex-col gap-4">
-            <legend className="mb-2 text-lg font-semibold text-zinc-900 dark:text-zinc-50">
+            <legend className="mb-2 text-lg font-semibold text-zinc-900">
               Delivery details
             </legend>
 
-            <label className="flex flex-col gap-1 text-sm font-medium text-zinc-700 dark:text-zinc-300">
+            <label className="flex flex-col gap-1 text-sm font-medium text-zinc-700">
               Full name
               <input
                 type="text"
@@ -138,7 +138,7 @@ export default function CheckoutPage() {
               />
             </label>
 
-            <label className="flex flex-col gap-1 text-sm font-medium text-zinc-700 dark:text-zinc-300">
+            <label className="flex flex-col gap-1 text-sm font-medium text-zinc-700">
               Phone number
               <input
                 type="tel"
@@ -154,7 +154,7 @@ export default function CheckoutPage() {
               />
             </label>
 
-            <label className="flex flex-col gap-1 text-sm font-medium text-zinc-700 dark:text-zinc-300">
+            <label className="flex flex-col gap-1 text-sm font-medium text-zinc-700">
               Full address
               <textarea
                 required
@@ -168,7 +168,7 @@ export default function CheckoutPage() {
               />
             </label>
 
-            <label className="flex flex-col gap-1 text-sm font-medium text-zinc-700 dark:text-zinc-300">
+            <label className="flex flex-col gap-1 text-sm font-medium text-zinc-700">
               Order notes (optional)
               <textarea
                 rows={2}
@@ -182,13 +182,13 @@ export default function CheckoutPage() {
           </fieldset>
 
           {error && (
-            <p className="mt-4 rounded-lg border border-red-300 bg-red-50 p-3 text-sm text-red-700 dark:border-red-800 dark:bg-red-950 dark:text-red-300">
+            <p className="mt-4 rounded-sm border border-red-300 bg-red-50 p-3 text-sm text-red-700">
               {error}
             </p>
           )}
 
           {stockIssues.length > 0 && (
-            <ul className="mt-4 flex list-disc flex-col gap-1 rounded-lg border border-amber-300 bg-amber-50 p-3 pl-8 text-sm text-amber-800 dark:border-amber-800 dark:bg-amber-950 dark:text-amber-300">
+            <ul className="mt-4 flex list-disc flex-col gap-1 rounded-sm border border-amber-300 bg-amber-50 p-3 pl-8 text-sm text-amber-800">
               {stockIssues.map((issue) => (
                 <li key={issue}>{issue}</li>
               ))}
@@ -198,7 +198,7 @@ export default function CheckoutPage() {
           <button
             type="submit"
             disabled={submitting || total === null || stockIssues.length > 0}
-            className="mt-6 h-12 w-full rounded-full bg-rose-700 text-base font-semibold text-white transition-colors hover:bg-rose-800 disabled:cursor-not-allowed disabled:bg-zinc-300 dark:disabled:bg-zinc-700 sm:w-auto sm:px-12"
+            className="btn btn-primary mt-6 h-12 w-full text-base sm:w-auto sm:px-12"
           >
             {submitting
               ? "Placing order..."
@@ -207,13 +207,28 @@ export default function CheckoutPage() {
                 : `Place Order - ${formatPrice(total)}`}
           </button>
 
-          <p className="mt-4 text-sm text-zinc-500 dark:text-zinc-400">
+          <p className="mt-4 text-sm text-zinc-500">
             Payment: Cash on Delivery. We will call you to confirm your order.
+          </p>
+          <p className="mt-2 text-sm text-zinc-500">
+            By placing your order you agree to our{" "}
+            <Link href="/terms" className="underline hover:text-brand">
+              Terms
+            </Link>
+            ,{" "}
+            <Link href="/return-policy" className="underline hover:text-brand">
+              Return &amp; Exchange
+            </Link>{" "}
+            and{" "}
+            <Link href="/privacy-policy" className="underline hover:text-brand">
+              Privacy Policy
+            </Link>
+            .
           </p>
         </form>
 
-        <aside className="h-fit rounded-xl border border-zinc-200 p-6 dark:border-zinc-800">
-          <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-50">
+        <aside className="h-fit rounded-sm border border-zinc-200 p-6">
+          <h2 className="text-lg text-zinc-900">
             Order summary
           </h2>
 
@@ -221,7 +236,7 @@ export default function CheckoutPage() {
             {items.map((item) => (
               <li
                 key={item.productId}
-                className="flex justify-between gap-2 text-sm text-zinc-600 dark:text-zinc-300"
+                className="flex justify-between gap-2 text-sm text-zinc-600"
               >
                 <span>
                   {item.name}
@@ -234,18 +249,18 @@ export default function CheckoutPage() {
             ))}
           </ul>
 
-          <div className="mt-4 border-t border-zinc-200 pt-4 dark:border-zinc-800">
-            <div className="flex justify-between text-zinc-600 dark:text-zinc-300">
+          <div className="mt-4 border-t border-zinc-200 pt-4">
+            <div className="flex justify-between text-zinc-600">
               <span>Subtotal</span>
               <span className="font-medium">{formatPrice(subtotal)}</span>
             </div>
-            <div className="mt-2 flex justify-between text-zinc-600 dark:text-zinc-300">
+            <div className="mt-2 flex justify-between text-zinc-600">
               <span>Delivery</span>
               <span className="font-medium">
                 {deliveryFee === null ? "Loading..." : formatPrice(deliveryFee)}
               </span>
             </div>
-            <div className="mt-4 flex justify-between text-lg font-semibold text-zinc-900 dark:text-zinc-50">
+            <div className="mt-4 flex justify-between text-lg font-semibold text-zinc-900">
               <span>Total</span>
               <span>{total === null ? "Loading..." : formatPrice(total)}</span>
             </div>

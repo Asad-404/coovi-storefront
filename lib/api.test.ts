@@ -57,6 +57,21 @@ describe("getProducts", () => {
     });
   });
 
+  it("passes the category and onSale filters", async () => {
+    respond({ data: [], pagination });
+    await getProducts({ category: "Saree", onSale: true });
+    expect(Object.fromEntries(new URL(requestedUrl()).searchParams)).toEqual({
+      category: "Saree",
+      onSale: "true",
+    });
+  });
+
+  it("leaves onSale out when it is false", async () => {
+    respond({ data: [], pagination });
+    await getProducts({ onSale: false });
+    expect(requestedUrl()).toBe(`${API_URL}/products`);
+  });
+
   it("throws with the status on a non-OK response", async () => {
     respond({ message: "boom" }, 500);
     await expect(getProducts()).rejects.toThrow("API request failed with status 500");

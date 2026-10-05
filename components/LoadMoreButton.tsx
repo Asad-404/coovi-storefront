@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 
 interface LoadMoreButtonProps {
@@ -10,6 +10,7 @@ interface LoadMoreButtonProps {
 
 export default function LoadMoreButton({ currentPage, hasMore }: LoadMoreButtonProps) {
   const router = useRouter();
+  const pathname = usePathname();
   const searchParams = useSearchParams();
   const [loading, setLoading] = useState(false);
 
@@ -19,14 +20,15 @@ export default function LoadMoreButton({ currentPage, hasMore }: LoadMoreButtonP
     setLoading(true);
     const params = new URLSearchParams(searchParams.toString());
     params.set("page", (currentPage + 1).toString());
-    router.push(`/?${params.toString()}`);
+    router.push(`${pathname}?${params.toString()}`, { scroll: false });
+    setTimeout(() => setLoading(false), 800);
   };
 
   return (
     <button
       onClick={handleLoadMore}
       disabled={loading}
-      className="rounded-full bg-rose-700 px-8 py-3 font-semibold text-white transition-colors hover:bg-rose-800 disabled:cursor-not-allowed disabled:bg-zinc-300 dark:disabled:bg-zinc-700"
+      className="btn btn-primary"
     >
       {loading ? "Loading..." : "Load More"}
     </button>

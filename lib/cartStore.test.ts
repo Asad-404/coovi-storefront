@@ -29,6 +29,17 @@ describe("useCartStore", () => {
     ]);
   });
 
+  it("adds a new item with a given quantity", () => {
+    useCartStore.getState().addItem(soap, 3);
+    expect(items()).toEqual([{ ...soap, quantity: 3 }]);
+  });
+
+  it("adds the given quantity to an item already in the cart", () => {
+    useCartStore.getState().addItem(soap, 2);
+    useCartStore.getState().addItem(soap, 3);
+    expect(items()).toEqual([{ ...soap, quantity: 5 }]);
+  });
+
   it("removes an item", () => {
     useCartStore.getState().addItem(soap);
     useCartStore.getState().addItem(oil);

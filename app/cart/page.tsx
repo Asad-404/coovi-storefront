@@ -13,18 +13,19 @@ export default function CartPage() {
 
   if (items.length === 0) {
     return (
-      <main className="mx-auto flex w-full max-w-6xl flex-1 flex-col items-center justify-center gap-4 px-4 py-24 text-center sm:px-6">
-        <h1 className="text-2xl font-semibold text-zinc-900 dark:text-zinc-50">
-          Your cart is empty
-        </h1>
-        <p className="text-zinc-500 dark:text-zinc-400">
-          Browse our collection and find something you love.
-        </p>
+      <main className="mx-auto flex w-full max-w-6xl flex-1 flex-col items-center justify-center gap-6 px-4 py-20 text-center sm:px-6">
+        <svg viewBox="0 0 64 64" className="h-32 w-32 text-zinc-200" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+          <path d="M6 14h8l5 28h28l6-20H17" />
+          <circle cx="24" cy="52" r="3.5" />
+          <circle cx="44" cy="52" r="3.5" />
+          <path d="M26 4l2 6M36 3v7M46 4l-2 6" />
+        </svg>
+        <h1 className="text-3xl text-ink sm:text-4xl">Your cart is currently empty.</h1>
         <Link
-          href="/"
-          className="rounded-full bg-rose-700 px-6 py-3 font-semibold text-white transition-colors hover:bg-rose-800"
+          href="/shop"
+          className="btn btn-primary"
         >
-          Continue shopping
+          Return to shop
         </Link>
       </main>
     );
@@ -32,17 +33,17 @@ export default function CartPage() {
 
   return (
     <main className="mx-auto w-full max-w-6xl px-4 pb-16 sm:px-6">
-      <h1 className="py-8 text-3xl font-bold text-zinc-900 dark:text-zinc-50">
+      <h1 className="py-8 text-3xl text-zinc-900">
         Your Cart
       </h1>
 
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
-        <ul className="flex flex-col divide-y divide-zinc-200 lg:col-span-2 dark:divide-zinc-800">
+        <ul className="flex flex-col divide-y divide-zinc-200 lg:col-span-2">
           {items.map((item) => (
             <li key={item.productId} className="flex gap-4 py-4">
               <Link
                 href={`/products/${item.slug}`}
-                className="relative h-24 w-20 shrink-0 overflow-hidden rounded-lg bg-zinc-100 dark:bg-zinc-800"
+                className="relative h-24 w-20 shrink-0 overflow-hidden rounded-sm bg-zinc-100"
               >
                 {item.image ? (
                   <Image
@@ -63,15 +64,15 @@ export default function CartPage() {
                 <div className="flex items-start justify-between gap-2">
                   <Link
                     href={`/products/${item.slug}`}
-                    className="font-medium text-zinc-900 hover:text-rose-700 dark:text-zinc-50 dark:hover:text-rose-400"
+                    className="font-medium text-zinc-900 hover:text-brand"
                   >
                     {item.name}
                   </Link>
-                  <span className="font-semibold text-zinc-900 dark:text-zinc-50">
+                  <span className="font-semibold text-zinc-900">
                     {formatPrice(item.price * item.quantity)}
                   </span>
                 </div>
-                <p className="text-sm text-zinc-500 dark:text-zinc-400">
+                <p className="text-sm text-zinc-500">
                   {formatPrice(item.price)} each
                 </p>
 
@@ -81,18 +82,18 @@ export default function CartPage() {
                       type="button"
                       aria-label={`Decrease quantity of ${item.name}`}
                       onClick={() => updateQuantity(item.productId, item.quantity - 1)}
-                      className="flex h-8 w-8 items-center justify-center rounded-full border border-zinc-300 text-zinc-700 transition-colors hover:bg-zinc-100 dark:border-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-800"
+                      className="flex h-8 w-8 items-center justify-center rounded-sm border border-zinc-300 text-zinc-700 transition-colors hover:bg-zinc-100"
                     >
                       −
                     </button>
-                    <span className="w-8 text-center font-medium text-zinc-900 dark:text-zinc-50">
+                    <span className="w-8 text-center font-medium text-zinc-900">
                       {item.quantity}
                     </span>
                     <button
                       type="button"
                       aria-label={`Increase quantity of ${item.name}`}
                       onClick={() => updateQuantity(item.productId, item.quantity + 1)}
-                      className="flex h-8 w-8 items-center justify-center rounded-full border border-zinc-300 text-zinc-700 transition-colors hover:bg-zinc-100 dark:border-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-800"
+                      className="flex h-8 w-8 items-center justify-center rounded-sm border border-zinc-300 text-zinc-700 transition-colors hover:bg-zinc-100"
                     >
                       +
                     </button>
@@ -101,7 +102,7 @@ export default function CartPage() {
                   <button
                     type="button"
                     onClick={() => removeItem(item.productId)}
-                    className="text-sm text-zinc-500 underline-offset-2 transition-colors hover:text-red-600 hover:underline dark:text-zinc-400 dark:hover:text-red-400"
+                    className="text-sm text-zinc-500 underline-offset-2 transition-colors hover:text-red-600 hover:underline"
                   >
                     Remove
                   </button>
@@ -111,22 +112,22 @@ export default function CartPage() {
           ))}
         </ul>
 
-        <aside className="h-fit rounded-xl border border-zinc-200 p-6 dark:border-zinc-800">
-          <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-50">
+        <aside className="h-fit rounded-sm border border-zinc-200 p-6">
+          <h2 className="text-lg text-zinc-900">
             Summary
           </h2>
-          <div className="mt-4 flex justify-between text-zinc-600 dark:text-zinc-300">
+          <div className="mt-4 flex justify-between text-zinc-600">
             <span>Subtotal</span>
             <span className="font-medium">{formatPrice(cartTotal(items))}</span>
           </div>
-          <div className="mt-2 flex justify-between text-sm text-zinc-500 dark:text-zinc-400">
+          <div className="mt-2 flex justify-between text-sm text-zinc-500">
             <span>Delivery</span>
             <span>Calculated at checkout</span>
           </div>
 
           <Link
             href="/checkout"
-            className="mt-6 block w-full rounded-full bg-rose-700 py-3 text-center font-semibold text-white transition-colors hover:bg-rose-800"
+            className="btn btn-primary mt-6 w-full"
           >
             Proceed to Checkout
           </Link>
@@ -134,7 +135,7 @@ export default function CartPage() {
           <button
             type="button"
             onClick={clearCart}
-            className="mt-4 w-full text-sm text-zinc-500 underline-offset-2 transition-colors hover:text-red-600 hover:underline dark:text-zinc-400"
+            className="mt-4 w-full text-sm text-zinc-500 underline-offset-2 transition-colors hover:text-red-600 hover:underline"
           >
             Clear cart
           </button>
