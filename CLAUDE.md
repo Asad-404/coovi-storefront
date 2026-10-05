@@ -22,6 +22,13 @@ pnpm coverage
 - Read the relevant Next.js guide under `node_modules/next/dist/docs/` before changing Next.js-specific code. The imported `AGENTS.md` contains the generated version-specific rule; do not duplicate or remove it.
 - The API contract shared with the other apps is `..\API_ENDPOINTS.md`.
 
+### Testing and CI
+
+- Vitest runs `*.test.ts(x)` files placed next to the code they cover. The default environment is Node; add `// @vitest-environment jsdom` to files that need browser APIs such as `localStorage`.
+- Keep `lib/` at full coverage: add or update tests with any change to `lib/api.ts`, `lib/cartStore.ts` or `lib/utils.ts`. Mock `fetch` with `vi.stubGlobal`; never call a real API from tests.
+- `pnpm typecheck` runs `next typegen` first because `PageProps` and `LayoutProps` are generated globals; plain `tsc` fails without them.
+- GitHub Actions (`.github/workflows/ci.yml`) runs lint, typecheck and tests with coverage on every pull request and push to `master`. Keep it green.
+
 ### Manual operation
 
 Do not start the dev server, build, lint, or preview commands automatically; the workspace owner runs them manually.
