@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
@@ -41,8 +40,6 @@ export default async function ProductDetailPage(props: Props) {
     }
     throw error;
   }
-
-  const [primaryImage, ...otherImages] = product.images;
 
   return (
     <main className="mx-auto w-full max-w-6xl px-4 pb-16 sm:px-6">

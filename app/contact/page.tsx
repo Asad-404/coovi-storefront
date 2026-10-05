@@ -16,7 +16,7 @@ export default function ContactPage() {
       <div className="mt-8 space-y-8">
         <div>
           <p className="text-lg text-zinc-700 dark:text-zinc-300">
-            We're here to help! Reach out to us with any questions about our products,
+            We&apos;re here to help! Reach out to us with any questions about our products,
             orders, or general inquiries.
           </p>
         </div>
