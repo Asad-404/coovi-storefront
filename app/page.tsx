@@ -59,7 +59,7 @@ export default async function Home(props: PageProps<"/">) {
       <JsonLd data={siteStructuredData} />
       <HomeHero featured={featured} />
 
-      <section id="shop" className="mx-auto max-w-[1120px] scroll-mt-24 px-4 py-14">
+      <section id="shop" className="mx-auto max-w-page scroll-mt-24 px-4 py-14">
         <SectionTitle eyebrow="Festive collection" title="New arrivals" subtitle="Fresh designs, limited pieces per design." />
 
         {products === null ? (

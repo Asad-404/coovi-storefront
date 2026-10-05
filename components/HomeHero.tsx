@@ -8,7 +8,7 @@ export default function HomeHero({ featured }: { featured?: Product }) {
   const image = featured?.images[0];
 
   return (
-    <section className="mx-auto max-w-[1170px] px-4 pb-4 pt-8 lg:pt-12">
+    <section className="mx-auto max-w-page px-4 pb-4 pt-8 lg:pt-12">
       <div className="grid items-center gap-8 lg:grid-cols-2 lg:gap-12">
         <div className="flex flex-col items-start gap-5">
           <h1 className="text-[44px] leading-[1.05] text-brand sm:text-[56px] lg:text-[64px]">

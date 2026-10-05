@@ -29,7 +29,7 @@ const reasons = [
 export default function WhyCoovi() {
   return (
     <section className="border-y border-zinc-200">
-      <div className="mx-auto max-w-[1120px] px-4 py-14">
+      <div className="mx-auto max-w-page px-4 py-14">
         <div className="mx-auto max-w-3xl text-center">
           <h2 className="text-2xl text-zinc-700">Why Coovi?</h2>
           <p className="mt-4 leading-7 text-zinc-700">

@@ -48,7 +48,7 @@ export default function SearchBar() {
           onSubmit={handleSubmit}
           className="absolute inset-x-0 top-full z-30 border-b border-zinc-200 bg-white px-4 py-4 shadow-md"
         >
-          <div className="mx-auto flex max-w-[1170px] gap-2">
+          <div className="mx-auto flex max-w-page gap-2">
             <input
               ref={inputRef}
               type="search"
