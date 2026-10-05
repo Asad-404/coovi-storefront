@@ -10,6 +10,7 @@ pnpm dev
 pnpm build
 pnpm start
 pnpm lint
+pnpm typecheck
 pnpm test
 pnpm coverage
 ```
