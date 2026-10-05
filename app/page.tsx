@@ -5,6 +5,7 @@ import { SITE_DESCRIPTION, SITE_NAME, SITE_TAGLINE, SITE_URL, pageOpenGraph } fr
 import JsonLd from "@/components/JsonLd";
 import { getProducts } from "@/lib/api";
 import ProductCard from "@/components/ProductCard";
+import NewArrivalCard from "@/components/NewArrivalCard";
 import HomeHero from "@/components/HomeHero";
 import PromoBanner from "@/components/PromoBanner";
 import WhyCoovi from "@/components/WhyCoovi";
@@ -51,6 +52,7 @@ export default async function Home(props: PageProps<"/">) {
     products = null;
   }
 
+  const newArrivals = products ? products.data.slice(0, 10) : [];
   const heroImages = products ? products.data.flatMap((product) => product.images.slice(0, 1)).slice(0, 3) : [];
 
   return (
@@ -59,8 +61,21 @@ export default async function Home(props: PageProps<"/">) {
       <HomeHero images={heroImages} />
       <PromoBanner />
 
+      {newArrivals.length > 0 && (
+        <section className="mx-auto max-w-[1120px] px-4">
+          <div className="rounded-2xl border border-frost bg-mist px-4 py-10 sm:px-6">
+            <SectionTitle title="New Arrivals" subtitle="Fresh designs, limited pieces per design." />
+            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
+              {newArrivals.map((product) => (
+                <NewArrivalCard key={product._id} product={product} />
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
       <section id="shop" className="mx-auto max-w-[1120px] scroll-mt-24 px-4 py-14">
-        <SectionTitle title="New arrivals" subtitle="Fresh designs, limited pieces per design." />
+        <SectionTitle title="All Products" />
 
         {products === null ? (
           <div className="mx-auto max-w-md border border-amber-300 bg-amber-50 p-6 text-center text-amber-800">
