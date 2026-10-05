@@ -10,7 +10,7 @@ export default function PageHeading({
   description?: string;
 }) {
   return (
-    <div className="mx-auto max-w-page px-4 pb-6 pt-6">
+    <div className="mx-auto max-w-[1170px] px-4 pb-6 pt-6">
       <nav className="text-sm text-zinc-600" aria-label="Breadcrumb">
         <Link href="/" className="text-ink hover:text-brand">Home</Link>
         <span className="mx-2 text-zinc-300">/</span>

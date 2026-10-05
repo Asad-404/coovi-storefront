@@ -114,7 +114,7 @@ export default async function ProductDetailPage(props: Props) {
     <main className="w-full">
       <JsonLd data={structuredData} />
       <section className="bg-zinc-50">
-        <div className="mx-auto max-w-page px-4 pb-14">
+        <div className="mx-auto max-w-[1170px] px-4 pb-14">
           <nav className="py-4 text-xs text-zinc-600" aria-label="Breadcrumb">
             <Link href="/" className="text-ink hover:text-brand">Home</Link>
             <span className="mx-2 text-zinc-300">/</span>
@@ -219,7 +219,7 @@ export default async function ProductDetailPage(props: Props) {
         </div>
       </section>
 
-      <section className="mx-auto max-w-page px-4">
+      <section className="mx-auto max-w-[1170px] px-4">
         <ProductTabs description={product.description} descriptionBn={product.descriptionBn} details={details} />
 
         {related.length > 0 && (

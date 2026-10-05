@@ -15,7 +15,7 @@ export default function Header() {
   return (
     <>
       <div className="hidden border-b border-zinc-100 bg-white text-sm text-zinc-700 md:block">
-        <div className="mx-auto flex h-9 max-w-page items-center justify-between px-4">
+        <div className="mx-auto flex h-9 max-w-[1170px] items-center justify-between px-4">
           <p>Cash on delivery across Bangladesh</p>
           <a
             href="https://wa.me/8801700000000"
@@ -44,7 +44,7 @@ export default function Header() {
           </div>
         </div>
 
-        <div className="mx-auto hidden h-[90px] max-w-page grid-cols-[1fr_auto_1fr] items-center gap-4 px-4 md:grid">
+        <div className="mx-auto hidden h-[90px] max-w-[1170px] grid-cols-[1fr_auto_1fr] items-center gap-4 px-4 md:grid">
           <div className="justify-self-start">
             <Logo />
           </div>

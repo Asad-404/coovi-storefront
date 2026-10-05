@@ -67,7 +67,7 @@ export default function CheckoutPage() {
 
   if (items.length === 0) {
     return (
-      <main className="mx-auto flex w-full max-w-page flex-1 flex-col items-center justify-center gap-4 px-4 py-24 text-center">
+      <main className="mx-auto flex w-full max-w-6xl flex-1 flex-col items-center justify-center gap-4 px-4 py-24 text-center sm:px-6">
         <h1 className="text-2xl text-zinc-900">
           Nothing to check out
         </h1>
@@ -112,7 +112,7 @@ export default function CheckoutPage() {
   }
 
   return (
-    <main className="mx-auto w-full max-w-page px-4 pb-16">
+    <main className="mx-auto w-full max-w-6xl px-4 pb-16 sm:px-6">
       <h1 className="py-8 text-3xl text-zinc-900">
         Checkout
       </h1>

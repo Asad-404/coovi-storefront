@@ -13,7 +13,7 @@ export default function CartPage() {
 
   if (items.length === 0) {
     return (
-      <main className="mx-auto flex w-full max-w-page flex-1 flex-col items-center justify-center gap-6 px-4 py-20 text-center">
+      <main className="mx-auto flex w-full max-w-6xl flex-1 flex-col items-center justify-center gap-6 px-4 py-20 text-center sm:px-6">
         <svg viewBox="0 0 64 64" className="h-32 w-32 text-zinc-200" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
           <path d="M6 14h8l5 28h28l6-20H17" />
           <circle cx="24" cy="52" r="3.5" />
@@ -32,7 +32,7 @@ export default function CartPage() {
   }
 
   return (
-    <main className="mx-auto w-full max-w-page px-4 pb-16">
+    <main className="mx-auto w-full max-w-6xl px-4 pb-16 sm:px-6">
       <h1 className="py-8 text-3xl text-zinc-900">
         Your Cart
       </h1>

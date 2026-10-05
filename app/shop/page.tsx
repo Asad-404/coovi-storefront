@@ -27,7 +27,7 @@ export default async function ShopPage(props: PageProps<"/shop">) {
       <PageHeading title={searchTerm ? `Results for "${searchTerm}"` : "Sarees"} crumb={searchTerm ? "Search" : "Sarees"}
         description={searchTerm ? undefined : "Cotton, silk and georgette sarees. Order as a guest and pay in cash when yours arrives."}
       />
-      <div className="mx-auto max-w-page px-4">
+      <div className="mx-auto max-w-[1170px] px-4">
         <ProductListing
           search={searchTerm}
           sort={typeof sort === "string" ? sort : undefined}

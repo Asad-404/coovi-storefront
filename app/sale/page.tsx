@@ -26,7 +26,7 @@ export default async function SalePage(props: PageProps<"/sale">) {
         crumb="On Sale"
         description="Sarees at reduced prices while the offer lasts. Grab your favourite before it is gone."
       />
-      <div className="mx-auto max-w-page px-4">
+      <div className="mx-auto max-w-[1170px] px-4">
         <ProductListing
           onSale
           search={typeof search === "string" ? search : undefined}

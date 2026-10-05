@@ -13,8 +13,6 @@
   --color-mist: #f6f5f2;
   --color-frost: #e6e3dc;
   --color-ink: #0f1b33;
-  /* The one page width: use max-w-page for every full-width section */
-  --container-page: 73.125rem;
   --font-sans: var(--font-hind-siliguri), system-ui, sans-serif;
   --font-display: var(--font-tiro-bangla), Georgia, serif;
   --font-logo: var(--font-nunito), system-ui, sans-serif;
