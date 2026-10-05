@@ -84,14 +84,14 @@ export default function ProductCard({ product }: { product: Product }) {
         <button
           type="button"
           onClick={handleAdd}
-          className="mt-3 rounded bg-highlight py-2.5 text-sm font-bold text-white transition-colors hover:bg-highlight/85 md:opacity-0 md:transition-opacity md:focus:opacity-100 md:group-hover:opacity-100"
+          className="btn btn-secondary mt-3 py-2.5 md:opacity-0 md:transition-opacity md:focus:opacity-100 md:group-hover:opacity-100"
         >
           {added ? "Added ✓" : "Add to cart"}
         </button>
       ) : (
         <Link
           href={`/products/${product.slug}`}
-          className="mt-3 rounded bg-highlight py-2.5 text-center text-sm font-bold text-white transition-colors hover:bg-highlight/85 md:opacity-0 md:transition-opacity md:focus:opacity-100 md:group-hover:opacity-100"
+          className="btn btn-secondary mt-3 py-2.5 md:opacity-0 md:transition-opacity md:focus:opacity-100 md:group-hover:opacity-100"
         >
           Read more
         </Link>

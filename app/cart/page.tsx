@@ -23,7 +23,7 @@ export default function CartPage() {
         <h1 className="text-3xl text-ink sm:text-4xl">Your cart is currently empty.</h1>
         <Link
           href="/shop"
-          className="rounded bg-highlight px-8 py-3.5 font-bold text-white transition-colors hover:bg-highlight/85"
+          className="btn btn-primary"
         >
           Return to shop
         </Link>
@@ -43,7 +43,7 @@ export default function CartPage() {
             <li key={item.productId} className="flex gap-4 py-4">
               <Link
                 href={`/products/${item.slug}`}
-                className="relative h-24 w-20 shrink-0 overflow-hidden rounded-lg bg-zinc-100"
+                className="relative h-24 w-20 shrink-0 overflow-hidden rounded-sm bg-zinc-100"
               >
                 {item.image ? (
                   <Image
@@ -82,7 +82,7 @@ export default function CartPage() {
                       type="button"
                       aria-label={`Decrease quantity of ${item.name}`}
                       onClick={() => updateQuantity(item.productId, item.quantity - 1)}
-                      className="flex h-8 w-8 items-center justify-center rounded-full border border-zinc-300 text-zinc-700 transition-colors hover:bg-zinc-100"
+                      className="flex h-8 w-8 items-center justify-center rounded-sm border border-zinc-300 text-zinc-700 transition-colors hover:bg-zinc-100"
                     >
                       −
                     </button>
@@ -93,7 +93,7 @@ export default function CartPage() {
                       type="button"
                       aria-label={`Increase quantity of ${item.name}`}
                       onClick={() => updateQuantity(item.productId, item.quantity + 1)}
-                      className="flex h-8 w-8 items-center justify-center rounded-full border border-zinc-300 text-zinc-700 transition-colors hover:bg-zinc-100"
+                      className="flex h-8 w-8 items-center justify-center rounded-sm border border-zinc-300 text-zinc-700 transition-colors hover:bg-zinc-100"
                     >
                       +
                     </button>
@@ -112,7 +112,7 @@ export default function CartPage() {
           ))}
         </ul>
 
-        <aside className="h-fit rounded-xl border border-zinc-200 p-6">
+        <aside className="h-fit rounded-sm border border-zinc-200 p-6">
           <h2 className="text-lg text-zinc-900">
             Summary
           </h2>
@@ -127,7 +127,7 @@ export default function CartPage() {
 
           <Link
             href="/checkout"
-            className="mt-6 block w-full rounded bg-highlight py-3.5 text-center font-bold text-white transition-colors hover:bg-highlight/85"
+            className="btn btn-primary mt-6 w-full"
           >
             Proceed to Checkout
           </Link>

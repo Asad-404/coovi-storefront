@@ -25,6 +25,21 @@ body {
 }
 
 /* Tiro Bangla ships a single weight; headings get their emphasis from size, not boldness */
+/* One button shape for the whole shop: add "btn" plus "btn-primary" or "btn-secondary" */
+@layer components {
+  .btn {
+    @apply inline-flex items-center justify-center rounded-sm px-8 py-3.5 text-center text-sm font-semibold transition-colors;
+  }
+
+  .btn-primary {
+    @apply bg-brand text-white hover:bg-brand-dark disabled:cursor-not-allowed disabled:bg-zinc-300;
+  }
+
+  .btn-secondary {
+    @apply border border-brand text-brand hover:bg-brand hover:text-white;
+  }
+}
+
 h1,
 h2 {
   font-family: var(--font-display);

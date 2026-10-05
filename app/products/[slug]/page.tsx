@@ -139,7 +139,7 @@ export default async function ProductDetailPage(props: Props) {
               </h1>
 
               <div className="flex flex-wrap items-center gap-3">
-                <PriceTag product={product} className="text-lg font-medium text-highlight" />
+                <PriceTag product={product} className="text-xl font-medium text-ink" />
                 {isOnSale(product) && (
                   <span className="bg-accent px-2.5 py-1 text-xs font-bold uppercase tracking-wide text-white">
                     Save {discountPercent(product)}%
@@ -184,13 +184,13 @@ export default async function ProductDetailPage(props: Props) {
                 )}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex h-12 items-center justify-center gap-2 rounded border border-green-600 text-sm font-semibold text-green-700 transition-colors hover:bg-green-600 hover:text-white"
+                className="btn h-12 border border-green-600 text-green-700 hover:bg-green-600 hover:text-white"
               >
                 Ask on WhatsApp
               </a>
 
-              <div className="rounded border border-accent/40 bg-white p-4">
-                <p className="text-sm font-semibold text-accent">Pay on delivery, risk nothing</p>
+              <div className="rounded-sm border border-frost bg-white p-4">
+                <p className="text-sm font-semibold text-ink">Pay on delivery, risk nothing</p>
                 <p className="mt-1 text-sm text-zinc-600">
                   Order with just your name, phone and address. You pay the rider in cash when your saree arrives.
                 </p>

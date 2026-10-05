@@ -85,7 +85,7 @@ export default async function Home(props: PageProps<"/">) {
             <div className="mt-12 flex flex-col items-center gap-2">
               <Link
                 href="/shop"
-                className="bg-brand px-10 py-3 text-sm font-semibold uppercase tracking-wide text-white transition-colors hover:bg-brand-dark"
+                className="btn btn-primary"
               >
                 Shop all sarees
               </Link>

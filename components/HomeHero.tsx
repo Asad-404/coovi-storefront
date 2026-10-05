@@ -22,7 +22,7 @@ export default function HomeHero({ featured }: { featured?: Product }) {
           <div className="mt-1 flex flex-wrap items-center gap-x-6 gap-y-3">
             <Link
               href="/shop"
-              className="bg-brand px-8 py-4 text-sm font-semibold text-white transition-colors hover:bg-brand-dark"
+              className="btn btn-primary"
             >
               Shop sarees
             </Link>

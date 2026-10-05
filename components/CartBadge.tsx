@@ -25,7 +25,7 @@ export default function CartBadge({ showTotal = true }: { showTotal?: boolean })
         className="flex items-center gap-2 text-sm font-semibold text-ink transition-colors hover:text-brand"
       >
         {showTotal && <span>{formatPrice(total)}</span>}
-        <span className="flex h-7 min-w-7 items-center justify-center rounded border border-highlight px-1.5 text-xs font-semibold text-highlight">
+        <span className="flex h-7 min-w-7 items-center justify-center rounded-sm border border-highlight px-1.5 text-xs font-semibold text-highlight">
           {count}
         </span>
       </button>

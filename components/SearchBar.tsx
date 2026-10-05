@@ -56,9 +56,9 @@ export default function SearchBar() {
               onChange={(event) => setTerm(event.target.value)}
               placeholder="Search sarees by name..."
               aria-label="Search sarees"
-              className="flex-1 border border-zinc-300 px-4 py-2.5 text-sm focus:border-brand focus:outline-none"
+              className="flex-1 rounded-sm border border-zinc-300 px-4 py-2.5 text-sm focus:border-brand focus:outline-none"
             />
-            <button type="submit" className="bg-brand px-6 py-2.5 text-sm font-semibold text-white hover:bg-brand-dark">
+            <button type="submit" className="btn btn-primary px-6 py-2.5">
               Search
             </button>
           </div>

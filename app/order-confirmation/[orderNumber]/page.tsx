@@ -45,11 +45,11 @@ export default async function OrderConfirmationPage(props: Props) {
             pattern="01[0-9]{9}"
             inputMode="numeric"
             placeholder="e.g. 01712345678"
-            className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-zinc-900 placeholder-zinc-400 focus:border-brand focus:outline-none"
+            className="w-full rounded-sm border border-zinc-300 bg-white px-3 py-2 text-zinc-900 placeholder-zinc-400 focus:border-brand focus:outline-none"
           />
           <button
             type="submit"
-            className="h-12 rounded-full bg-brand font-semibold text-white transition-colors hover:bg-brand-dark"
+            className="btn btn-primary h-12"
           >
             View my order
           </button>
@@ -83,11 +83,11 @@ export default async function OrderConfirmationPage(props: Props) {
         </p>
       </div>
 
-      <div className="rounded-xl border border-zinc-200">
+      <div className="rounded-sm border border-zinc-200">
         <ul className="flex flex-col divide-y divide-zinc-200">
           {order.items.map((item) => (
             <li key={item.productId} className="flex items-center gap-4 p-4">
-              <div className="relative h-16 w-12 shrink-0 overflow-hidden rounded-md bg-zinc-100">
+              <div className="relative h-16 w-12 shrink-0 overflow-hidden rounded-sm bg-zinc-100">
                 {item.image ? (
                   <Image
                     src={item.image}
@@ -145,7 +145,7 @@ export default async function OrderConfirmationPage(props: Props) {
       <div className="mt-8 text-center">
         <Link
           href="/"
-          className="rounded-full bg-brand px-6 py-3 font-semibold text-white transition-colors hover:bg-brand-dark"
+          className="btn btn-primary"
         >
           Continue shopping
         </Link>

@@ -28,7 +28,7 @@ export default function LoadMoreButton({ currentPage, hasMore }: LoadMoreButtonP
     <button
       onClick={handleLoadMore}
       disabled={loading}
-      className="bg-brand px-10 py-3 text-sm font-semibold uppercase tracking-wide text-white transition-colors hover:bg-brand-dark disabled:cursor-not-allowed disabled:bg-zinc-300"
+      className="btn btn-primary"
     >
       {loading ? "Loading..." : "Load More"}
     </button>

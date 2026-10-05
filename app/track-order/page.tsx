@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 const inputClass =
-  "w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-zinc-900 placeholder-zinc-400 focus:border-brand focus:outline-none";
+  "w-full rounded-sm border border-zinc-300 bg-white px-3 py-2 text-zinc-900 placeholder-zinc-400 focus:border-brand focus:outline-none";
 
 export default function TrackOrderPage() {
   const router = useRouter();
@@ -63,7 +63,7 @@ export default function TrackOrderPage() {
 
         <button
           type="submit"
-          className="h-12 w-full rounded-full bg-brand text-base font-semibold text-white transition-colors hover:bg-brand-dark"
+          className="btn btn-primary h-12 w-full text-base"
         >
           Track Order
         </button>

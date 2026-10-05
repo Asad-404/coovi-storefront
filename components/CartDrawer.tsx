@@ -66,7 +66,7 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
               <p className="text-zinc-500">Your cart is empty</p>
               <button
                 onClick={onClose}
-                className="rounded-full bg-brand px-6 py-3 font-semibold text-white transition-colors hover:bg-brand-dark"
+                className="btn btn-primary"
               >
                 Continue Shopping
               </button>
@@ -76,12 +76,12 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
               {items.map((item) => (
                 <li
                   key={item.productId}
-                  className="flex gap-4 rounded-lg border border-zinc-200 p-3"
+                  className="flex gap-4 rounded-sm border border-zinc-200 p-3"
                 >
                   <Link
                     href={`/products/${item.slug}`}
                     onClick={onClose}
-                    className="relative h-20 w-16 shrink-0 overflow-hidden rounded-md bg-zinc-100"
+                    className="relative h-20 w-16 shrink-0 overflow-hidden rounded-sm bg-zinc-100"
                   >
                     {item.image ? (
                       <Image
@@ -114,7 +114,7 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                       <div className="flex items-center gap-2">
                         <button
                           onClick={() => updateQuantity(item.productId, item.quantity - 1)}
-                          className="flex h-6 w-6 items-center justify-center rounded-full border border-zinc-300 text-sm text-zinc-700 transition-colors hover:bg-zinc-100"
+                          className="flex h-6 w-6 items-center justify-center rounded-sm border border-zinc-300 text-sm text-zinc-700 transition-colors hover:bg-zinc-100"
                           aria-label={`Decrease quantity of ${item.name}`}
                         >
                           −
@@ -124,7 +124,7 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                         </span>
                         <button
                           onClick={() => updateQuantity(item.productId, item.quantity + 1)}
-                          className="flex h-6 w-6 items-center justify-center rounded-full border border-zinc-300 text-sm text-zinc-700 transition-colors hover:bg-zinc-100"
+                          className="flex h-6 w-6 items-center justify-center rounded-sm border border-zinc-300 text-sm text-zinc-700 transition-colors hover:bg-zinc-100"
                           aria-label={`Increase quantity of ${item.name}`}
                         >
                           +
@@ -154,14 +154,14 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
             <Link
               href="/checkout"
               onClick={onClose}
-              className="flex h-12 items-center justify-center rounded bg-highlight font-bold text-white transition-colors hover:bg-highlight/85"
+              className="btn btn-primary flex h-12"
             >
               Proceed to Checkout
             </Link>
             <Link
               href="/cart"
               onClick={onClose}
-              className="mt-2 flex h-12 items-center justify-center rounded border-2 border-zinc-200 font-semibold text-zinc-900 transition-colors hover:bg-zinc-100"
+              className="btn btn-secondary mt-2 flex h-12"
             >
               View Full Cart
             </Link>

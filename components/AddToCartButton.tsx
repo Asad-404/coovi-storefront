@@ -67,7 +67,7 @@ export default function AddToCartButton({ product, inStock, maxQuantity }: AddTo
         type="button"
         onClick={handleAdd}
         disabled={!inStock}
-        className="h-[52px] flex-1 rounded bg-highlight text-base font-bold text-white transition-colors hover:bg-highlight/85 disabled:cursor-not-allowed disabled:bg-zinc-300"
+        className="btn btn-primary h-[52px] flex-1 text-base"
       >
         {!inStock ? "Out of stock" : added ? "Added ✓" : "Add to cart"}
       </button>

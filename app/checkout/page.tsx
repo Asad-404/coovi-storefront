@@ -8,7 +8,7 @@ import { getDeliveryFee, getProducts, postOrder } from "@/lib/api";
 import { formatPrice } from "@/lib/utils";
 
 const inputClass =
-  "w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-zinc-900 placeholder-zinc-400 focus:border-brand focus:outline-none";
+  "w-full rounded-sm border border-zinc-300 bg-white px-3 py-2 text-zinc-900 placeholder-zinc-400 focus:border-brand focus:outline-none";
 
 export default function CheckoutPage() {
   const items = useCartStore((state) => state.items);
@@ -76,7 +76,7 @@ export default function CheckoutPage() {
         </p>
         <Link
           href="/"
-          className="rounded-full bg-brand px-6 py-3 font-semibold text-white transition-colors hover:bg-brand-dark"
+          className="btn btn-primary"
         >
           Continue shopping
         </Link>
@@ -182,13 +182,13 @@ export default function CheckoutPage() {
           </fieldset>
 
           {error && (
-            <p className="mt-4 rounded-lg border border-red-300 bg-red-50 p-3 text-sm text-red-700">
+            <p className="mt-4 rounded-sm border border-red-300 bg-red-50 p-3 text-sm text-red-700">
               {error}
             </p>
           )}
 
           {stockIssues.length > 0 && (
-            <ul className="mt-4 flex list-disc flex-col gap-1 rounded-lg border border-amber-300 bg-amber-50 p-3 pl-8 text-sm text-amber-800">
+            <ul className="mt-4 flex list-disc flex-col gap-1 rounded-sm border border-amber-300 bg-amber-50 p-3 pl-8 text-sm text-amber-800">
               {stockIssues.map((issue) => (
                 <li key={issue}>{issue}</li>
               ))}
@@ -198,7 +198,7 @@ export default function CheckoutPage() {
           <button
             type="submit"
             disabled={submitting || total === null || stockIssues.length > 0}
-            className="mt-6 h-12 w-full rounded bg-highlight text-base font-bold text-white transition-colors hover:bg-highlight/85 disabled:cursor-not-allowed disabled:bg-zinc-300 sm:w-auto sm:px-12"
+            className="btn btn-primary mt-6 h-12 w-full text-base sm:w-auto sm:px-12"
           >
             {submitting
               ? "Placing order..."
@@ -227,7 +227,7 @@ export default function CheckoutPage() {
           </p>
         </form>
 
-        <aside className="h-fit rounded-xl border border-zinc-200 p-6">
+        <aside className="h-fit rounded-sm border border-zinc-200 p-6">
           <h2 className="text-lg text-zinc-900">
             Order summary
           </h2>

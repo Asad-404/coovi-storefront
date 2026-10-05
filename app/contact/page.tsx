@@ -25,7 +25,7 @@ export default function ContactPage() {
         </div>
 
         <div className="space-y-6">
-          <div className="rounded-xl border border-zinc-200 bg-white p-6">
+          <div className="rounded-sm border border-zinc-200 bg-white p-6">
             <h2 className="text-xl text-zinc-900">
               📱 WhatsApp
             </h2>
@@ -36,14 +36,14 @@ export default function ContactPage() {
               href="https://wa.me/8801700000000"
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-4 inline-flex items-center gap-2 rounded-full bg-green-600 px-6 py-3 font-semibold text-white transition-colors hover:bg-green-700"
+              className="btn mt-4 gap-2 bg-green-600 text-white hover:bg-green-700"
             >
               <span>Chat on WhatsApp</span>
               <span>→</span>
             </a>
           </div>
 
-          <div className="rounded-xl border border-zinc-200 bg-white p-6">
+          <div className="rounded-sm border border-zinc-200 bg-white p-6">
             <h2 className="text-xl text-zinc-900">
               📧 Email
             </h2>
@@ -58,7 +58,7 @@ export default function ContactPage() {
             </a>
           </div>
 
-          <div className="rounded-xl border border-zinc-200 bg-white p-6">
+          <div className="rounded-sm border border-zinc-200 bg-white p-6">
             <h2 className="text-xl text-zinc-900">
               📦 Order Tracking
             </h2>
@@ -67,7 +67,7 @@ export default function ContactPage() {
             </p>
             <Link
               href="/track-order"
-              className="mt-4 inline-flex items-center gap-2 rounded-full bg-brand px-6 py-3 font-semibold text-white transition-colors hover:bg-brand-dark"
+              className="btn btn-primary mt-4 gap-2"
             >
               <span>Track Your Order</span>
               <span>→</span>
