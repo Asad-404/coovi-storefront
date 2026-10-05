@@ -8,7 +8,7 @@ import { getDeliveryFee, getProducts, postOrder } from "@/lib/api";
 import { formatPrice } from "@/lib/utils";
 
 const inputClass =
-  "w-full rounded-sm border border-zinc-300 bg-white px-3 py-2 text-zinc-900 placeholder-zinc-400 focus:border-brand focus:outline-none";
+  "w-full rounded-sm border border-zinc-300 bg-white px-3 py-2 text-zinc-900 placeholder-zinc-400 focus:border-brand";
 
 export default function CheckoutPage() {
   const items = useCartStore((state) => state.items);

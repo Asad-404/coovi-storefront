@@ -56,7 +56,7 @@ export default function MobileMenu() {
               onChange={(event) => setTerm(event.target.value)}
               placeholder="Search sarees..."
               aria-label="Search sarees"
-              className="min-w-0 flex-1 rounded-sm border border-zinc-300 px-3 py-2.5 text-sm focus:border-brand focus:outline-none"
+              className="min-w-0 flex-1 rounded-sm border border-zinc-300 px-3 py-2.5 text-sm focus:border-brand"
             />
             <button type="submit" className="btn btn-primary px-4 py-2.5">
               Go

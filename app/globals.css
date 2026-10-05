@@ -27,6 +27,14 @@ body {
 }
 
 /* Tiro Bangla ships a single weight; headings get their emphasis from size, not boldness */
+/* Keyboard users need to see where they are; do not add focus:outline-none to elements */
+@layer base {
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+}
+
 /* One button shape for the whole shop: add "btn" plus "btn-primary" or "btn-secondary" */
 @layer components {
   .btn {

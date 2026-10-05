@@ -45,7 +45,7 @@ export default async function OrderConfirmationPage(props: Props) {
             pattern="01[0-9]{9}"
             inputMode="numeric"
             placeholder="e.g. 01712345678"
-            className="w-full rounded-sm border border-zinc-300 bg-white px-3 py-2 text-zinc-900 placeholder-zinc-400 focus:border-brand focus:outline-none"
+            className="w-full rounded-sm border border-zinc-300 bg-white px-3 py-2 text-zinc-900 placeholder-zinc-400 focus:border-brand"
           />
           <button
             type="submit"

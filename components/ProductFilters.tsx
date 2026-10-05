@@ -26,7 +26,7 @@ export default function ProductFilters({ total, shown }: { total: number; shown:
         <select
           value={searchParams.get("sort") ?? "newest"}
           onChange={handleSortChange}
-          className="w-56 border-b border-zinc-300 bg-white py-2 pr-6 text-sm focus:border-brand focus:outline-none"
+          className="w-56 border-b border-zinc-300 bg-white py-2 pr-6 text-sm focus:border-brand"
         >
           <option value="newest">Sort by latest</option>
           <option value="price-asc">Sort by price: low to high</option>
