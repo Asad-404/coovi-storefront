@@ -3,6 +3,15 @@ import { Order, Product } from "./types";
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5000/api";
 const TIMEOUT_MS = 8000;
 
+// AbortSignal.timeout() rejects fetch with a TimeoutError; a manual abort
+// rejects with an AbortError. Both mean the request never completed.
+function isTimeoutError(error: unknown): boolean {
+  return (
+    error instanceof Error &&
+    (error.name === "TimeoutError" || error.name === "AbortError")
+  );
+}
+
 export interface ProductsResponse {
   data: Product[];
   pagination: {
@@ -39,7 +48,7 @@ export async function getProducts(
       pagination: json.pagination,
     };
   } catch (error) {
-    if (error instanceof Error && error.name === "AbortError") {
+    if (isTimeoutError(error)) {
       throw new Error("Request timed out. Please check your connection and try again.");
     }
     throw error;
@@ -59,7 +68,7 @@ export async function getProductBySlug(slug: string): Promise<Product> {
     const json = await res.json();
     return json.data as Product;
   } catch (error) {
-    if (error instanceof Error && error.name === "AbortError") {
+    if (isTimeoutError(error)) {
       throw new Error("Request timed out. Please check your connection and try again.");
     }
     throw error;
@@ -79,7 +88,7 @@ export async function getDeliveryFee(): Promise<number> {
     const json = await res.json();
     return json.data.deliveryFee as number;
   } catch (error) {
-    if (error instanceof Error && error.name === "AbortError") {
+    if (isTimeoutError(error)) {
       throw new Error("Request timed out. Please check your connection and try again.");
     }
     throw error;
@@ -100,7 +109,7 @@ export async function getOrderByNumber(orderNumber: string, phone: string): Prom
     const json = await res.json();
     return json.data as Order;
   } catch (error) {
-    if (error instanceof Error && error.name === "AbortError") {
+    if (isTimeoutError(error)) {
       throw new Error("Request timed out. Please check your connection and try again.");
     }
     throw error;
@@ -133,7 +142,7 @@ export async function postOrder(order: OrderInput): Promise<Order> {
     }
     return json.data as Order;
   } catch (error) {
-    if (error instanceof Error && error.name === "AbortError") {
+    if (isTimeoutError(error)) {
       throw new Error("Request timed out. Please check your connection and try again.");
     }
     throw error;

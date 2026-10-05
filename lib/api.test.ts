@@ -67,9 +67,7 @@ describe("getProducts", () => {
     await expect(getProducts()).rejects.toThrow(TIMEOUT_MESSAGE);
   });
 
-  // AbortSignal.timeout() makes fetch reject with a TimeoutError, not an
-  // AbortError, so real timeouts currently skip the friendly message.
-  it.fails("maps a real timeout (TimeoutError) to a friendly message", async () => {
+  it("maps a real timeout (TimeoutError) to a friendly message", async () => {
     rejectWith("TimeoutError");
     await expect(getProducts()).rejects.toThrow(TIMEOUT_MESSAGE);
   });
