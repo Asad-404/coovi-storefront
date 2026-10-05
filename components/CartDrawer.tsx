@@ -2,10 +2,12 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useSyncExternalStore } from "react";
 import { createPortal } from "react-dom";
 import { useCartStore, cartTotal, cartCount } from "@/lib/cartStore";
 import { formatPrice } from "@/lib/utils";
+
+const subscribeNoop = () => () => {};
 
 interface CartDrawerProps {
   isOpen: boolean;
@@ -17,10 +19,8 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
   const updateQuantity = useCartStore((state) => state.updateQuantity);
   const removeItem = useCartStore((state) => state.removeItem);
 
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  // False on the server and during hydration, true afterwards (the portal needs document.body)
+  const mounted = useSyncExternalStore(subscribeNoop, () => true, () => false);
 
   const total = cartTotal(items);
   const count = cartCount(items);

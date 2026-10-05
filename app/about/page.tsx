@@ -23,7 +23,7 @@ export default function AboutPage() {
 
         <p className="leading-relaxed">
           We carefully handpick each saree in our collection, focusing on quality fabrics,
-          authentic designs, and honest pricing. Whether you're looking for elegant cotton
+          authentic designs, and honest pricing. Whether you&apos;re looking for elegant cotton
           sarees for everyday wear, luxurious silk for special occasions, or lightweight
           georgette for comfort, we have something for every moment.
         </p>
@@ -45,14 +45,14 @@ export default function AboutPage() {
         </h2>
 
         <p className="leading-relaxed">
-          At Coovi, we understand that buying sarees online requires trust. That's why
+          At Coovi, we understand that buying sarees online requires trust. That&apos;s why
           we provide detailed product descriptions, multiple product images, and a
           straightforward ordering process. Our Cash on Delivery option means you only
           pay when you receive your order.
         </p>
 
         <p className="leading-relaxed">
-          We're a learning-first project built with care, aiming to provide a seamless
+          We&apos;re a learning-first project built with care, aiming to provide a seamless
           online shopping experience for saree lovers across Bangladesh.
         </p>
       </div>
