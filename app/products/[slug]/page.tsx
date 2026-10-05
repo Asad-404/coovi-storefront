@@ -222,13 +222,6 @@ export default async function ProductDetailPage(props: Props) {
       <section className="mx-auto max-w-page px-4">
         <ProductTabs description={product.description} descriptionBn={product.descriptionBn} details={details} />
 
-        <p className="border-t border-zinc-200 py-6 text-center text-xs text-zinc-600">
-          Category:{" "}
-          <Link href="/shop" className="underline hover:text-brand">
-            {product.category}
-          </Link>
-        </p>
-
         {related.length > 0 && (
           <div className="pb-16 pt-6">
             <h2 className="mb-6 text-xl text-zinc-700">Related products</h2>

@@ -60,7 +60,7 @@ export default async function Home(props: PageProps<"/">) {
       <HomeHero featured={featured} />
 
       <section id="shop" className="mx-auto max-w-page scroll-mt-24 px-4 py-14">
-        <SectionTitle eyebrow="Festive collection" title="New arrivals" subtitle="Fresh designs, limited pieces per design." />
+        <SectionTitle title="New arrivals" subtitle="Fresh designs, limited pieces per design." />
 
         {products === null ? (
           <div className="mx-auto max-w-md border border-amber-300 bg-amber-50 p-6 text-center text-amber-800">
@@ -100,10 +100,9 @@ export default async function Home(props: PageProps<"/">) {
   );
 }
 
-function SectionTitle({ eyebrow, title, subtitle }: { eyebrow: string; title: string; subtitle?: string }) {
+function SectionTitle({ title, subtitle }: { title: string; subtitle?: string }) {
   return (
     <div className="mb-8 flex flex-col items-center gap-1 text-center">
-      <span className="text-xs font-medium uppercase tracking-[0.25em] text-accent">{eyebrow}</span>
       <h2 className="text-3xl text-zinc-700">{title}</h2>
       {subtitle && <p className="mt-1 text-sm text-zinc-600">{subtitle}</p>}
     </div>

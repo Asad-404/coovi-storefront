@@ -65,7 +65,6 @@ export default function ProductCard({ product }: { product: Product }) {
         </div>
 
         <div className="flex flex-col items-center gap-1 px-1 pt-3 text-center">
-          <p className="text-[11px] uppercase tracking-wider text-zinc-600">{product.category}</p>
           <h3 className="flex flex-col gap-0.5 text-ink transition-colors group-hover:text-brand">
             {product.nameBn && (
               <span lang="bn" className="font-display text-xl leading-snug sm:text-2xl">

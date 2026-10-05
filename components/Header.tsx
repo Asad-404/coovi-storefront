@@ -66,7 +66,7 @@ export default function Header() {
       </header>
 
       <div className="bg-brand py-3.5 text-center text-sm font-semibold text-white">
-        <span className="text-logo-dot">✦</span> Coovi Festive Collection <span className="text-logo-dot">✦</span>
+        Coovi Festive Collection
       </div>
     </>
   );

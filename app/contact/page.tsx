@@ -27,7 +27,7 @@ export default function ContactPage() {
         <div className="space-y-6">
           <div className="rounded-sm border border-zinc-200 bg-white p-6">
             <h2 className="text-xl text-zinc-900">
-              📱 WhatsApp
+              WhatsApp
             </h2>
             <p className="mt-2 text-zinc-600">
               For quick questions and order support
@@ -38,14 +38,13 @@ export default function ContactPage() {
               rel="noopener noreferrer"
               className="btn mt-4 gap-2 bg-green-600 text-white hover:bg-green-700"
             >
-              <span>Chat on WhatsApp</span>
-              <span>→</span>
+              Chat on WhatsApp
             </a>
           </div>
 
           <div className="rounded-sm border border-zinc-200 bg-white p-6">
             <h2 className="text-xl text-zinc-900">
-              📧 Email
+              Email
             </h2>
             <p className="mt-2 text-zinc-600">
               For detailed inquiries and support
@@ -60,7 +59,7 @@ export default function ContactPage() {
 
           <div className="rounded-sm border border-zinc-200 bg-white p-6">
             <h2 className="text-xl text-zinc-900">
-              📦 Order Tracking
+              Order Tracking
             </h2>
             <p className="mt-2 text-zinc-600">
               Check your order status anytime
@@ -69,8 +68,7 @@ export default function ContactPage() {
               href="/track-order"
               className="btn btn-primary mt-4 gap-2"
             >
-              <span>Track Your Order</span>
-              <span>→</span>
+              Track Your Order
             </Link>
           </div>
         </div>
