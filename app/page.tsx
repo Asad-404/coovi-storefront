@@ -6,6 +6,7 @@ import JsonLd from "@/components/JsonLd";
 import { getProducts } from "@/lib/api";
 import ProductCard from "@/components/ProductCard";
 import HomeHero from "@/components/HomeHero";
+import PromoBanner from "@/components/PromoBanner";
 import WhyCoovi from "@/components/WhyCoovi";
 
 export const metadata: Metadata = {
@@ -45,19 +46,18 @@ export default async function Home(props: PageProps<"/">) {
 
   let products = null;
   try {
-    products = await getProducts({ limit: 13 });
+    products = await getProducts({ limit: 12 });
   } catch {
     products = null;
   }
 
-  // The newest saree with a photo fills the hero; the grid shows the rest so nothing appears twice
-  const featured = products?.data.find((product) => product.images.length > 0);
-  const gridProducts = products ? products.data.filter((product) => product !== featured).slice(0, 12) : [];
+  const heroImages = products ? products.data.flatMap((product) => product.images.slice(0, 1)).slice(0, 3) : [];
 
   return (
     <main className="w-full">
       <JsonLd data={siteStructuredData} />
-      <HomeHero featured={featured} />
+      <HomeHero images={heroImages} />
+      <PromoBanner />
 
       <section id="shop" className="mx-auto max-w-[1120px] scroll-mt-24 px-4 py-14">
         <SectionTitle title="New arrivals" subtitle="Fresh designs, limited pieces per design." />
@@ -72,12 +72,12 @@ export default async function Home(props: PageProps<"/">) {
               </p>
             )}
           </div>
-        ) : gridProducts.length === 0 && !featured ? (
+        ) : products.data.length === 0 ? (
           <p className="py-10 text-center text-zinc-500">No products yet. Add some from the admin panel.</p>
         ) : (
           <>
             <div className="grid grid-cols-2 gap-x-4 gap-y-10 sm:gap-x-[30px] md:grid-cols-3">
-              {gridProducts.map((product) => (
+              {products.data.map((product) => (
                 <ProductCard key={product._id} product={product} />
               ))}
             </div>
