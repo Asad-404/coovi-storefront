@@ -31,7 +31,7 @@ export default function WhyCoovi() {
     <section className="border-y border-zinc-200">
       <div className="mx-auto max-w-[1120px] px-4 py-14">
         <div className="mx-auto max-w-3xl text-center">
-          <h2 className="text-2xl font-bold text-zinc-700">Why Coovi?</h2>
+          <h2 className="text-2xl text-zinc-700">Why Coovi?</h2>
           <p className="mt-4 leading-7 text-zinc-700">
             We believe in celebrating tradition, craftsmanship and timeless elegance. Our sarees are
             chosen with care, priced honestly and delivered across Bangladesh, so you can embrace

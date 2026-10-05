@@ -127,7 +127,16 @@ export default async function ProductDetailPage(props: Props) {
             <ProductImageGallery images={product.images} productName={product.name} />
 
             <div className="flex flex-col gap-4">
-              <h1 className="text-[28px] font-semibold leading-tight text-ink sm:text-[34px]">{title}</h1>
+              <h1 className="flex flex-col gap-1 text-ink">
+                {product.nameBn && (
+                  <span lang="bn" className="text-[40px] leading-tight sm:text-[52px]">
+                    {product.nameBn}
+                  </span>
+                )}
+                <span className={product.nameBn ? "font-sans text-lg text-zinc-600" : "text-[32px] leading-tight sm:text-[40px]"}>
+                  {product.name}
+                </span>
+              </h1>
 
               <div className="flex flex-wrap items-center gap-3">
                 <PriceTag product={product} className="text-lg font-medium text-highlight" />
@@ -222,7 +231,7 @@ export default async function ProductDetailPage(props: Props) {
 
         {related.length > 0 && (
           <div className="pb-16 pt-6">
-            <h2 className="mb-6 text-xl font-semibold text-zinc-700">Related products</h2>
+            <h2 className="mb-6 text-xl text-zinc-700">Related products</h2>
             <div className="grid grid-cols-2 gap-x-4 gap-y-10 sm:gap-x-[30px] md:grid-cols-3">
               {related.map((item, index) => (
                 <div key={item._id} className={index === 2 ? "hidden md:block" : undefined}>

@@ -1,19 +1,28 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, Nunito } from "next/font/google";
+import { Hind_Siliguri, Nunito, Tiro_Bangla } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { BRAND_NAVY, SITE_DESCRIPTION, SITE_NAME, SITE_TAGLINE, SITE_URL } from "@/lib/site";
 
+// Nunito is only for the Coovi wordmark; it has no Bengali letters
 const nunito = Nunito({
   variable: "--font-nunito",
   subsets: ["latin"],
-  weight: ["700", "800", "900"],
+  weight: ["900"],
 });
 
-const inter = Inter({
-  variable: "--font-inter",
-  subsets: ["latin"],
+// Headings and saree names: one weight only, so never pair it with a bold class
+const tiroBangla = Tiro_Bangla({
+  variable: "--font-tiro-bangla",
+  subsets: ["bengali", "latin"],
+  weight: "400",
+});
+
+const hindSiliguri = Hind_Siliguri({
+  variable: "--font-hind-siliguri",
+  subsets: ["bengali", "latin"],
+  weight: ["400", "500", "600", "700"],
 });
 
 export const metadata: Metadata = {
@@ -43,7 +52,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${nunito.variable} h-full antialiased`}
+      className={`${hindSiliguri.variable} ${tiroBangla.variable} ${nunito.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col">
         <Header />

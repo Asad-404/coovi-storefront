@@ -29,7 +29,7 @@ export default async function OrderConfirmationPage(props: Props) {
   if (!phoneValue) {
     return (
       <main className="mx-auto flex w-full max-w-md flex-1 flex-col items-center justify-center gap-6 px-4 py-24 text-center sm:px-6">
-        <h1 className="text-2xl font-semibold text-zinc-900">
+        <h1 className="text-2xl text-zinc-900">
           Check your order
         </h1>
         <p className="text-zinc-500">
@@ -71,7 +71,7 @@ export default async function OrderConfirmationPage(props: Props) {
         <div className="flex h-16 w-16 items-center justify-center rounded-full bg-green-100 text-3xl text-green-700">
           ✓
         </div>
-        <h1 className="text-3xl font-bold text-zinc-900">
+        <h1 className="text-3xl text-zinc-900">
           Order placed!
         </h1>
         <p className="text-zinc-600">

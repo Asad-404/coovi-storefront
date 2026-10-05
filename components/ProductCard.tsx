@@ -15,7 +15,6 @@ export default function ProductCard({ product }: { product: Product }) {
   const primaryImage = product.images[0];
   const secondaryImage = product.images[1];
   const displayImage = isHovered && secondaryImage ? secondaryImage : primaryImage;
-  const title = product.nameBn ? `${product.nameBn} – ${product.name}` : product.name;
 
   function handleAdd() {
     addItem({
@@ -67,8 +66,15 @@ export default function ProductCard({ product }: { product: Product }) {
 
         <div className="flex flex-col items-center gap-1 px-1 pt-3 text-center">
           <p className="text-[11px] uppercase tracking-wider text-zinc-600">{product.category}</p>
-          <h3 className="text-sm font-semibold text-ink transition-colors group-hover:text-brand sm:text-base">
-            {title}
+          <h3 className="flex flex-col gap-0.5 text-ink transition-colors group-hover:text-brand">
+            {product.nameBn && (
+              <span lang="bn" className="font-display text-xl leading-snug sm:text-2xl">
+                {product.nameBn}
+              </span>
+            )}
+            <span className={product.nameBn ? "text-sm text-zinc-600" : "font-display text-lg leading-snug sm:text-xl"}>
+              {product.name}
+            </span>
           </h3>
           <PriceTag product={product} className="justify-center text-sm text-ink" />
         </div>

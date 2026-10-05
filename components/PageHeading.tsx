@@ -16,7 +16,7 @@ export default function PageHeading({
         <span className="mx-2 text-zinc-300">/</span>
         <span>{crumb}</span>
       </nav>
-      <h1 className="mt-4 text-4xl font-bold text-ink sm:text-5xl">{title}</h1>
+      <h1 className="mt-4 text-4xl text-ink sm:text-5xl">{title}</h1>
       {description && (
         <p className="mt-8 bg-[#e7eef7] px-5 py-6 text-base leading-7 text-ink sm:px-8 sm:text-lg">{description}</p>
       )}

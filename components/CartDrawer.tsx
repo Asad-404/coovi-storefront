@@ -47,7 +47,7 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
       >
         {/* Header */}
         <div className="flex items-center justify-between border-b border-zinc-200 p-4">
-          <h2 className="text-lg font-semibold text-zinc-900">
+          <h2 className="text-lg text-zinc-900">
             Shopping Cart ({count})
           </h2>
           <button

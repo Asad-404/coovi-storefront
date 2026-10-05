@@ -20,7 +20,7 @@ export default function CartPage() {
           <circle cx="44" cy="52" r="3.5" />
           <path d="M26 4l2 6M36 3v7M46 4l-2 6" />
         </svg>
-        <h1 className="text-3xl font-bold text-ink sm:text-4xl">Your cart is currently empty.</h1>
+        <h1 className="text-3xl text-ink sm:text-4xl">Your cart is currently empty.</h1>
         <Link
           href="/shop"
           className="rounded bg-highlight px-8 py-3.5 font-bold text-white transition-colors hover:bg-highlight/85"
@@ -33,7 +33,7 @@ export default function CartPage() {
 
   return (
     <main className="mx-auto w-full max-w-6xl px-4 pb-16 sm:px-6">
-      <h1 className="py-8 text-3xl font-bold text-zinc-900">
+      <h1 className="py-8 text-3xl text-zinc-900">
         Your Cart
       </h1>
 
@@ -113,7 +113,7 @@ export default function CartPage() {
         </ul>
 
         <aside className="h-fit rounded-xl border border-zinc-200 p-6">
-          <h2 className="text-lg font-semibold text-zinc-900">
+          <h2 className="text-lg text-zinc-900">
             Summary
           </h2>
           <div className="mt-4 flex justify-between text-zinc-600">

@@ -21,7 +21,7 @@ export default function TrackOrderPage() {
   return (
     <main className="mx-auto flex w-full max-w-md flex-1 flex-col items-center justify-center gap-6 px-4 py-24 sm:px-6">
       <div className="text-center">
-        <h1 className="text-3xl font-bold text-zinc-900">
+        <h1 className="text-3xl text-zinc-900">
           Track Your Order
         </h1>
         <p className="mt-2 text-zinc-600">

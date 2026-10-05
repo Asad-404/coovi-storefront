@@ -11,7 +11,7 @@ export default function Error({ error, reset }: ErrorProps) {
       <div className="flex h-16 w-16 items-center justify-center rounded-full bg-red-100 text-3xl text-red-700">
         ⚠
       </div>
-      <h1 className="text-2xl font-semibold text-zinc-900">
+      <h1 className="text-2xl text-zinc-900">
         Something went wrong
       </h1>
       <p className="text-zinc-600">

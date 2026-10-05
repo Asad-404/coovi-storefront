@@ -123,7 +123,7 @@ function SectionTitle({ eyebrow, title, subtitle }: { eyebrow: string; title: st
   return (
     <div className="mb-8 flex flex-col items-center gap-1 text-center">
       <span className="text-xs font-medium uppercase tracking-[0.25em] text-accent">{eyebrow}</span>
-      <h2 className="text-3xl font-bold text-zinc-700">{title}</h2>
+      <h2 className="text-3xl text-zinc-700">{title}</h2>
       {subtitle && <p className="mt-1 text-sm text-zinc-600">{subtitle}</p>}
     </div>
   );

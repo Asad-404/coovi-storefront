@@ -27,7 +27,7 @@ export default function PolicyPage({
         <div className="mt-8 space-y-8">
           {sections.map((section) => (
             <section key={section.heading}>
-              <h2 className="text-xl font-semibold text-ink">{section.heading}</h2>
+              <h2 className="text-xl text-ink">{section.heading}</h2>
               <div className="mt-2 space-y-3 leading-7 text-zinc-700">{section.body}</div>
             </section>
           ))}

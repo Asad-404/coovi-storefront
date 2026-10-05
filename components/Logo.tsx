@@ -5,7 +5,7 @@ export default function Logo({ size = "md" }: { size?: "md" | "lg" }) {
   const text = size === "lg" ? "text-5xl" : "text-[30px] sm:text-4xl";
 
   return (
-    <Link href="/" aria-label="Coovi home" className={`${text} inline-block font-display font-black leading-none tracking-tight text-brand`}>
+    <Link href="/" aria-label="Coovi home" className={`${text} inline-block font-logo font-black leading-none tracking-tight text-brand`}>
       Coov
       <span className="relative inline-block">
         ı

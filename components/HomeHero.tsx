@@ -26,7 +26,7 @@ export default function HomeHero({ images }: { images: string[] }) {
             <span className="rounded-full border border-highlight/50 bg-white/60 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.2em] text-accent">
               Festive collection
             </span>
-            <h1 className="font-display text-[28px] font-extrabold leading-[1.25] text-brand sm:text-4xl lg:text-[44px]">
+            <h1 className="font-display text-[28px] leading-[1.25] text-brand sm:text-4xl lg:text-[44px]">
               In every festive colour,
               <br className="hidden sm:block" />{" "}
               Coovi is with you.

@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 export default function AboutPage() {
   return (
     <main className="mx-auto w-full max-w-3xl px-4 py-16 sm:px-6">
-      <h1 className="text-4xl font-bold text-zinc-900">
+      <h1 className="text-4xl text-zinc-900">
         About Coovi
       </h1>
 
@@ -28,7 +28,7 @@ export default function AboutPage() {
           georgette for comfort, we have something for every moment.
         </p>
 
-        <h2 className="pt-6 text-2xl font-semibold text-zinc-900">
+        <h2 className="pt-6 text-2xl text-zinc-900">
           Our Promise
         </h2>
 
@@ -40,7 +40,7 @@ export default function AboutPage() {
           <li>Responsive customer support</li>
         </ul>
 
-        <h2 className="pt-6 text-2xl font-semibold text-zinc-900">
+        <h2 className="pt-6 text-2xl text-zinc-900">
           Why Choose Us?
         </h2>
 

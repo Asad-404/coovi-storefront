@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 export default function ContactPage() {
   return (
     <main className="mx-auto w-full max-w-3xl px-4 py-16 sm:px-6">
-      <h1 className="text-4xl font-bold text-zinc-900">
+      <h1 className="text-4xl text-zinc-900">
         Contact Us
       </h1>
 
@@ -26,7 +26,7 @@ export default function ContactPage() {
 
         <div className="space-y-6">
           <div className="rounded-xl border border-zinc-200 bg-white p-6">
-            <h2 className="text-xl font-semibold text-zinc-900">
+            <h2 className="text-xl text-zinc-900">
               📱 WhatsApp
             </h2>
             <p className="mt-2 text-zinc-600">
@@ -44,7 +44,7 @@ export default function ContactPage() {
           </div>
 
           <div className="rounded-xl border border-zinc-200 bg-white p-6">
-            <h2 className="text-xl font-semibold text-zinc-900">
+            <h2 className="text-xl text-zinc-900">
               📧 Email
             </h2>
             <p className="mt-2 text-zinc-600">
@@ -59,7 +59,7 @@ export default function ContactPage() {
           </div>
 
           <div className="rounded-xl border border-zinc-200 bg-white p-6">
-            <h2 className="text-xl font-semibold text-zinc-900">
+            <h2 className="text-xl text-zinc-900">
               📦 Order Tracking
             </h2>
             <p className="mt-2 text-zinc-600">
@@ -76,7 +76,7 @@ export default function ContactPage() {
         </div>
 
         <div className="mt-12 border-t border-zinc-200 pt-8">
-          <h2 className="text-2xl font-semibold text-zinc-900">
+          <h2 className="text-2xl text-zinc-900">
             Business Hours
           </h2>
           <p className="mt-4 text-zinc-700">

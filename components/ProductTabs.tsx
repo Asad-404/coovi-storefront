@@ -72,7 +72,7 @@ export default function ProductTabs({ description, descriptionBn, details }: Pro
 
         {active === "Care Guide" && (
           <div className="space-y-6">
-            <h2 className="text-xl font-semibold text-ink">Saree care guide</h2>
+            <h2 className="text-xl text-ink">Saree care guide</h2>
             {careGuide.map((section) => (
               <div key={section.title}>
                 <h3 className="font-semibold text-ink">{section.title}</h3>
