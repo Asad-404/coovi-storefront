@@ -10,7 +10,9 @@ const reasons = [
     icon: (
       <>
         <circle cx="12" cy="12" r="9" />
-        <path d="M9 15c0 1.5 6 1.5 6-.5 0-2.5-6-1.5-6-4 0-2 6-2 6-.5M12 6.5v11" />
+        <text x="12" y="16.5" textAnchor="middle" fontSize="12" fill="currentColor" stroke="none">
+          ৳
+        </text>
       </>
     ),
   },
