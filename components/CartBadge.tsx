@@ -1,17 +1,17 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState, useSyncExternalStore } from "react";
 import { useCartStore, cartCount } from "@/lib/cartStore";
 import CartDrawer from "./CartDrawer";
 
+const subscribeNoop = () => () => {};
+
 export default function CartBadge() {
   const items = useCartStore((state) => state.items);
-  const [mounted, setMounted] = useState(false);
+  // The cart lives in localStorage, so the server always renders an empty
+  // cart. Only show the count once hydrated to avoid a hydration mismatch.
+  const mounted = useSyncExternalStore(subscribeNoop, () => true, () => false);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   const count = cartCount(items);
 
