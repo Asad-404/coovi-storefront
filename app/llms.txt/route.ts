@@ -1,17 +1,17 @@
-import { getProducts } from "@/lib/api";
+import { getAllProducts } from "@/lib/api";
 import { SITE_DESCRIPTION, SITE_NAME, SITE_TAGLINE, SITE_URL } from "@/lib/site";
-import { formatPrice, isOnSale } from "@/lib/utils";
+import { formatPrice, isAvailable, isOnSale } from "@/lib/utils";
 
 export const revalidate = 3600;
 
 export async function GET() {
   let productLines = "";
   try {
-    const { data } = await getProducts({ limit: 50 });
-    productLines = data
+    const products = await getAllProducts();
+    productLines = products
       .map((product) => {
         const sale = isOnSale(product) ? ` (on sale, was ${formatPrice(product.compareAtPrice as number)})` : "";
-        const stock = product.inStock ? "" : " [out of stock]";
+        const stock = isAvailable(product) ? "" : " [out of stock]";
         return `- [${product.name}](${SITE_URL}/products/${product.slug}): ${formatPrice(product.price)}${sale}${stock}`;
       })
       .join("\n");

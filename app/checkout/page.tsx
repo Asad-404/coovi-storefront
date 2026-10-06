@@ -4,8 +4,8 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCartStore, cartTotal } from "@/lib/cartStore";
-import { getDeliveryFee, getProducts, postOrder } from "@/lib/api";
-import { formatPrice } from "@/lib/utils";
+import { getDeliveryFee, getProductBySlug, postOrder } from "@/lib/api";
+import { formatPrice, isAvailable } from "@/lib/utils";
 
 const inputClass =
   "w-full rounded-sm border border-zinc-300 bg-white px-3 py-2 text-zinc-900 placeholder-zinc-400 focus:border-brand";
@@ -39,23 +39,26 @@ export default function CheckoutPage() {
         if (active) setError("Could not load the delivery fee — please refresh the page");
       });
 
-    getProducts()
-      .then((productsResponse) => {
-        if (!active) return;
-        const issues: string[] = [];
-        for (const item of items) {
-          const product = productsResponse.data.find((p) => p._id === item.productId);
-          if (product && product.stock < item.quantity) {
-            issues.push(
-              `Only ${product.stock} left of "${item.name}" — please reduce the quantity in your cart`
-            );
-          }
+    // One lookup per cart item: a single product-list page would miss anything
+    // beyond its first 12 products. A failed lookup is not fatal — the API
+    // re-checks availability and stock when the order is submitted.
+    Promise.allSettled(items.map((item) => getProductBySlug(item.slug))).then((results) => {
+      if (!active) return;
+      const issues: string[] = [];
+      results.forEach((result, i) => {
+        if (result.status !== "fulfilled") return;
+        const product = result.value;
+        const item = items[i];
+        if (!isAvailable(product)) {
+          issues.push(`"${item.name}" is currently unavailable — please remove it from your cart`);
+        } else if (product.stock < item.quantity) {
+          issues.push(
+            `Only ${product.stock} left of "${item.name}" — please reduce the quantity in your cart`
+          );
         }
-        setStockIssues(issues);
-      })
-      .catch(() => {
-        // Not fatal: the API re-checks stock again when the order is submitted
       });
+      setStockIssues(issues);
+    });
 
     return () => {
       active = false;

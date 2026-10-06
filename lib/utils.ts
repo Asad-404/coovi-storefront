@@ -12,3 +12,9 @@ export function discountPercent(product: Pick<Product, "price" | "compareAtPrice
   if (!isOnSale(product)) return 0;
   return Math.round((1 - product.price / (product.compareAtPrice as number)) * 100);
 }
+
+// Orderable only when the admin has it switched on AND units remain: the API refuses an order
+// for either reason, and stock reaching 0 does not flip the inStock switch by itself
+export function isAvailable(product: Pick<Product, "inStock" | "stock">): boolean {
+  return product.inStock && product.stock > 0;
+}
