@@ -3,6 +3,7 @@ import CartBadge from "@/components/CartBadge";
 import Logo from "@/components/Logo";
 import SearchBar from "@/components/SearchBar";
 import MobileMenu from "@/components/MobileMenu";
+import { whatsappUrl } from "@/lib/site";
 
 const navLinks = [
   { href: "/", label: "Home" },
@@ -18,7 +19,7 @@ export default function Header() {
         <div className="mx-auto flex h-9 max-w-[1170px] items-center justify-between px-4">
           <p>Cash on delivery across Bangladesh</p>
           <a
-            href="https://wa.me/8801700000000"
+            href={whatsappUrl()}
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-2 font-semibold hover:text-brand"

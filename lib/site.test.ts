@@ -45,3 +45,23 @@ describe("pageOpenGraph", () => {
     });
   });
 });
+
+describe("whatsappUrl", () => {
+  it("falls back to the placeholder number", async () => {
+    vi.stubEnv("NEXT_PUBLIC_WHATSAPP_NUMBER", "");
+    const { whatsappUrl } = await loadSite();
+    expect(whatsappUrl()).toBe("https://wa.me/8801700000000");
+  });
+
+  it("uses NEXT_PUBLIC_WHATSAPP_NUMBER with formatting stripped", async () => {
+    vi.stubEnv("NEXT_PUBLIC_WHATSAPP_NUMBER", "+880 1712-345678");
+    const { WHATSAPP_NUMBER, whatsappUrl } = await loadSite();
+    expect(WHATSAPP_NUMBER).toBe("8801712345678");
+    expect(whatsappUrl()).toBe("https://wa.me/8801712345678");
+  });
+
+  it("adds an encoded message", async () => {
+    const { whatsappUrl } = await loadSite();
+    expect(whatsappUrl("Hi! Saree & more")).toMatch(/\?text=Hi!%20Saree%20%26%20more$/);
+  });
+});

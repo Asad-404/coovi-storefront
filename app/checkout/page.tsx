@@ -8,7 +8,7 @@ import { getDeliveryFee, getProducts, postOrder } from "@/lib/api";
 import { formatPrice } from "@/lib/utils";
 
 const inputClass =
-  "w-full rounded-sm border border-zinc-300 bg-white px-3 py-2 text-zinc-900 placeholder-zinc-400 focus:border-brand";
+  "w-full rounded-sm border border-zinc-300 bg-white px-3 py-2 text-zinc-900 placeholder-zinc-500 focus:border-brand";
 
 export default function CheckoutPage() {
   const items = useCartStore((state) => state.items);
@@ -131,6 +131,7 @@ export default function CheckoutPage() {
                 required
                 minLength={1}
                 maxLength={100}
+                autoComplete="name"
                 value={form.customerName}
                 onChange={(e) => setForm({ ...form, customerName: e.target.value })}
                 placeholder="e.g. Fatima Rahman"
@@ -147,6 +148,8 @@ export default function CheckoutPage() {
                 minLength={11}
                 maxLength={11}
                 inputMode="numeric"
+                autoComplete="tel-national"
+                title="11-digit mobile number starting with 01, for example 01712345678"
                 value={form.phone}
                 onChange={(e) => setForm({ ...form, phone: e.target.value })}
                 placeholder="01712345678 (11 digits)"
@@ -161,6 +164,7 @@ export default function CheckoutPage() {
                 minLength={5}
                 maxLength={500}
                 rows={3}
+                autoComplete="street-address"
                 value={form.address}
                 onChange={(e) => setForm({ ...form, address: e.target.value })}
                 placeholder="House number, road, area, city (minimum 5 characters)"
@@ -182,13 +186,13 @@ export default function CheckoutPage() {
           </fieldset>
 
           {error && (
-            <p className="mt-4 rounded-sm border border-red-300 bg-red-50 p-3 text-sm text-red-700">
+            <p role="alert" className="mt-4 rounded-sm border border-red-300 bg-red-50 p-3 text-sm text-red-700">
               {error}
             </p>
           )}
 
           {stockIssues.length > 0 && (
-            <ul className="mt-4 flex list-disc flex-col gap-1 rounded-sm border border-amber-300 bg-amber-50 p-3 pl-8 text-sm text-amber-800">
+            <ul role="status" className="mt-4 flex list-disc flex-col gap-1 rounded-sm border border-amber-300 bg-amber-50 p-3 pl-8 text-sm text-amber-800">
               {stockIssues.map((issue) => (
                 <li key={issue}>{issue}</li>
               ))}
@@ -240,7 +244,7 @@ export default function CheckoutPage() {
               >
                 <span>
                   {item.name}
-                  <span className="text-zinc-400"> × {item.quantity}</span>
+                  <span className="text-zinc-500"> × {item.quantity}</span>
                 </span>
                 <span className="whitespace-nowrap font-medium">
                   {formatPrice(item.price * item.quantity)}

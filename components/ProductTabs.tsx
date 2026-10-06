@@ -65,7 +65,7 @@ export default function ProductTabs({ description, descriptionBn, details }: Pro
         {active === "Description" && (
           <div className="space-y-4">
             {description && <p>{description}</p>}
-            {descriptionBn && <p>{descriptionBn}</p>}
+            {descriptionBn && <p lang="bn">{descriptionBn}</p>}
             {!description && !descriptionBn && <p>No description has been added for this saree yet.</p>}
           </div>
         )}
@@ -78,7 +78,10 @@ export default function ProductTabs({ description, descriptionBn, details }: Pro
                 <h3 className="font-semibold text-ink">{section.title}</h3>
                 <ul className="mt-1 space-y-1">
                   {section.points.map((point) => (
-                    <li key={point}>✓ {point}</li>
+                    <li key={point}>
+                      <span aria-hidden="true">✓ </span>
+                      {point}
+                    </li>
                   ))}
                 </ul>
               </div>

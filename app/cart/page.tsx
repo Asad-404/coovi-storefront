@@ -54,7 +54,7 @@ export default function CartPage() {
                     className="object-cover"
                   />
                 ) : (
-                  <span className="flex h-full items-center justify-center text-xs text-zinc-400">
+                  <span className="flex h-full items-center justify-center text-xs text-zinc-500">
                     No image
                   </span>
                 )}
@@ -82,7 +82,7 @@ export default function CartPage() {
                       type="button"
                       aria-label={`Decrease quantity of ${item.name}`}
                       onClick={() => updateQuantity(item.productId, item.quantity - 1)}
-                      className="flex h-8 w-8 items-center justify-center rounded-sm border border-zinc-300 text-zinc-700 transition-colors hover:bg-zinc-100"
+                      className="relative flex h-8 w-8 items-center justify-center rounded-sm border border-zinc-300 text-zinc-700 transition-colors after:absolute after:-inset-1.5 after:content-[''] hover:bg-zinc-100"
                     >
                       −
                     </button>
@@ -93,7 +93,7 @@ export default function CartPage() {
                       type="button"
                       aria-label={`Increase quantity of ${item.name}`}
                       onClick={() => updateQuantity(item.productId, item.quantity + 1)}
-                      className="flex h-8 w-8 items-center justify-center rounded-sm border border-zinc-300 text-zinc-700 transition-colors hover:bg-zinc-100"
+                      className="relative flex h-8 w-8 items-center justify-center rounded-sm border border-zinc-300 text-zinc-700 transition-colors after:absolute after:-inset-1.5 after:content-[''] hover:bg-zinc-100"
                     >
                       +
                     </button>
@@ -102,7 +102,8 @@ export default function CartPage() {
                   <button
                     type="button"
                     onClick={() => removeItem(item.productId)}
-                    className="text-sm text-zinc-500 underline-offset-2 transition-colors hover:text-red-600 hover:underline"
+                    aria-label={`Remove ${item.name}`}
+                    className="relative text-sm text-zinc-500 after:absolute after:-inset-x-2 after:-inset-y-3 after:content-[''] underline-offset-2 transition-colors hover:text-red-600 hover:underline"
                   >
                     Remove
                   </button>

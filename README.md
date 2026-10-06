@@ -23,6 +23,7 @@ Set these in `.env.local`:
 |---|---|---|
 | `NEXT_PUBLIC_API_URL` | `http://localhost:5000/api` | Base URL of the Coovi API |
 | `NEXT_PUBLIC_SITE_URL` | `http://localhost:3000` | Public site URL, used for metadata, the sitemap and WhatsApp share links |
+| `NEXT_PUBLIC_WHATSAPP_NUMBER` | `8801700000000` (placeholder) | Shop WhatsApp number, digits in international format; used by every WhatsApp link |
 
 ## Scripts
 
@@ -46,8 +47,10 @@ Covered today, at 100% line and branch coverage:
 - `lib/api.ts`: request URLs and query params, error and timeout handling, and that orders send only product IDs and quantities
 - `lib/cartStore.ts`: cart actions, `localStorage` persistence, totals and counts
 - `lib/utils.ts`: price formatting
+- `lib/site.ts`: site URL, Open Graph and WhatsApp link helpers
+- `lib/useDialog.ts`: Escape, focus trap, scroll lock and focus return for dialogs
 
-Components and pages are not tested yet.
+Component tests use [React Testing Library](https://testing-library.com/docs/react-testing-library/intro/); `components/CartDrawer.test.tsx` covers the cart drawer's dialog behaviour. Other components and pages are not tested yet.
 
 ## Continuous integration
 

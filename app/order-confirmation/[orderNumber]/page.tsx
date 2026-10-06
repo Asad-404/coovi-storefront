@@ -38,14 +38,20 @@ export default async function OrderConfirmationPage(props: Props) {
         </p>
         {/* A plain GET form re-submits to this same URL with ?phone=... */}
         <form method="get" className="flex w-full flex-col gap-3">
+          <label htmlFor="order-phone" className="sr-only">
+            Phone number used at checkout
+          </label>
           <input
+            id="order-phone"
             type="tel"
             name="phone"
             required
             pattern="01[0-9]{9}"
             inputMode="numeric"
+            autoComplete="tel-national"
+            title="11-digit mobile number starting with 01, for example 01712345678"
             placeholder="e.g. 01712345678"
-            className="w-full rounded-sm border border-zinc-300 bg-white px-3 py-2 text-zinc-900 placeholder-zinc-400 focus:border-brand"
+            className="w-full rounded-sm border border-zinc-300 bg-white px-3 py-2 text-zinc-900 placeholder-zinc-500 focus:border-brand"
           />
           <button
             type="submit"
@@ -68,7 +74,7 @@ export default async function OrderConfirmationPage(props: Props) {
   return (
     <main className="mx-auto w-full max-w-3xl px-4 pb-16 sm:px-6">
       <div className="flex flex-col items-center gap-3 py-12 text-center">
-        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-green-100 text-3xl text-green-700">
+        <div aria-hidden="true" className="flex h-16 w-16 items-center justify-center rounded-full bg-green-100 text-3xl text-green-700">
           ✓
         </div>
         <h1 className="text-3xl text-zinc-900">
@@ -97,7 +103,7 @@ export default async function OrderConfirmationPage(props: Props) {
                     className="object-cover"
                   />
                 ) : (
-                  <span className="flex h-full items-center justify-center text-xs text-zinc-400">
+                  <span className="flex h-full items-center justify-center text-xs text-zinc-500">
                     No image
                   </span>
                 )}

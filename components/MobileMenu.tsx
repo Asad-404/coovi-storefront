@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useRef, useState } from "react";
+import { useDialog } from "@/lib/useDialog";
 
 const links = [
   { href: "/", label: "Home" },
@@ -18,12 +19,9 @@ export default function MobileMenu() {
   const [open, setOpen] = useState(false);
   const [term, setTerm] = useState("");
 
-  useEffect(() => {
-    document.body.style.overflow = open ? "hidden" : "";
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, [open]);
+  const panelRef = useRef<HTMLDivElement>(null);
+  // The toggle sits outside the panel, so no focus trap; Escape closes and focus returns to the toggle
+  useDialog(open, () => setOpen(false), panelRef, { trapFocus: false, initialFocus: false });
 
   function handleSearch(event: React.FormEvent) {
     event.preventDefault();
@@ -39,6 +37,7 @@ export default function MobileMenu() {
         onClick={() => setOpen((value) => !value)}
         aria-label={open ? "Close menu" : "Open menu"}
         aria-expanded={open}
+        aria-controls="mobile-menu"
         className="flex items-center gap-2 text-xs font-bold uppercase text-ink"
       >
         <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
@@ -48,7 +47,7 @@ export default function MobileMenu() {
       </button>
 
       {open && (
-        <div className="absolute inset-x-0 top-full z-30 max-h-[calc(100dvh-68px)] overflow-y-auto border-t border-zinc-100 bg-white px-5 pb-6 pt-4 shadow-lg">
+        <div id="mobile-menu" ref={panelRef} className="absolute inset-x-0 top-full z-30 max-h-[calc(100dvh-68px)] overflow-y-auto border-t border-zinc-100 bg-white px-5 pb-6 pt-4 shadow-lg">
           <form onSubmit={handleSearch} className="mb-2 flex gap-2">
             <input
               type="search"

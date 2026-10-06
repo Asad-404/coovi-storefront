@@ -2,10 +2,11 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useSyncExternalStore } from "react";
+import { useId, useRef, useSyncExternalStore } from "react";
 import { createPortal } from "react-dom";
 import { useCartStore, cartTotal, cartCount } from "@/lib/cartStore";
 import { formatPrice } from "@/lib/utils";
+import { useDialog } from "@/lib/useDialog";
 
 const subscribeNoop = () => () => {};
 
@@ -21,6 +22,11 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
 
   // False on the server and during hydration, true afterwards (the portal needs document.body)
   const mounted = useSyncExternalStore(subscribeNoop, () => true, () => false);
+
+  const panelRef = useRef<HTMLDivElement>(null);
+  // Header renders a CartBadge (and so a drawer) for both mobile and desktop, so the id must be unique
+  const titleId = useId();
+  useDialog(isOpen, onClose, panelRef);
 
   const total = cartTotal(items);
   const count = cartCount(items);
@@ -39,15 +45,21 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
       )}
 
       {/* The wrapper clips the closed drawer so it cannot widen the page on phones */}
-      <div className={`fixed inset-0 z-50 overflow-hidden ${isOpen ? "" : "pointer-events-none"}`} aria-hidden={!isOpen}>
+      {/* inert while closed: the off-screen panel must not take Tab focus or be read out */}
+      <div className={`fixed inset-0 z-50 overflow-hidden ${isOpen ? "" : "pointer-events-none"}`} inert={!isOpen}>
       <div
+        ref={panelRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={titleId}
+        tabIndex={-1}
         className={`absolute right-0 top-0 flex h-full w-full max-w-md transform flex-col bg-white shadow-xl transition-transform duration-300 ${
           isOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
         {/* Header */}
         <div className="flex items-center justify-between border-b border-zinc-200 p-4">
-          <h2 className="text-lg text-zinc-900">
+          <h2 id={titleId} className="text-lg text-zinc-900">
             Shopping Cart ({count})
           </h2>
           <button
@@ -92,7 +104,7 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                         className="object-cover"
                       />
                     ) : (
-                      <span className="flex h-full items-center justify-center text-xs text-zinc-400">
+                      <span className="flex h-full items-center justify-center text-xs text-zinc-500">
                         No image
                       </span>
                     )}
@@ -114,7 +126,7 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                       <div className="flex items-center gap-2">
                         <button
                           onClick={() => updateQuantity(item.productId, item.quantity - 1)}
-                          className="flex h-6 w-6 items-center justify-center rounded-sm border border-zinc-300 text-sm text-zinc-700 transition-colors hover:bg-zinc-100"
+                          className="relative flex h-6 w-6 items-center justify-center rounded-sm border border-zinc-300 text-sm text-zinc-700 transition-colors after:absolute after:-inset-2 after:content-[''] hover:bg-zinc-100"
                           aria-label={`Decrease quantity of ${item.name}`}
                         >
                           −
@@ -124,7 +136,7 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                         </span>
                         <button
                           onClick={() => updateQuantity(item.productId, item.quantity + 1)}
-                          className="flex h-6 w-6 items-center justify-center rounded-sm border border-zinc-300 text-sm text-zinc-700 transition-colors hover:bg-zinc-100"
+                          className="relative flex h-6 w-6 items-center justify-center rounded-sm border border-zinc-300 text-sm text-zinc-700 transition-colors after:absolute after:-inset-2 after:content-[''] hover:bg-zinc-100"
                           aria-label={`Increase quantity of ${item.name}`}
                         >
                           +
@@ -132,7 +144,8 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                       </div>
                       <button
                         onClick={() => removeItem(item.productId)}
-                        className="text-xs text-red-600 hover:text-red-700"
+                        aria-label={`Remove ${item.name}`}
+                        className="relative text-xs text-red-600 after:absolute after:-inset-x-2 after:-inset-y-3 after:content-[''] hover:text-red-700"
                       >
                         Remove
                       </button>
