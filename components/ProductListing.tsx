@@ -12,8 +12,8 @@ interface ProductListingProps {
   emptyMessage: string;
 }
 
-// Server component: fetches one page of products (12 per page) and renders the filters, grid and Load More button.
-// Page N shows products 1..N*12, so "Load More" simply asks for the next page number.
+// Server component: fetches one page of products (12 per page) and renders the filters, grid and "Load more" button.
+// Page N shows products 1..N*12, so "Load more" simply asks for the next page number.
 export default async function ProductListing({ search, sort, page, onSale, emptyMessage }: ProductListingProps) {
   let data = null;
   try {

@@ -22,7 +22,7 @@ export default function TrackOrderPage() {
     <main className="mx-auto flex w-full max-w-md flex-1 flex-col items-center justify-center gap-6 px-4 py-24 sm:px-6">
       <div className="text-center">
         <h1 className="text-3xl text-zinc-900">
-          Track Your Order
+          Track your order
         </h1>
         <p className="mt-2 text-zinc-600">
           Enter your order details to view the status
@@ -31,7 +31,7 @@ export default function TrackOrderPage() {
 
       <form onSubmit={handleSubmit} className="w-full space-y-4">
         <label className="flex flex-col gap-1 text-sm font-medium text-zinc-700">
-          Order Number
+          Order number
           <input
             type="text"
             required
@@ -45,7 +45,7 @@ export default function TrackOrderPage() {
         </label>
 
         <label className="flex flex-col gap-1 text-sm font-medium text-zinc-700">
-          Phone Number
+          Phone number
           <input
             type="tel"
             required
@@ -69,7 +69,7 @@ export default function TrackOrderPage() {
           type="submit"
           className="btn btn-primary h-12 w-full text-base"
         >
-          Track Order
+          Track order
         </button>
       </form>
 

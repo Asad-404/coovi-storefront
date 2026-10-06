@@ -8,8 +8,8 @@ import { whatsappUrl } from "@/lib/site";
 const navLinks = [
   { href: "/", label: "Home" },
   { href: "/shop", label: "Saree" },
-  { href: "/sale", label: "On Sale" },
-  { href: "/track-order", label: "Track Order" },
+  { href: "/sale", label: "On sale" },
+  { href: "/track-order", label: "Track order" },
 ];
 
 export default function Header() {
@@ -50,7 +50,7 @@ export default function Header() {
             <Logo />
           </div>
 
-          <nav className="flex items-center gap-6 text-sm font-semibold uppercase text-ink">
+          <nav className="flex items-center gap-6 text-nav font-semibold text-ink">
             {navLinks.map((link) => (
               <Link key={link.label} href={link.href} className="transition-colors hover:text-brand">
                 {link.label}
@@ -66,9 +66,9 @@ export default function Header() {
         </div>
       </header>
 
-      <div className="bg-brand py-3.5 text-center text-sm font-semibold text-white">
-        Coovi Festive Collection
-      </div>
+      <Link href="/shop" className="block bg-brand py-3.5 text-center text-sm font-semibold text-white hover:bg-brand-dark">
+        Shop the festive collection
+      </Link>
     </>
   );
 }

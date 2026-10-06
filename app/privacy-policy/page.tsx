@@ -39,7 +39,7 @@ export default function PrivacyPolicyPage() {
           body: (
             <p>
               We use your details only to confirm your order, contact you about it, deliver it, and let you look it up
-              on the Track Order page. Your order number together with your phone number acts as the key to view an
+              on the Track order page. Your order number together with your phone number acts as the key to view an
               order.
             </p>
           ),

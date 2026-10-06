@@ -60,7 +60,7 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
         {/* Header */}
         <div className="flex items-center justify-between border-b border-zinc-200 p-4">
           <h2 id={titleId} className="text-lg text-zinc-900">
-            Shopping Cart ({count})
+            Shopping cart ({count})
           </h2>
           <button
             onClick={onClose}
@@ -80,7 +80,7 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                 onClick={onClose}
                 className="btn btn-primary"
               >
-                Continue Shopping
+                Continue shopping
               </button>
             </div>
           ) : (
@@ -169,14 +169,14 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
               onClick={onClose}
               className="btn btn-primary flex h-12"
             >
-              Proceed to Checkout
+              Proceed to checkout
             </Link>
             <Link
               href="/cart"
               onClick={onClose}
               className="btn btn-secondary mt-2 flex h-12"
             >
-              View Full Cart
+              View full cart
             </Link>
           </div>
         )}

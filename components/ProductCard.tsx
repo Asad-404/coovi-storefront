@@ -37,7 +37,7 @@ export default function ProductCard({ product }: { product: Product }) {
                 alt={product.name}
                 fill
                 sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 360px"
-                className="object-cover transition-transform duration-500 group-hover:scale-105"
+                className="object-cover"
               />
               {/* Second photo is stacked and faded in with CSS, so it is already loaded when the pointer arrives */}
               {secondaryImage && (
@@ -46,7 +46,7 @@ export default function ProductCard({ product }: { product: Product }) {
                   alt=""
                   fill
                   sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 360px"
-                  className="object-cover opacity-0 transition duration-500 group-hover:scale-105 group-hover/image:opacity-100"
+                  className="object-cover opacity-0 transition-opacity duration-500 group-hover/image:opacity-100"
                 />
               )}
             </>
@@ -57,7 +57,7 @@ export default function ProductCard({ product }: { product: Product }) {
           )}
 
           {isOnSale(product) && product.inStock && (
-            <span className="absolute left-2 top-2 bg-accent px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide text-white">
+            <span className="absolute left-2 top-2 rounded-sm bg-accent px-2.5 py-1 text-xs font-bold text-white">
               Sale
             </span>
           )}
