@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useSyncExternalStore } from "react";
 import { createPortal } from "react-dom";
-import { useCartStore, cartTotal, cartCount } from "@/lib/cartStore";
+import { MAX_ITEM_QUANTITY, useCartStore, cartTotal, cartCount } from "@/lib/cartStore";
 import { formatPrice } from "@/lib/utils";
 
 const subscribeNoop = () => () => {};
@@ -124,7 +124,8 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                         </span>
                         <button
                           onClick={() => updateQuantity(item.productId, item.quantity + 1)}
-                          className="flex h-6 w-6 items-center justify-center rounded-sm border border-zinc-300 text-sm text-zinc-700 transition-colors hover:bg-zinc-100"
+                          disabled={item.quantity >= MAX_ITEM_QUANTITY}
+                          className="flex h-6 w-6 items-center justify-center rounded-sm border border-zinc-300 text-sm text-zinc-700 transition-colors hover:bg-zinc-100 disabled:opacity-40"
                           aria-label={`Increase quantity of ${item.name}`}
                         >
                           +

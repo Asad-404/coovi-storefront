@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { getProducts } from "@/lib/api";
+import { getAllProducts } from "@/lib/api";
 import { SITE_URL } from "@/lib/site";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
@@ -65,8 +65,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   // Dynamic product pages
   try {
-    const productsResponse = await getProducts({ limit: 50 });
-    const productPages: MetadataRoute.Sitemap = productsResponse.data.map((product) => ({
+    const products = await getAllProducts();
+    const productPages: MetadataRoute.Sitemap = products.map((product) => ({
       url: `${baseUrl}/products/${product.slug}`,
       lastModified: new Date(product.updatedAt),
       changeFrequency: "weekly",

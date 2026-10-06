@@ -4,7 +4,7 @@ import type { Metadata } from "next";
 import { SITE_NAME, SITE_URL, pageOpenGraph } from "@/lib/site";
 import JsonLd from "@/components/JsonLd";
 import { getDeliveryFee, getProductBySlug, getProducts } from "@/lib/api";
-import { discountPercent, formatPrice, isOnSale } from "@/lib/utils";
+import { discountPercent, formatPrice, isAvailable, isOnSale } from "@/lib/utils";
 import type { Product } from "@/lib/types";
 import AddToCartButton from "@/components/AddToCartButton";
 import ProductImageGallery from "@/components/ProductImageGallery";
@@ -30,7 +30,7 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
       other: {
         "product:price:amount": String(product.price),
         "product:price:currency": "BDT",
-        "product:availability": product.inStock ? "in stock" : "out of stock",
+        "product:availability": isAvailable(product) ? "in stock" : "out of stock",
       },
     };
   } catch {
@@ -72,11 +72,12 @@ export default async function ProductDetailPage(props: Props) {
   ]);
   const related = (relatedResponse?.data ?? []).filter((item) => item._id !== product._id).slice(0, 3);
   const title = product.nameBn ? `${product.nameBn} – ${product.name}` : product.name;
+  const available = isAvailable(product);
 
   const details = [
     { label: "Category", value: product.category },
     ...(product.size ? [{ label: "Size", value: product.size }] : []),
-    { label: "Availability", value: product.inStock ? `In stock (${product.stock} available)` : "Out of stock" },
+    { label: "Availability", value: available ? `In stock (${product.stock} available)` : "Out of stock" },
   ];
 
   const productUrl = `${SITE_URL}/products/${product.slug}`;
@@ -96,7 +97,7 @@ export default async function ProductDetailPage(props: Props) {
         priceCurrency: "BDT",
         price: product.price,
         itemCondition: "https://schema.org/NewCondition",
-        availability: product.inStock ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+        availability: available ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
       },
     },
     {
@@ -157,8 +158,8 @@ export default async function ProductDetailPage(props: Props) {
                   </>
                 )}
                 <dt className="font-semibold text-ink">Stock:</dt>
-                <dd className={product.inStock ? "text-green-700" : "text-red-600"}>
-                  {product.inStock ? `In stock (${product.stock} available)` : "Out of stock"}
+                <dd className={available ? "text-green-700" : "text-red-600"}>
+                  {available ? `In stock (${product.stock} available)` : "Out of stock"}
                 </dd>
               </dl>
 
@@ -173,7 +174,7 @@ export default async function ProductDetailPage(props: Props) {
                     price: product.price,
                     image: product.images[0] ?? "",
                   }}
-                  inStock={product.inStock}
+                  inStock={available}
                   maxQuantity={product.stock}
                 />
               </div>

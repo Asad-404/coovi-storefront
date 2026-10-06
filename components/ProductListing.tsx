@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { getProducts } from "@/lib/api";
+import { getFirstProducts } from "@/lib/api";
 import ProductCard from "@/components/ProductCard";
 import ProductFilters from "@/components/ProductFilters";
 import LoadMoreButton from "@/components/LoadMoreButton";
@@ -12,12 +12,13 @@ interface ProductListingProps {
   emptyMessage: string;
 }
 
-// Server component: fetches one page of products (12 per page) and renders the filters, grid and Load More button.
-// Page N shows products 1..N*12, so "Load More" simply asks for the next page number.
+// Server component: fetches the products and renders the filters, grid and Load More button.
+// Page N shows products 1..N*12, so "Load More" simply asks for the next page number. getFirstProducts
+// splits that into API-sized pages, since the API caps one request at 50 products.
 export default async function ProductListing({ search, sort, page, onSale, emptyMessage }: ProductListingProps) {
   let data = null;
   try {
-    data = await getProducts({ search, sort, limit: 12 * page, page: 1, onSale });
+    data = await getFirstProducts({ search, sort, onSale }, 12 * page);
   } catch {
     data = null;
   }

@@ -1,6 +1,8 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import {
+  getAllProducts,
   getDeliveryFee,
+  getFirstProducts,
   getOrderByNumber,
   getProductBySlug,
   getProducts,
@@ -94,6 +96,65 @@ describe("getProducts", () => {
   });
 });
 
+function productsPage(ids: string[], total: number, hasMore: boolean) {
+  respond({
+    data: ids.map((_id) => ({ _id })),
+    pagination: { page: 1, limit: ids.length, total, pages: 1, hasMore },
+  });
+}
+
+const requestedParams = (call: number) => new URL(fetchMock.mock.calls[call][0] as string).searchParams;
+
+describe("getFirstProducts", () => {
+  it("asks for one page when the count fits under the API's 50 cap", async () => {
+    productsPage(["a", "b"], 30, true);
+    const result = await getFirstProducts({ sort: "price-asc" }, 24);
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    expect(requestedParams(0).get("limit")).toBe("24");
+    expect(requestedParams(0).get("page")).toBe("1");
+    expect(requestedParams(0).get("sort")).toBe("price-asc");
+    expect(result.pagination).toEqual({ page: 1, limit: 24, total: 30, pages: 2, hasMore: true });
+  });
+
+  it("splits counts above 50 into API-sized pages and trims to the count", async () => {
+    const ids = (prefix: string, n: number) => Array.from({ length: n }, (_, i) => `${prefix}${i}`);
+    productsPage(ids("a", 50), 120, true);
+    productsPage(ids("b", 50), 120, true);
+    const result = await getFirstProducts({ onSale: true }, 60);
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+    expect(requestedParams(1).get("page")).toBe("2");
+    expect(requestedParams(1).get("limit")).toBe("50");
+    expect(requestedParams(1).get("onSale")).toBe("true");
+    expect(result.data).toHaveLength(60);
+    expect(result.data[59]._id).toBe("b9");
+    expect(result.pagination.hasMore).toBe(true);
+  });
+
+  it("reports no more products once the count covers the total", async () => {
+    productsPage(["a"], 1, false);
+    const result = await getFirstProducts({}, 12);
+    expect(result.pagination.hasMore).toBe(false);
+  });
+});
+
+describe("getAllProducts", () => {
+  it("walks pages of 50 until the API reports no more", async () => {
+    productsPage(["a", "b"], 3, true);
+    productsPage(["c"], 3, false);
+    const products = await getAllProducts();
+    expect(products.map((p) => p._id)).toEqual(["a", "b", "c"]);
+    expect(requestedParams(0).get("limit")).toBe("50");
+    expect(requestedParams(1).get("page")).toBe("2");
+  });
+
+  it("stops at the page limit even if the API keeps reporting more", async () => {
+    productsPage(["a"], 99, true);
+    productsPage(["b"], 99, true);
+    expect(await getAllProducts(2)).toHaveLength(2);
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+  });
+});
+
 describe("getProductBySlug", () => {
   it("returns the product from /products/:slug", async () => {
     respond({ data: { _id: "p1", slug: "soap" } });
@@ -141,6 +202,12 @@ describe("getOrderByNumber", () => {
     const url = new URL(requestedUrl());
     expect(url.pathname).toBe("/api/orders/CV-1001");
     expect(url.searchParams.get("phone")).toBe("+8801700000000");
+  });
+
+  it("encodes the order number into the path", async () => {
+    respond({ data: { orderNumber: "A/B" } });
+    await getOrderByNumber("A/B", "01712345678");
+    expect(new URL(requestedUrl()).pathname).toBe("/api/orders/A%2FB");
   });
 
   it("throws on a non-OK response", async () => {

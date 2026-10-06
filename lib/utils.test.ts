@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { discountPercent, formatPrice, isOnSale } from "./utils";
+import { discountPercent, formatPrice, isAvailable, isOnSale } from "./utils";
 
 describe("formatPrice", () => {
   it("prefixes the taka sign", () => {
@@ -40,5 +40,19 @@ describe("discountPercent", () => {
   it("is 0 when the product is not on sale", () => {
     expect(discountPercent({ price: 1500 })).toBe(0);
     expect(discountPercent({ price: 1500, compareAtPrice: 1500 })).toBe(0);
+  });
+});
+
+describe("isAvailable", () => {
+  it("is true when switched on with units left", () => {
+    expect(isAvailable({ inStock: true, stock: 3 })).toBe(true);
+  });
+
+  it("is false when the stock has run out, even if still switched on", () => {
+    expect(isAvailable({ inStock: true, stock: 0 })).toBe(false);
+  });
+
+  it("is false when the admin switched it off, even with units left", () => {
+    expect(isAvailable({ inStock: false, stock: 3 })).toBe(false);
   });
 });
