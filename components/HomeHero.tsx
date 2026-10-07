@@ -7,26 +7,12 @@ export default function HomeHero({ images }: { images: string[] }) {
   return (
     <section className="px-2.5 pt-2.5">
       <div className="relative overflow-hidden border border-frost bg-mist">
-        <svg
-          aria-hidden="true"
-          viewBox="0 0 200 300"
-          className="pointer-events-none absolute -left-4 bottom-0 hidden h-[85%] text-highlight/30 lg:block"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.5"
-        >
-          <path d="M20 300 C 40 200, 60 120, 130 20" />
-          <path d="M45 220 C 20 190, 25 150, 60 140 C 75 175, 70 200, 45 220Z" />
-          <path d="M65 170 C 40 140, 50 100, 85 95 C 95 130, 90 150, 65 170Z" />
-          <path d="M90 120 C 70 90, 80 55, 115 55 C 122 85, 115 105, 90 120Z" />
-        </svg>
-
         <div className="relative flex flex-col lg:min-h-[600px] lg:flex-row lg:items-stretch">
           <div className="flex flex-1 flex-col items-center justify-center gap-4 px-5 py-10 text-center sm:px-12 lg:items-start lg:gap-5 lg:py-12 lg:pl-[11%] lg:pr-8 lg:text-left">
-            <span className="rounded-full border border-highlight/50 bg-white/60 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.2em] text-accent">
+            <span className="rounded-sm border border-highlight/50 bg-white/60 px-4 py-1.5 text-sm font-semibold text-accent">
               Festive collection
             </span>
-            <h1 className="font-display text-[28px] leading-[1.25] text-brand sm:text-4xl lg:text-[44px]">
+            <h1 className="font-display text-title-sm leading-[1.25] text-brand sm:text-4xl lg:text-title-lg">
               In every festive colour,
               <br className="hidden sm:block" />{" "}
               Coovi is with you.
@@ -41,9 +27,9 @@ export default function HomeHero({ images }: { images: string[] }) {
             </p>
             <Link
               href="/#shop"
-              className="btn btn-primary mt-2 w-full py-4 shadow-lg shadow-brand/30 sm:w-auto"
+              className="btn btn-primary mt-2 w-full py-4 sm:w-auto"
             >
-              Explore the collection &nbsp;→
+              Explore the collection
             </Link>
           </div>
 

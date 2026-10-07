@@ -13,7 +13,7 @@ export default function ContactPage() {
   return (
     <main className="mx-auto w-full max-w-3xl px-4 py-16 sm:px-6">
       <h1 className="text-4xl text-zinc-900">
-        Contact Us
+        Contact us
       </h1>
 
       <div className="mt-8 space-y-8">
@@ -59,7 +59,7 @@ export default function ContactPage() {
 
           <div className="rounded-sm border border-zinc-200 bg-white p-6">
             <h2 className="text-xl text-zinc-900">
-              Order Tracking
+              Order tracking
             </h2>
             <p className="mt-2 text-zinc-600">
               Check your order status anytime
@@ -68,14 +68,14 @@ export default function ContactPage() {
               href="/track-order"
               className="btn btn-primary mt-4 gap-2"
             >
-              Track Your Order
+              Track your order
             </Link>
           </div>
         </div>
 
         <div className="mt-12 border-t border-zinc-200 pt-8">
           <h2 className="text-2xl text-zinc-900">
-            Business Hours
+            Business hours
           </h2>
           <p className="mt-4 text-zinc-700">
             Saturday - Thursday: 10:00 AM - 8:00 PM (Bangladesh Time)

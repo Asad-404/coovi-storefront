@@ -20,7 +20,7 @@ export default function Loading() {
           <div className="h-8 w-1/3 animate-pulse rounded-sm bg-zinc-200" />
           <div className="h-4 w-1/4 animate-pulse rounded-sm bg-zinc-200" />
           <div className="h-24 w-full animate-pulse rounded-sm bg-zinc-200" />
-          <div className="h-12 w-48 animate-pulse rounded-full bg-zinc-200" />
+          <div className="h-12 w-48 animate-pulse rounded-sm bg-zinc-200" />
         </div>
       </div>
     </main>

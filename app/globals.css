@@ -16,6 +16,14 @@
   --font-sans: var(--font-hind-siliguri), system-ui, sans-serif;
   --font-display: var(--font-tiro-bangla), Georgia, serif;
   --font-logo: var(--font-nunito), system-ui, sans-serif;
+
+  /* Named sizes for headings and saree names. Pick from these instead of one-off text-[Npx] values. */
+  --text-nav: 0.9375rem; /* 15px: navigation and tab labels */
+  --text-title-sm: 1.75rem; /* 28px: hero headline on phones */
+  --text-title-md: 2rem; /* 32px: English-only product name on phones */
+  --text-title: 2.5rem; /* 40px: Bangla product name on phones, English-only on desktop */
+  --text-title-lg: 2.75rem; /* 44px: hero headline on desktop */
+  --text-title-xl: 3.25rem; /* 52px: Bangla product name on desktop */
 }
 
 body {

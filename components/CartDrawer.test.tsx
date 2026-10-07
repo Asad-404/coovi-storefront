@@ -34,7 +34,7 @@ describe("CartDrawer", () => {
 
   it("is a labelled modal dialog when open and takes focus", () => {
     render(<CartDrawer isOpen onClose={() => {}} />);
-    const dialog = screen.getByRole("dialog", { name: "Shopping Cart (1)" });
+    const dialog = screen.getByRole("dialog", { name: "Shopping cart (1)" });
     expect(dialog.getAttribute("aria-modal")).toBe("true");
     expect(dialog.closest("[inert]")).toBeNull();
     expect(dialog.contains(document.activeElement)).toBe(true);

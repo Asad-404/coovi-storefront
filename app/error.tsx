@@ -12,12 +12,12 @@ export default function Error({ error, reset }: ErrorProps) {
         ⚠
       </div>
       <h1 className="text-2xl text-zinc-900">
-        Something went wrong
+        This page could not load
       </h1>
       <p className="text-zinc-600">
         {process.env.NODE_ENV === "development"
           ? error.message
-          : "We encountered an unexpected error. Please try again."}
+          : "Check your connection and try again. If it keeps happening, message us on WhatsApp."}
       </p>
       <button
         onClick={reset}

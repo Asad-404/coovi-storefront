@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useId, useRef, useState } from "react";
 
 interface ProductTabsProps {
   description?: string;
@@ -34,24 +34,51 @@ const careGuide = [
   },
 ];
 
-const tabs = ["Care Guide", "Description", "Additional information"] as const;
+const tabs = ["Care guide", "Description", "Additional information"] as const;
 
 export default function ProductTabs({ description, descriptionBn, details }: ProductTabsProps) {
   const [active, setActive] = useState<(typeof tabs)[number]>("Description");
+  const baseId = useId();
+  const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
+  const tabId = (index: number) => `${baseId}-tab-${index}`;
+  const panelId = `${baseId}-panel`;
+
+  // Arrow keys, Home and End move between tabs, as screen reader users expect from a tab list
+  function handleKeyDown(event: React.KeyboardEvent, index: number) {
+    const last = tabs.length - 1;
+    const next =
+      event.key === "ArrowRight" || event.key === "ArrowDown" ? (index === last ? 0 : index + 1)
+      : event.key === "ArrowLeft" || event.key === "ArrowUp" ? (index === 0 ? last : index - 1)
+      : event.key === "Home" ? 0
+      : event.key === "End" ? last
+      : null;
+    if (next === null) return;
+    event.preventDefault();
+    setActive(tabs[next]);
+    tabRefs.current[next]?.focus();
+  }
 
   return (
     <div>
       <div
         role="tablist"
+        aria-label="Saree information"
         className="flex flex-col items-start border-b border-zinc-200 text-sm sm:flex-row sm:justify-center sm:gap-8"
       >
-        {tabs.map((tab) => (
+        {tabs.map((tab, index) => (
           <button
             key={tab}
+            ref={(element) => {
+              tabRefs.current[index] = element;
+            }}
+            id={tabId(index)}
             role="tab"
             type="button"
             aria-selected={active === tab}
+            aria-controls={panelId}
+            tabIndex={active === tab ? 0 : -1}
             onClick={() => setActive(tab)}
+            onKeyDown={(event) => handleKeyDown(event, index)}
             className={`-mb-px shrink-0 border-b-2 px-1 py-3 font-medium transition-colors sm:py-4 ${
               active === tab ? "border-highlight text-ink" : "border-transparent text-zinc-600 hover:text-ink"
             }`}
@@ -61,7 +88,12 @@ export default function ProductTabs({ description, descriptionBn, details }: Pro
         ))}
       </div>
 
-      <div role="tabpanel" className="mx-auto max-w-4xl py-10 text-[15px] leading-7 text-zinc-700">
+      <div
+        id={panelId}
+        role="tabpanel"
+        aria-labelledby={tabId(tabs.indexOf(active))}
+        tabIndex={0}
+        className="mx-auto max-w-4xl py-10 text-nav leading-7 text-zinc-700">
         {active === "Description" && (
           <div className="space-y-4">
             {description && <p>{description}</p>}
@@ -70,7 +102,7 @@ export default function ProductTabs({ description, descriptionBn, details }: Pro
           </div>
         )}
 
-        {active === "Care Guide" && (
+        {active === "Care guide" && (
           <div className="space-y-6">
             <h2 className="text-xl text-ink">Saree care guide</h2>
             {careGuide.map((section) => (

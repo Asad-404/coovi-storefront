@@ -109,7 +109,7 @@ export default function CheckoutPage() {
         `/order-confirmation/${order.orderNumber}?phone=${encodeURIComponent(form.phone)}`
       );
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong");
+      setError(err instanceof Error ? err.message : "Your order could not be placed. Check your connection and try again.");
       setSubmitting(false);
     }
   }
@@ -211,7 +211,7 @@ export default function CheckoutPage() {
               ? "Placing order..."
               : total === null
                 ? "Loading..."
-                : `Place Order - ${formatPrice(total)}`}
+                : `Place order for ${formatPrice(total)}`}
           </button>
 
           <p className="mt-4 text-sm text-zinc-500">

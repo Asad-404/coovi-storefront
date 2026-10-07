@@ -8,8 +8,8 @@ import { useDialog } from "@/lib/useDialog";
 const links = [
   { href: "/", label: "Home" },
   { href: "/shop", label: "Saree" },
-  { href: "/sale", label: "On Sale" },
-  { href: "/track-order", label: "Track Order" },
+  { href: "/sale", label: "On sale" },
+  { href: "/track-order", label: "Track order" },
   { href: "/about", label: "About" },
   { href: "/contact", label: "Contact" },
 ];
@@ -38,7 +38,7 @@ export default function MobileMenu() {
         aria-label={open ? "Close menu" : "Open menu"}
         aria-expanded={open}
         aria-controls="mobile-menu"
-        className="flex items-center gap-2 text-xs font-bold uppercase text-ink"
+        className="flex items-center gap-2 text-sm font-bold text-ink"
       >
         <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
           {open ? <path d="M6 6l12 12M18 6 6 18" /> : <path d="M4 7h16M4 12h16M4 17h16" />}
@@ -67,7 +67,7 @@ export default function MobileMenu() {
                 key={link.label}
                 href={link.href}
                 onClick={() => setOpen(false)}
-                className="border-b border-zinc-100 py-3.5 text-sm font-semibold uppercase text-ink hover:text-brand"
+                className="border-b border-zinc-100 py-3.5 text-nav font-semibold text-ink hover:text-brand"
               >
                 {link.label}
               </Link>

@@ -41,7 +41,7 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
 function Accordion({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <details className="group border-b border-zinc-200">
-      <summary className="flex cursor-pointer list-none items-center justify-between py-3 text-xs font-semibold uppercase tracking-wide text-ink">
+      <summary className="flex cursor-pointer list-none items-center justify-between py-3 text-sm font-semibold text-ink">
         {title}
         <svg viewBox="0 0 24 24" className="h-4 w-4 transition-transform group-open:rotate-180" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
           <path d="m6 9 6 6 6-6" />
@@ -130,11 +130,11 @@ export default async function ProductDetailPage(props: Props) {
             <div className="flex flex-col gap-4">
               <h1 className="flex flex-col gap-1 text-ink">
                 {product.nameBn && (
-                  <span lang="bn" className="text-[40px] leading-tight sm:text-[52px]">
+                  <span lang="bn" className="text-title leading-tight sm:text-title-xl">
                     {product.nameBn}
                   </span>
                 )}
-                <span className={product.nameBn ? "font-sans text-lg text-zinc-600" : "text-[32px] leading-tight sm:text-[40px]"}>
+                <span className={product.nameBn ? "font-sans text-lg text-zinc-600" : "text-title-md leading-tight sm:text-title"}>
                   {product.name}
                 </span>
               </h1>
@@ -142,7 +142,7 @@ export default async function ProductDetailPage(props: Props) {
               <div className="flex flex-wrap items-center gap-3">
                 <PriceTag product={product} className="text-xl font-medium text-ink" />
                 {isOnSale(product) && (
-                  <span className="bg-accent px-2.5 py-1 text-xs font-bold uppercase tracking-wide text-white">
+                  <span className="rounded-sm bg-accent px-2.5 py-1 text-xs font-bold text-white">
                     Save {discountPercent(product)}%
                   </span>
                 )}

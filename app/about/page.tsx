@@ -29,7 +29,7 @@ export default function AboutPage() {
         </p>
 
         <h2 className="pt-6 text-2xl text-zinc-900">
-          Our Promise
+          Our promise
         </h2>
 
         <ul className="list-disc space-y-2 pl-6">
@@ -41,7 +41,7 @@ export default function AboutPage() {
         </ul>
 
         <h2 className="pt-6 text-2xl text-zinc-900">
-          Why Choose Us?
+          Why choose us?
         </h2>
 
         <p className="leading-relaxed">
