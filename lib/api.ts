@@ -23,16 +23,19 @@ export interface ProductsResponse {
   };
 }
 
-export async function getProducts(
-  options: {
-    search?: string;
-    sort?: string;
-    page?: number;
-    limit?: number;
-    category?: string;
-    onSale?: boolean;
-  } = {}
-): Promise<ProductsResponse> {
+export interface ProductQuery {
+  search?: string;
+  sort?: string;
+  page?: number;
+  limit?: number;
+  category?: string;
+  onSale?: boolean;
+}
+
+// GET /api/products clamps `limit` to this; asking for more silently returns fewer products
+export const MAX_PAGE_SIZE = 50;
+
+export async function getProducts(options: ProductQuery = {}): Promise<ProductsResponse> {
   const params = new URLSearchParams();
   if (options.search) params.set("search", options.search);
   if (options.sort) params.set("sort", options.sort);
@@ -64,9 +67,38 @@ export async function getProducts(
   }
 }
 
+// The first `count` products, fetched in API-sized pages so counts above MAX_PAGE_SIZE still arrive in full
+export async function getFirstProducts(
+  options: Omit<ProductQuery, "page" | "limit">,
+  count: number
+): Promise<ProductsResponse> {
+  const limit = Math.min(count, MAX_PAGE_SIZE);
+  const pageCount = Math.ceil(count / limit);
+  const responses = await Promise.all(
+    Array.from({ length: pageCount }, (_, i) => getProducts({ ...options, page: i + 1, limit }))
+  );
+  const data = responses.flatMap((response) => response.data).slice(0, count);
+  const total = responses[0].pagination.total;
+  return {
+    data,
+    pagination: { page: 1, limit: count, total, pages: Math.ceil(total / count), hasMore: count < total },
+  };
+}
+
+// Every product (sitemap, llms.txt), walking the API's pages until it reports no more
+export async function getAllProducts(maxPages = 100): Promise<Product[]> {
+  const products: Product[] = [];
+  for (let page = 1; page <= maxPages; page++) {
+    const response = await getProducts({ page, limit: MAX_PAGE_SIZE });
+    products.push(...response.data);
+    if (!response.pagination.hasMore) break;
+  }
+  return products;
+}
+
 export async function getProductBySlug(slug: string): Promise<Product> {
   try {
-    const res = await fetch(`${API_URL}/products/${slug}`, {
+    const res = await fetch(`${API_URL}/products/${encodeURIComponent(slug)}`, {
       signal: AbortSignal.timeout(TIMEOUT_MS),
     });
 
@@ -107,7 +139,7 @@ export async function getDeliveryFee(): Promise<number> {
 export async function getOrderByNumber(orderNumber: string, phone: string): Promise<Order> {
   try {
     const params = new URLSearchParams({ phone });
-    const res = await fetch(`${API_URL}/orders/${orderNumber}?${params}`, {
+    const res = await fetch(`${API_URL}/orders/${encodeURIComponent(orderNumber)}?${params}`, {
       signal: AbortSignal.timeout(TIMEOUT_MS),
     });
 

@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { Product } from "@/lib/types";
-import { isOnSale } from "@/lib/utils";
+import { isAvailable, isOnSale } from "@/lib/utils";
 import { useCartStore } from "@/lib/cartStore";
 import PriceTag from "@/components/PriceTag";
 
@@ -13,6 +13,7 @@ export default function ProductCard({ product }: { product: Product }) {
   const [added, setAdded] = useState(false);
   const primaryImage = product.images[0];
   const secondaryImage = product.images[1];
+  const available = isAvailable(product);
 
   function handleAdd() {
     addItem({
@@ -56,13 +57,13 @@ export default function ProductCard({ product }: { product: Product }) {
             </div>
           )}
 
-          {isOnSale(product) && product.inStock && (
+          {isOnSale(product) && available && (
             <span className="absolute left-2 top-2 bg-accent px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide text-white">
               Sale
             </span>
           )}
 
-          {!product.inStock && (
+          {!available && (
             <span className="absolute inset-x-0 bottom-0 bg-white/80 py-1.5 text-center text-xs font-medium text-ink">
               Out of stock
             </span>
@@ -84,7 +85,7 @@ export default function ProductCard({ product }: { product: Product }) {
         </div>
       </Link>
 
-      {product.inStock ? (
+      {available ? (
         <button
           type="button"
           onClick={handleAdd}

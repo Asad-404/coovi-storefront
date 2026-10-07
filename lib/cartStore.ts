@@ -2,6 +2,10 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { CartItem } from "./types";
 
+// The API accepts at most 99 of one product per order
+export const MAX_ITEM_QUANTITY = 99;
+const capped = (quantity: number) => Math.min(quantity, MAX_ITEM_QUANTITY);
+
 interface CartStore {
   items: CartItem[];
   addItem: (item: Omit<CartItem, "quantity">, quantity?: number) => void;
@@ -22,12 +26,12 @@ export const useCartStore = create<CartStore>()(
             return {
               items: state.items.map((i) =>
                 i.productId === item.productId
-                  ? { ...i, quantity: i.quantity + quantity }
+                  ? { ...i, quantity: capped(i.quantity + quantity) }
                   : i
               ),
             };
           }
-          return { items: [...state.items, { ...item, quantity }] };
+          return { items: [...state.items, { ...item, quantity: capped(quantity) }] };
         }),
 
       removeItem: (productId) =>
@@ -41,7 +45,7 @@ export const useCartStore = create<CartStore>()(
             quantity <= 0
               ? state.items.filter((i) => i.productId !== productId)
               : state.items.map((i) =>
-                  i.productId === productId ? { ...i, quantity } : i
+                  i.productId === productId ? { ...i, quantity: capped(quantity) } : i
                 ),
         })),
 

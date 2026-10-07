@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useCartStore, cartTotal } from "@/lib/cartStore";
+import { MAX_ITEM_QUANTITY, useCartStore, cartTotal } from "@/lib/cartStore";
 import { formatPrice } from "@/lib/utils";
 
 export default function CartPage() {
@@ -93,7 +93,8 @@ export default function CartPage() {
                       type="button"
                       aria-label={`Increase quantity of ${item.name}`}
                       onClick={() => updateQuantity(item.productId, item.quantity + 1)}
-                      className="relative flex h-8 w-8 items-center justify-center rounded-sm border border-zinc-300 text-zinc-700 transition-colors after:absolute after:-inset-1.5 after:content-[''] hover:bg-zinc-100"
+                      disabled={item.quantity >= MAX_ITEM_QUANTITY}
+                      className="relative flex h-8 w-8 items-center justify-center rounded-sm border border-zinc-300 text-zinc-700 transition-colors after:absolute after:-inset-1.5 after:content-[''] hover:bg-zinc-100 disabled:opacity-40"
                     >
                       +
                     </button>

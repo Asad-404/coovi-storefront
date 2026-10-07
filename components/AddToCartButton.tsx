@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useCartStore } from "@/lib/cartStore";
+import { MAX_ITEM_QUANTITY, useCartStore } from "@/lib/cartStore";
 
 interface AddToCartButtonProps {
   product: {
@@ -20,7 +20,7 @@ export default function AddToCartButton({ product, inStock, maxQuantity }: AddTo
   const [quantity, setQuantity] = useState(1);
   const [added, setAdded] = useState(false);
 
-  const limit = Math.max(1, Math.min(maxQuantity, 99));
+  const limit = Math.max(1, Math.min(maxQuantity, MAX_ITEM_QUANTITY));
 
   function handleAdd() {
     addItem(

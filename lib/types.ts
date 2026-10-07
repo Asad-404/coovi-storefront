@@ -48,4 +48,5 @@ export interface Order {
   paymentMethod: string;
   notes?: string;
   createdAt: string;
+  updatedAt: string;
 }
