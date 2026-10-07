@@ -81,6 +81,27 @@ describe("useDialog", () => {
     expect(document.activeElement).toBe(opener);
   });
 
+  it("pads the page by the scrollbar width while open so it does not jump sideways", () => {
+    const clientWidth = vi.spyOn(document.documentElement, "clientWidth", "get").mockReturnValue(window.innerWidth - 15);
+    render(<Harness />);
+    document.body.style.paddingRight = "";
+    openDialog();
+    expect(document.body.style.paddingRight).toBe("15px");
+
+    fireEvent.keyDown(document, { key: "Escape" });
+    expect(document.body.style.paddingRight).toBe("");
+    clientWidth.mockRestore();
+  });
+
+  it("adds no padding when the page has no scrollbar", () => {
+    const clientWidth = vi.spyOn(document.documentElement, "clientWidth", "get").mockReturnValue(window.innerWidth);
+    render(<Harness />);
+    document.body.style.paddingRight = "";
+    openDialog();
+    expect(document.body.style.paddingRight).toBe("");
+    clientWidth.mockRestore();
+  });
+
   it("wraps Tab from the last element to the first", () => {
     render(<Harness />);
     openDialog();
