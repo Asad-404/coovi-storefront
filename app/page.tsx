@@ -88,7 +88,11 @@ export default async function Home(props: PageProps<"/">) {
             )}
           </div>
         ) : products.data.length === 0 ? (
-          <p className="py-10 text-center text-zinc-500">No products yet. Add some from the admin panel.</p>
+          <p className="py-10 text-center text-zinc-500">
+            {process.env.NODE_ENV === "development"
+              ? "No products yet. Add some from the admin panel."
+              : "New sarees are being added. Please check back soon."}
+          </p>
         ) : (
           <>
             <div className="grid grid-cols-2 gap-x-4 gap-y-10 sm:gap-x-[30px] md:grid-cols-3">

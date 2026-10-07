@@ -1,7 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useRef, useState } from "react";
+import { useDialog } from "@/lib/useDialog";
 
 interface ProductImageGalleryProps {
   images: string[];
@@ -11,6 +12,8 @@ interface ProductImageGalleryProps {
 export default function ProductImageGallery({ images, productName }: ProductImageGalleryProps) {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const modalRef = useRef<HTMLDivElement>(null);
+  useDialog(isModalOpen, () => setIsModalOpen(false), modalRef);
 
   const primaryImage = images[selectedIndex] ?? images[0];
 
@@ -28,7 +31,7 @@ export default function ProductImageGallery({ images, productName }: ProductImag
               className="object-cover"
             />
           ) : (
-            <div className="flex h-full items-center justify-center text-zinc-400">No image</div>
+            <div className="flex h-full items-center justify-center text-zinc-500">No image</div>
           )}
 
           {primaryImage && (
@@ -53,6 +56,7 @@ export default function ProductImageGallery({ images, productName }: ProductImag
                 type="button"
                 onClick={() => setSelectedIndex(index)}
                 aria-label={`Show image ${index + 1}`}
+                aria-current={selectedIndex === index ? "true" : undefined}
                 className={`relative aspect-3/4 w-16 shrink-0 overflow-hidden bg-mist transition-opacity sm:w-20 ${
                   selectedIndex === index ? "ring-2 ring-brand" : "opacity-70 hover:opacity-100"
                 }`}
@@ -66,13 +70,17 @@ export default function ProductImageGallery({ images, productName }: ProductImag
 
       {isModalOpen && (
         <div
+          ref={modalRef}
+          role="dialog"
+          aria-modal="true"
+          aria-label={`${productName} images`}
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-4"
           onClick={() => setIsModalOpen(false)}
         >
           <button
             onClick={() => setIsModalOpen(false)}
             className="absolute right-4 top-4 flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-2xl text-white transition-colors hover:bg-white/20"
-            aria-label="Close"
+            aria-label="Close image viewer"
           >
             ×
           </button>
@@ -91,6 +99,8 @@ export default function ProductImageGallery({ images, productName }: ProductImag
                 {images.map((_, index) => (
                   <button
                     key={index}
+                    type="button"
+                    aria-current={selectedIndex === index ? "true" : undefined}
                     onClick={() => setSelectedIndex(index)}
                     className={`h-2 w-2 rounded-full transition-all ${
                       selectedIndex === index ? "w-8 bg-white" : "bg-white/50 hover:bg-white/70"

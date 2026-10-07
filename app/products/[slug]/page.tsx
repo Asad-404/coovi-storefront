@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { SITE_NAME, SITE_URL, pageOpenGraph } from "@/lib/site";
+import { SITE_NAME, SITE_URL, pageOpenGraph, whatsappUrl } from "@/lib/site";
 import JsonLd from "@/components/JsonLd";
 import { getDeliveryFee, getProductBySlug, getProducts } from "@/lib/api";
 import { discountPercent, formatPrice, isAvailable, isOnSale } from "@/lib/utils";
@@ -180,9 +180,7 @@ export default async function ProductDetailPage(props: Props) {
               </div>
 
               <a
-                href={`https://wa.me/8801700000000?text=${encodeURIComponent(
-                  `Hi! I'm interested in ${product.name} - ${process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"}/products/${product.slug}`
-                )}`}
+                href={whatsappUrl(`Hi! I'm interested in ${product.name} - ${productUrl}`)}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="btn h-12 border border-green-600 text-green-700 hover:bg-green-600 hover:text-white"

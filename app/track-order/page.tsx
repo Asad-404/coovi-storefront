@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 const inputClass =
-  "w-full rounded-sm border border-zinc-300 bg-white px-3 py-2 text-zinc-900 placeholder-zinc-400 focus:border-brand";
+  "w-full rounded-sm border border-zinc-300 bg-white px-3 py-2 text-zinc-900 placeholder-zinc-500 focus:border-brand";
 
 export default function TrackOrderPage() {
   const router = useRouter();
@@ -38,6 +38,8 @@ export default function TrackOrderPage() {
             type="text"
             required
             placeholder="e.g. ORD-20260921-001"
+            autoComplete="off"
+            autoCapitalize="characters"
             value={form.orderNumber}
             onChange={(e) => setForm({ ...form, orderNumber: e.target.value })}
             className={inputClass}
@@ -53,6 +55,8 @@ export default function TrackOrderPage() {
             minLength={11}
             maxLength={11}
             inputMode="numeric"
+            autoComplete="tel-national"
+            title="11-digit mobile number starting with 01, for example 01712345678"
             placeholder="01712345678"
             value={form.phone}
             onChange={(e) => setForm({ ...form, phone: e.target.value })}

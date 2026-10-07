@@ -8,7 +8,7 @@ interface ErrorProps {
 export default function Error({ error, reset }: ErrorProps) {
   return (
     <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col items-center justify-center gap-4 px-4 py-24 text-center sm:px-6">
-      <div className="flex h-16 w-16 items-center justify-center rounded-full bg-red-100 text-3xl text-red-700">
+      <div aria-hidden="true" className="flex h-16 w-16 items-center justify-center rounded-full bg-red-100 text-3xl text-red-700">
         ⚠
       </div>
       <h1 className="text-2xl text-zinc-900">

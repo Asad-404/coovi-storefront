@@ -10,11 +10,9 @@ import PriceTag from "@/components/PriceTag";
 
 export default function ProductCard({ product }: { product: Product }) {
   const addItem = useCartStore((state) => state.addItem);
-  const [isHovered, setIsHovered] = useState(false);
   const [added, setAdded] = useState(false);
   const primaryImage = product.images[0];
   const secondaryImage = product.images[1];
-  const displayImage = isHovered && secondaryImage ? secondaryImage : primaryImage;
   const available = isAvailable(product);
 
   function handleAdd() {
@@ -31,23 +29,30 @@ export default function ProductCard({ product }: { product: Product }) {
 
   return (
     <div className="group flex flex-col">
-      <Link
-        href={`/products/${product.slug}`}
-        className="flex flex-col"
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
-      >
+      <Link href={`/products/${product.slug}`} className="group/image flex flex-col">
         <div className="relative aspect-3/4 overflow-hidden bg-mist">
-          {displayImage ? (
-            <Image
-              src={displayImage}
-              alt={product.name}
-              fill
-              sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 360px"
-              className="object-cover transition-transform duration-500 group-hover:scale-105"
-            />
+          {primaryImage ? (
+            <>
+              <Image
+                src={primaryImage}
+                alt={product.name}
+                fill
+                sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 360px"
+                className="object-cover transition-transform duration-500 group-hover:scale-105"
+              />
+              {/* Second photo is stacked and faded in with CSS, so it is already loaded when the pointer arrives */}
+              {secondaryImage && (
+                <Image
+                  src={secondaryImage}
+                  alt=""
+                  fill
+                  sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 360px"
+                  className="object-cover opacity-0 transition duration-500 group-hover:scale-105 group-hover/image:opacity-100"
+                />
+              )}
+            </>
           ) : (
-            <div className="flex h-full items-center justify-center text-sm text-zinc-400">
+            <div className="flex h-full items-center justify-center text-sm text-zinc-500">
               No image
             </div>
           )}
@@ -84,14 +89,15 @@ export default function ProductCard({ product }: { product: Product }) {
         <button
           type="button"
           onClick={handleAdd}
-          className="btn btn-secondary mt-3 py-2.5 md:opacity-0 md:transition-opacity md:focus:opacity-100 md:group-hover:opacity-100"
+          aria-live="polite"
+          className="btn btn-secondary mt-3 py-2.5 md:pointer-fine:opacity-0 md:transition-opacity md:focus:opacity-100 md:group-hover:opacity-100"
         >
           {added ? "Added ✓" : "Add to cart"}
         </button>
       ) : (
         <Link
           href={`/products/${product.slug}`}
-          className="btn btn-secondary mt-3 py-2.5 md:opacity-0 md:transition-opacity md:focus:opacity-100 md:group-hover:opacity-100"
+          className="btn btn-secondary mt-3 py-2.5 md:pointer-fine:opacity-0 md:transition-opacity md:focus:opacity-100 md:group-hover:opacity-100"
         >
           View details
         </Link>

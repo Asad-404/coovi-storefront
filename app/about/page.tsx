@@ -52,8 +52,8 @@ export default function AboutPage() {
         </p>
 
         <p className="leading-relaxed">
-          We&apos;re a learning-first project built with care, aiming to provide a seamless
-          online shopping experience for saree lovers across Bangladesh.
+          We&apos;re a small team that looks after every order ourselves, so buying a saree
+          online feels easy and safe anywhere in Bangladesh.
         </p>
       </div>
     </main>

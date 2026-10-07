@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { pageOpenGraph } from "@/lib/site";
+import { pageOpenGraph, whatsappUrl } from "@/lib/site";
 import Link from "next/link";
 
 export const metadata: Metadata = {
@@ -33,7 +33,7 @@ export default function ContactPage() {
               For quick questions and order support
             </p>
             <a
-              href="https://wa.me/8801700000000"
+              href={whatsappUrl()}
               target="_blank"
               rel="noopener noreferrer"
               className="btn mt-4 gap-2 bg-green-600 text-white hover:bg-green-700"

@@ -67,6 +67,7 @@ export default function AddToCartButton({ product, inStock, maxQuantity }: AddTo
         type="button"
         onClick={handleAdd}
         disabled={!inStock}
+        aria-live="polite"
         className="btn btn-primary h-[52px] flex-1 text-base"
       >
         {!inStock ? "Out of stock" : added ? "Added ✓" : "Add to cart"}
