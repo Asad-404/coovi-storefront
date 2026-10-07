@@ -31,5 +31,5 @@ pnpm coverage
 
 ### Manual operation
 
-Do not start the dev server, build, lint, or preview commands automatically; the workspace owner runs them manually.
+Claude may run `pnpm lint`, `pnpm typecheck`, `pnpm test`, `pnpm coverage` and `pnpm build` to check changes, and may push feature branches and open pull requests; never push `master`. Do not start `pnpm dev` or `pnpm start` unless asked; the workspace owner runs them manually.
 
