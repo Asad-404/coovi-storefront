@@ -30,7 +30,7 @@ export default function LoadMoreButton({ currentPage, hasMore }: LoadMoreButtonP
       disabled={loading}
       className="btn btn-primary"
     >
-      {loading ? "Loading..." : "Load More"}
+      {loading ? "Loading..." : "Load more"}
     </button>
   );
 }

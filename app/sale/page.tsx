@@ -7,10 +7,10 @@ export async function generateMetadata(props: PageProps<"/sale">): Promise<Metad
   const { search, page } = await props.searchParams;
   const isFiltered = (typeof search === "string" && search.length > 0) || (typeof page === "string" && page !== "1");
   return {
-    title: "On Sale",
+    title: "On sale",
     description: "Coovi sarees at reduced prices. Cash on delivery anywhere in Bangladesh.",
     alternates: { canonical: "/sale" },
-    openGraph: pageOpenGraph("/sale", "On Sale | Coovi"),
+    openGraph: pageOpenGraph("/sale", "On sale | Coovi"),
     robots: isFiltered ? { index: false, follow: true } : undefined,
   };
 }
@@ -22,8 +22,8 @@ export default async function SalePage(props: PageProps<"/sale">) {
   return (
     <main className="w-full pb-16">
       <PageHeading
-        title="On Sale"
-        crumb="On Sale"
+        title="On sale"
+        crumb="On sale"
         description="Sarees at reduced prices while the offer lasts. Grab your favourite before it is gone."
       />
       <div className="mx-auto max-w-[1170px] px-4">
@@ -32,7 +32,7 @@ export default async function SalePage(props: PageProps<"/sale">) {
           search={typeof search === "string" ? search : undefined}
           sort={typeof sort === "string" ? sort : undefined}
           page={Number.isFinite(parsedPage) && parsedPage > 0 ? parsedPage : 1}
-          emptyMessage="No products were found matching your selection."
+          emptyMessage="No sarees are on sale right now. New offers are added often, so check back soon."
         />
       </div>
     </main>

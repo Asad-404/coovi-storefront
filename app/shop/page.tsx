@@ -33,7 +33,7 @@ export default async function ShopPage(props: PageProps<"/shop">) {
           sort={typeof sort === "string" ? sort : undefined}
           page={Number.isFinite(parsedPage) && parsedPage > 0 ? parsedPage : 1}
           emptyMessage={
-            searchTerm ? "No sarees matched your search. Try a different word." : "No products were found matching your selection."
+            searchTerm ? "No sarees matched your search. Try a different word." : "No sarees here yet. New designs are added often, so check back soon."
           }
         />
       </div>

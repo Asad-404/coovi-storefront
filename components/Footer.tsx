@@ -8,8 +8,8 @@ export default function Footer() {
         <Logo size="lg" />
         <nav className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-zinc-700">
           <Link href="/shop" className="hover:text-brand">Saree</Link>
-          <Link href="/sale" className="hover:text-brand">On Sale</Link>
-          <Link href="/track-order" className="hover:text-brand">Track Order</Link>
+          <Link href="/sale" className="hover:text-brand">On sale</Link>
+          <Link href="/track-order" className="hover:text-brand">Track order</Link>
           <Link href="/about" className="hover:text-brand">About</Link>
           <Link href="/contact" className="hover:text-brand">Contact</Link>
         </nav>

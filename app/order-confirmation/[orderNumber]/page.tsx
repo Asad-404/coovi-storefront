@@ -84,7 +84,7 @@ export default async function OrderConfirmationPage(props: Props) {
           Thank you, {order.customerName.split(" ")[0]}! We will call you at{" "}
           <span className="font-medium">{order.phone}</span> to confirm.
         </p>
-        <p className="rounded-full bg-zinc-100 px-4 py-1 font-mono text-sm text-zinc-700">
+        <p className="rounded-sm bg-zinc-100 px-4 py-1 font-mono text-sm text-zinc-700">
           {order.orderNumber}
         </p>
       </div>

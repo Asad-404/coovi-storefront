@@ -63,7 +63,7 @@ export default function ReturnPolicyPage() {
               You can ask us to cancel an order before it has been shipped. Contact us with your order number. You can
               check the status of your order on the{" "}
               <Link href="/track-order" className="underline hover:text-brand">
-                Track Order
+                Track order
               </Link>{" "}
               page.
             </p>

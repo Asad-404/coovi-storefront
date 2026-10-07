@@ -54,7 +54,7 @@ export default async function DeliveryPolicyPage() {
               <p>
                 Track it on the{" "}
                 <Link href="/track-order" className="underline hover:text-brand">
-                  Track Order
+                  Track order
                 </Link>{" "}
                 page with your order number and the phone number you used at checkout.
               </p>
