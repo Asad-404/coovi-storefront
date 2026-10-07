@@ -31,7 +31,13 @@ export function useDialog(
 
     const opener = document.activeElement instanceof HTMLElement ? document.activeElement : null;
     const previousOverflow = document.body.style.overflow;
+    const previousPaddingRight = document.body.style.paddingRight;
+    // Hiding the scrollbar widens the page, which makes everything jump sideways; pad by the same width instead
+    const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
     document.body.style.overflow = "hidden";
+    if (scrollbarWidth > 0) {
+      document.body.style.paddingRight = `${scrollbarWidth}px`;
+    }
 
     const focusables = () =>
       Array.from(containerRef.current?.querySelectorAll<HTMLElement>(FOCUSABLE) ?? []);
@@ -70,6 +76,7 @@ export function useDialog(
     return () => {
       document.removeEventListener("keydown", onKeyDown);
       document.body.style.overflow = previousOverflow;
+      document.body.style.paddingRight = previousPaddingRight;
       opener?.focus();
     };
   }, [open, containerRef, trapFocus, initialFocus]);
