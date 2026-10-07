@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import { beforeEach, describe, expect, it } from "vitest";
-import { cartCount, cartTotal, useCartStore } from "./cartStore";
+import { MAX_ITEM_QUANTITY, cartCount, cartTotal, useCartStore } from "./cartStore";
 import { CartItem } from "./types";
 
 const soap = { productId: "p1", slug: "soap", name: "Soap", price: 120, image: "/soap.jpg" };
@@ -38,6 +38,15 @@ describe("useCartStore", () => {
     useCartStore.getState().addItem(soap, 2);
     useCartStore.getState().addItem(soap, 3);
     expect(items()).toEqual([{ ...soap, quantity: 5 }]);
+  });
+
+  it("caps a product at the API's per-item maximum", () => {
+    useCartStore.getState().addItem(soap, 150);
+    expect(items()).toEqual([{ ...soap, quantity: MAX_ITEM_QUANTITY }]);
+    useCartStore.getState().addItem(soap, 5);
+    expect(items()).toEqual([{ ...soap, quantity: MAX_ITEM_QUANTITY }]);
+    useCartStore.getState().updateQuantity("p1", 120);
+    expect(items()).toEqual([{ ...soap, quantity: MAX_ITEM_QUANTITY }]);
   });
 
   it("removes an item", () => {
