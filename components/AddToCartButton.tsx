@@ -39,7 +39,7 @@ export default function AddToCartButton({ product, inStock, maxQuantity }: AddTo
 
   return (
     <div className="flex items-stretch gap-3">
-      <div className="flex h-[52px] items-center border border-zinc-300 bg-white">
+      <div className="flex h-13 items-center border border-zinc-300 bg-white">
         <button
           type="button"
           onClick={() => setQuantity((q) => Math.max(1, q - 1))}
@@ -68,7 +68,7 @@ export default function AddToCartButton({ product, inStock, maxQuantity }: AddTo
         onClick={handleAdd}
         disabled={!inStock}
         aria-live="polite"
-        className="btn btn-primary h-[52px] flex-1 text-base"
+        className="btn btn-primary h-13 flex-1 text-base"
       >
         {!inStock ? "Out of stock" : added ? "Added ✓" : "Add to cart"}
       </button>

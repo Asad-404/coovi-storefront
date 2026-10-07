@@ -16,7 +16,7 @@ export default function Header() {
   return (
     <>
       <div className="hidden border-b border-zinc-100 bg-white text-sm text-zinc-700 md:block">
-        <div className="mx-auto flex h-9 max-w-[1170px] items-center justify-between px-4">
+        <div className="mx-auto flex h-9 max-w-292.5 items-center justify-between px-4">
           <p>Cash on delivery across Bangladesh</p>
           <a
             href={whatsappUrl()}
@@ -35,7 +35,7 @@ export default function Header() {
       </div>
 
       <header className="sticky top-0 z-20 border-b border-zinc-100 bg-white/95 backdrop-blur">
-        <div className="grid h-[68px] grid-cols-[1fr_auto_1fr] items-center px-4 md:hidden">
+        <div className="grid h-17 grid-cols-[1fr_auto_1fr] items-center px-4 md:hidden">
           <div className="justify-self-start">
             <MobileMenu />
           </div>
@@ -45,7 +45,7 @@ export default function Header() {
           </div>
         </div>
 
-        <div className="mx-auto hidden h-[90px] max-w-[1170px] grid-cols-[1fr_auto_1fr] items-center gap-4 px-4 md:grid">
+        <div className="mx-auto hidden h-22.5 max-w-292.5 grid-cols-[1fr_auto_1fr] items-center gap-4 px-4 md:grid">
           <div className="justify-self-start">
             <Logo />
           </div>
