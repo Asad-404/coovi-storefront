@@ -79,4 +79,4 @@ The cart lives only in the browser. At checkout the storefront sends the custome
 
 ## Deployment
 
-Any Next.js host works. Run `pnpm build` and `pnpm start`, or deploy to [Vercel](https://vercel.com). Set both environment variables in production. Product images are allowed from `images.unsplash.com` and `picsum.photos` (see `next.config.ts`).
+Any Next.js host works. Run `pnpm build` and `pnpm start`, or deploy to [Vercel](https://vercel.com). Set both environment variables in production. Product images are allowed from `res.cloudinary.com` (photos uploaded in the admin), `images.pexels.com`, `images.unsplash.com` and `picsum.photos` (see `next.config.ts`).
