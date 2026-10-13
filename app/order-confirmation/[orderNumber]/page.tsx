@@ -1,8 +1,10 @@
 import Image from "next/image";
 import Link from "next/link";
+import { headers } from "next/headers";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { getOrderByNumber } from "@/lib/api";
+import { clientIpFrom } from "@/lib/clientIp";
 import { formatPrice, preorderText } from "@/lib/utils";
 
 type Props = PageProps<"/order-confirmation/[orderNumber]">;
@@ -66,7 +68,8 @@ export default async function OrderConfirmationPage(props: Props) {
 
   let order;
   try {
-    order = await getOrderByNumber(orderNumber, phoneValue);
+    // Pass the shopper's address so the API's lookup limit applies per shopper, not per storefront server
+    order = await getOrderByNumber(orderNumber, phoneValue, clientIpFrom(await headers()));
   } catch {
     notFound();
   }

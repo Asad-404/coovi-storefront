@@ -2,7 +2,41 @@ import { Order, Product, ShopSettings } from "./types";
 import { WHATSAPP_NUMBER } from "./site";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5000/api";
-const TIMEOUT_MS = 8000;
+
+// The API runs on Render's free plan, which sleeps after ~15 quiet minutes and can take up to a
+// minute to wake. Waiting that long (on the loading screen) beats showing an error. Vercel lets a
+// server render run for 5 minutes; in the browser 30 seconds is the most a shopper should wait.
+export const SERVER_TIMEOUT_MS = 60_000;
+export const BROWSER_TIMEOUT_MS = 30_000;
+
+// How long the storefront server reuses product data and the delivery fee before asking the API
+// again. While the API is asleep or slow, shoppers keep getting the last good copy, and a busy shop
+// sends the API one request a minute per page instead of one per shopper. Admin edits show up
+// within this time; checkout always re-checks prices and stock on the API.
+export const CACHE_SECONDS = 60;
+
+// Lets the API tell this storefront's server apart from shoppers (see coovi-api rateLimiters.ts).
+// STOREFRONT_API_KEY is server-only: it has no NEXT_PUBLIC_ prefix, so it is never sent to browsers.
+export const STOREFRONT_KEY_HEADER = "x-coovi-storefront-key";
+export const CLIENT_IP_HEADER = "x-coovi-client-ip";
+
+const isServer = () => typeof window === "undefined";
+
+function timeoutSignal(): AbortSignal {
+  return AbortSignal.timeout(isServer() ? SERVER_TIMEOUT_MS : BROWSER_TIMEOUT_MS);
+}
+
+// Extra headers for requests made on the storefront server; empty in the browser or without a key
+export function serverHeaders(clientIp?: string): Record<string, string> {
+  const key = process.env.STOREFRONT_API_KEY;
+  if (!isServer() || !key) return {};
+  return clientIp ? { [STOREFRONT_KEY_HEADER]: key, [CLIENT_IP_HEADER]: clientIp } : { [STOREFRONT_KEY_HEADER]: key };
+}
+
+// Shared fetch options for public catalogue data: cached on the server, ignored by browsers
+function catalogueInit(): RequestInit {
+  return { headers: serverHeaders(), next: { revalidate: CACHE_SECONDS }, signal: timeoutSignal() };
+}
 
 // AbortSignal.timeout() rejects fetch with a TimeoutError; a manual abort
 // rejects with an AbortError. Both mean the request never completed.
@@ -47,9 +81,7 @@ export async function getProducts(options: ProductQuery = {}): Promise<ProductsR
   const queryString = params.toString();
 
   try {
-    const res = await fetch(`${API_URL}/products${queryString ? `?${queryString}` : ""}`, {
-      signal: AbortSignal.timeout(TIMEOUT_MS),
-    });
+    const res = await fetch(`${API_URL}/products${queryString ? `?${queryString}` : ""}`, catalogueInit());
 
     if (!res.ok) {
       throw new Error(`API request failed with status ${res.status}`);
@@ -99,9 +131,7 @@ export async function getAllProducts(maxPages = 100): Promise<Product[]> {
 
 export async function getProductBySlug(slug: string): Promise<Product> {
   try {
-    const res = await fetch(`${API_URL}/products/${encodeURIComponent(slug)}`, {
-      signal: AbortSignal.timeout(TIMEOUT_MS),
-    });
+    const res = await fetch(`${API_URL}/products/${encodeURIComponent(slug)}`, catalogueInit());
 
     if (!res.ok) {
       throw new Error(`API request failed with status ${res.status}`);
@@ -119,9 +149,7 @@ export async function getProductBySlug(slug: string): Promise<Product> {
 
 export async function getDeliveryFee(): Promise<number> {
   try {
-    const res = await fetch(`${API_URL}/orders/delivery-fee`, {
-      signal: AbortSignal.timeout(TIMEOUT_MS),
-    });
+    const res = await fetch(`${API_URL}/orders/delivery-fee`, catalogueInit());
 
     if (!res.ok) {
       throw new Error(`API request failed with status ${res.status}`);
@@ -145,16 +173,11 @@ export const DEFAULT_SHOP_SETTINGS: ShopSettings = {
   announcementActive: true,
 };
 
-const SETTINGS_REVALIDATE_SECONDS = 60;
-
-// Shop settings from the admin Settings page, cached for a minute. Never throws: the header is on every
+// Shop settings from the admin Settings page, cached like the catalogue (CACHE_SECONDS). Never throws: the header is on every
 // page, so if the API is down the shop falls back to the defaults instead of showing an error.
 export async function getShopSettings(): Promise<ShopSettings> {
   try {
-    const res = await fetch(`${API_URL}/settings`, {
-      signal: AbortSignal.timeout(TIMEOUT_MS),
-      next: { revalidate: SETTINGS_REVALIDATE_SECONDS },
-    });
+    const res = await fetch(`${API_URL}/settings`, catalogueInit());
 
     if (!res.ok) return DEFAULT_SHOP_SETTINGS;
 
@@ -165,11 +188,15 @@ export async function getShopSettings(): Promise<ShopSettings> {
   }
 }
 
-export async function getOrderByNumber(orderNumber: string, phone: string): Promise<Order> {
+// clientIp is the shopper's own address, so the API limits order lookups per shopper rather than
+// per storefront server. A customer's order is never cached.
+export async function getOrderByNumber(orderNumber: string, phone: string, clientIp?: string): Promise<Order> {
   try {
     const params = new URLSearchParams({ phone });
     const res = await fetch(`${API_URL}/orders/${encodeURIComponent(orderNumber)}?${params}`, {
-      signal: AbortSignal.timeout(TIMEOUT_MS),
+      cache: "no-store",
+      headers: serverHeaders(clientIp),
+      signal: timeoutSignal(),
     });
 
     if (!res.ok) {
@@ -203,7 +230,7 @@ export async function postOrder(order: OrderInput): Promise<Order> {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(order),
-      signal: AbortSignal.timeout(TIMEOUT_MS),
+      signal: timeoutSignal(),
     });
 
     const json = await res.json();
