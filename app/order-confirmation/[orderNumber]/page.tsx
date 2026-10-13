@@ -134,6 +134,12 @@ export default async function OrderConfirmationPage(props: Props) {
             <span>Subtotal</span>
             <span>{formatPrice(order.subtotal)}</span>
           </div>
+          {Boolean(order.discount) && (
+            <div className="flex justify-between">
+              <span>Discount</span>
+              <span>-{formatPrice(order.discount ?? 0)}</span>
+            </div>
+          )}
           <div className="flex justify-between">
             <span>Delivery</span>
             <span>{formatPrice(order.deliveryFee)}</span>
