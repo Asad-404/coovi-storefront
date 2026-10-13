@@ -60,6 +60,12 @@ describe("whatsappUrl", () => {
     expect(whatsappUrl()).toBe("https://wa.me/8801712345678");
   });
 
+  it("uses the number passed in, such as the one from the admin settings", async () => {
+    const { whatsappUrl } = await loadSite();
+    expect(whatsappUrl(undefined, "8801812345678")).toBe("https://wa.me/8801812345678");
+    expect(whatsappUrl("Hi", "8801812345678")).toBe("https://wa.me/8801812345678?text=Hi");
+  });
+
   it("adds an encoded message", async () => {
     const { whatsappUrl } = await loadSite();
     expect(whatsappUrl("Hi! Saree & more")).toMatch(/\?text=Hi!%20Saree%20%26%20more$/);
