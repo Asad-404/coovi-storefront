@@ -9,8 +9,9 @@ export const BRAND_CYAN = "#06b5e4";
 // Shop WhatsApp number in international format, digits only (8801XXXXXXXXX). The default is a placeholder.
 export const WHATSAPP_NUMBER = (process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "8801700000000").replace(/\D/g, "");
 
-export function whatsappUrl(message?: string): string {
-  return `https://wa.me/${WHATSAPP_NUMBER}${message ? `?text=${encodeURIComponent(message)}` : ""}`;
+// `number` is the one saved in the admin settings (see getShopSettings); the default is the fallback above
+export function whatsappUrl(message?: string, number: string = WHATSAPP_NUMBER): string {
+  return `https://wa.me/${number}${message ? `?text=${encodeURIComponent(message)}` : ""}`;
 }
 
 // Open Graph block for a page. A page-level openGraph replaces the layout's, so shared fields are repeated here.

@@ -1,12 +1,16 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import {
+  CACHE_SECONDS,
   getAllProducts,
   getDeliveryFee,
   getFirstProducts,
   getOrderByNumber,
   getProductBySlug,
   getProducts,
+  getShopSettings,
+  DEFAULT_SHOP_SETTINGS,
   postOrder,
+  serverHeaders,
 } from "./api";
 
 const API_URL = "http://localhost:5000/api";
@@ -32,7 +36,46 @@ const requestInit = () => fetchMock.mock.calls[0][1] as RequestInit;
 
 beforeEach(() => {
   fetchMock.mockReset();
+  vi.unstubAllGlobals();
+  vi.unstubAllEnvs();
   vi.stubGlobal("fetch", fetchMock);
+});
+
+describe("serverHeaders", () => {
+  it("is empty without a storefront key", () => {
+    vi.stubEnv("STOREFRONT_API_KEY", "");
+    expect(serverHeaders("203.0.113.7")).toEqual({});
+  });
+
+  it("sends the key, and the shopper's address when given, on the server", () => {
+    vi.stubEnv("STOREFRONT_API_KEY", "secret");
+    expect(serverHeaders()).toEqual({ "x-coovi-storefront-key": "secret" });
+    expect(serverHeaders("203.0.113.7")).toEqual({
+      "x-coovi-storefront-key": "secret",
+      "x-coovi-client-ip": "203.0.113.7",
+    });
+  });
+
+  it("never sends the key from a browser", () => {
+    vi.stubEnv("STOREFRONT_API_KEY", "secret");
+    vi.stubGlobal("window", {});
+    expect(serverHeaders("203.0.113.7")).toEqual({});
+  });
+});
+
+describe("timeouts", () => {
+  it("waits up to a minute on the server and 30 seconds in a browser", async () => {
+    const timeout = vi.spyOn(AbortSignal, "timeout");
+    respond({ data: { deliveryFee: 60 } });
+    await getDeliveryFee();
+    expect(timeout).toHaveBeenLastCalledWith(60_000);
+
+    vi.stubGlobal("window", {});
+    respond({ data: { deliveryFee: 60 } });
+    await getDeliveryFee();
+    expect(timeout).toHaveBeenLastCalledWith(30_000);
+    timeout.mockRestore();
+  });
 });
 
 describe("getProducts", () => {
@@ -44,6 +87,15 @@ describe("getProducts", () => {
     expect(requestedUrl()).toBe(`${API_URL}/products`);
     expect(requestInit().signal).toBeInstanceOf(AbortSignal);
     expect(result).toEqual({ data: [{ _id: "p1" }], pagination });
+  });
+
+  it("caches the response on the server for a minute and identifies the storefront", async () => {
+    vi.stubEnv("STOREFRONT_API_KEY", "secret");
+    respond({ data: [], pagination });
+    await getProducts();
+    const init = requestInit() as RequestInit & { next?: { revalidate?: number } };
+    expect(init.next).toEqual({ revalidate: 60 });
+    expect(init.headers).toEqual({ "x-coovi-storefront-key": "secret" });
   });
 
   it("passes search, sort, page and limit as query params", async () => {
@@ -160,6 +212,7 @@ describe("getProductBySlug", () => {
     respond({ data: { _id: "p1", slug: "soap" } });
     await expect(getProductBySlug("soap")).resolves.toEqual({ _id: "p1", slug: "soap" });
     expect(requestedUrl()).toBe(`${API_URL}/products/soap`);
+    expect((requestInit() as { next?: unknown }).next).toEqual({ revalidate: 60 });
   });
 
   it("throws on 404", async () => {
@@ -180,6 +233,7 @@ describe("getDeliveryFee", () => {
     respond({ data: { deliveryFee: 60 } });
     await expect(getDeliveryFee()).resolves.toBe(60);
     expect(requestedUrl()).toBe(`${API_URL}/orders/delivery-fee`);
+    expect((requestInit() as { next?: unknown }).next).toEqual({ revalidate: 60 });
   });
 
   it("throws on a non-OK response", async () => {
@@ -193,6 +247,46 @@ describe("getDeliveryFee", () => {
   });
 });
 
+describe("getShopSettings", () => {
+  const saved = {
+    whatsappNumber: "8801712345678",
+    supportPhone: "01812345678",
+    announcementText: "Eid sale",
+    announcementActive: false,
+  };
+
+  it("returns the saved settings and caches them for a minute", async () => {
+    respond({ success: true, data: saved });
+    await expect(getShopSettings()).resolves.toEqual(saved);
+    expect(requestedUrl()).toBe(`${API_URL}/settings`);
+    expect((requestInit() as RequestInit & { next?: { revalidate: number } }).next).toEqual({ revalidate: CACHE_SECONDS });
+  });
+
+  it("fills a missing field from the defaults", async () => {
+    respond({ success: true, data: { whatsappNumber: "8801712345678" } });
+    await expect(getShopSettings()).resolves.toEqual({ ...DEFAULT_SHOP_SETTINGS, whatsappNumber: "8801712345678" });
+  });
+
+  it("falls back to the defaults on a non-OK response", async () => {
+    respond({}, 503);
+    await expect(getShopSettings()).resolves.toEqual(DEFAULT_SHOP_SETTINGS);
+  });
+
+  it("falls back to the defaults when the request fails", async () => {
+    rejectWith("TimeoutError");
+    await expect(getShopSettings()).resolves.toEqual(DEFAULT_SHOP_SETTINGS);
+  });
+
+  it("starts from what the shop showed before settings existed", () => {
+    expect(DEFAULT_SHOP_SETTINGS).toEqual({
+      whatsappNumber: "8801700000000",
+      supportPhone: "",
+      announcementText: "Shop the festive collection",
+      announcementActive: true,
+    });
+  });
+});
+
 describe("getOrderByNumber", () => {
   it("sends the phone number as a query param", async () => {
     respond({ data: { orderNumber: "CV-1001" } });
@@ -202,6 +296,15 @@ describe("getOrderByNumber", () => {
     const url = new URL(requestedUrl());
     expect(url.pathname).toBe("/api/orders/CV-1001");
     expect(url.searchParams.get("phone")).toBe("+8801700000000");
+  });
+
+  it("never caches an order and forwards the shopper's address", async () => {
+    vi.stubEnv("STOREFRONT_API_KEY", "secret");
+    respond({ data: { orderNumber: "CV-1001" } });
+    await getOrderByNumber("CV-1001", "01712345678", "203.0.113.7");
+    const init = requestInit();
+    expect(init.cache).toBe("no-store");
+    expect(init.headers).toEqual({ "x-coovi-storefront-key": "secret", "x-coovi-client-ip": "203.0.113.7" });
   });
 
   it("encodes the order number into the path", async () => {

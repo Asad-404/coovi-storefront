@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { getShopSettings } from "@/lib/api";
 import { pageOpenGraph, whatsappUrl } from "@/lib/site";
 import Link from "next/link";
 
@@ -9,7 +10,9 @@ export const metadata: Metadata = {
   description: "Get in touch with Coovi for questions about orders, products, or support.",
 };
 
-export default function ContactPage() {
+export default async function ContactPage() {
+  const settings = await getShopSettings();
+
   return (
     <main className="mx-auto w-full max-w-3xl px-4 py-16 sm:px-6">
       <h1 className="text-4xl text-zinc-900">
@@ -33,13 +36,21 @@ export default function ContactPage() {
               For quick questions and order support
             </p>
             <a
-              href={whatsappUrl()}
+              href={whatsappUrl(undefined, settings.whatsappNumber)}
               target="_blank"
               rel="noopener noreferrer"
               className="btn mt-4 gap-2 bg-green-600 text-white hover:bg-green-700"
             >
               Chat on WhatsApp
             </a>
+            {settings.supportPhone && (
+              <p className="mt-4 text-zinc-600">
+                Or call{" "}
+                <a href={`tel:${settings.supportPhone}`} className="font-medium text-brand hover:text-brand-dark">
+                  {settings.supportPhone}
+                </a>
+              </p>
+            )}
           </div>
 
           <div className="rounded-sm border border-zinc-200 bg-white p-6">

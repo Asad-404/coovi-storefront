@@ -3,6 +3,7 @@ import CartBadge from "@/components/CartBadge";
 import Logo from "@/components/Logo";
 import SearchBar from "@/components/SearchBar";
 import MobileMenu from "@/components/MobileMenu";
+import { getShopSettings } from "@/lib/api";
 import { whatsappUrl } from "@/lib/site";
 
 const navLinks = [
@@ -12,14 +13,17 @@ const navLinks = [
   { href: "/track-order", label: "Track order" },
 ];
 
-export default function Header() {
+export default async function Header() {
+  // Owner-editable from the admin Settings page; falls back to the old values if the API is down
+  const settings = await getShopSettings();
+
   return (
     <>
       <div className="hidden border-b border-zinc-100 bg-white text-sm text-zinc-700 md:block">
         <div className="mx-auto flex h-9 max-w-292.5 items-center justify-between px-4">
           <p>Cash on delivery across Bangladesh</p>
           <a
-            href={whatsappUrl()}
+            href={whatsappUrl(undefined, settings.whatsappNumber)}
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-2 font-semibold hover:text-brand"
@@ -66,9 +70,11 @@ export default function Header() {
         </div>
       </header>
 
-      <Link href="/shop" className="block bg-brand py-3.5 text-center text-sm font-semibold text-white hover:bg-brand-dark">
-        Shop the festive collection
-      </Link>
+      {settings.announcementActive && settings.announcementText && (
+        <Link href="/shop" className="block bg-brand py-3.5 text-center text-sm font-semibold text-white hover:bg-brand-dark">
+          {settings.announcementText}
+        </Link>
+      )}
     </>
   );
 }

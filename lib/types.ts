@@ -56,3 +56,11 @@ export interface Order {
   createdAt: string;
   updatedAt: string;
 }
+
+// GET /api/settings: what the owner sets on the admin Settings page
+export interface ShopSettings {
+  whatsappNumber: string; // 8801XXXXXXXXX
+  supportPhone: string; // 01XXXXXXXXX, or "" when not shown
+  announcementText: string;
+  announcementActive: boolean;
+}
