@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { SITE_NAME, SITE_URL, pageOpenGraph, whatsappUrl } from "@/lib/site";
 import JsonLd from "@/components/JsonLd";
-import { getDeliveryOptions, getProductBySlug, getProducts } from "@/lib/api";
+import { getDeliveryOptions, getProductBySlug, getProducts, getShopSettings } from "@/lib/api";
 import { describeDeliveryFees, discountPercent, isAvailable, isOnSale, isPreorder, preorderText } from "@/lib/utils";
 import type { Product } from "@/lib/types";
 import AddToCartButton from "@/components/AddToCartButton";
@@ -66,9 +66,10 @@ export default async function ProductDetailPage(props: Props) {
     throw error;
   }
 
-  const [delivery, relatedResponse] = await Promise.all([
+  const [delivery, relatedResponse, settings] = await Promise.all([
     getDeliveryOptions().catch(() => null),
     getProducts({ limit: 4 }).catch(() => null),
+    getShopSettings(),
   ]);
   const related = (relatedResponse?.data ?? []).filter((item) => item._id !== product._id).slice(0, 3);
   const title = product.nameBn ? `${product.nameBn} – ${product.name}` : product.name;
@@ -191,7 +192,7 @@ export default async function ProductDetailPage(props: Props) {
               </div>
 
               <a
-                href={whatsappUrl(`Hi! I'm interested in ${product.name} - ${productUrl}`)}
+                href={whatsappUrl(`Hi! I'm interested in ${product.name} - ${productUrl}`, settings.whatsappNumber)}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="btn h-12 border border-green-600 text-green-700 hover:bg-green-600 hover:text-white"
