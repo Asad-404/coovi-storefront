@@ -25,6 +25,10 @@ export default function ReturnPolicyPage() {
                 received the wrong saree, or it is damaged, you do not have to pay. Refuse the parcel and message us
                 with your order number.
               </p>
+              <p>
+                We do not accept returns once you have paid and kept the parcel, so please check it carefully before
+                you pay.
+              </p>
             </>
           ),
         },
