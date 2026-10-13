@@ -48,6 +48,8 @@ export interface Order {
   address: string;
   items: OrderItem[];
   subtotal: number;
+  // Taka off the items, agreed with the shop on a phone or Facebook order
+  discount?: number;
   deliveryFee: number;
   total: number;
   status: "Pending" | "Processing" | "Shipped" | "Delivered" | "Cancelled";
