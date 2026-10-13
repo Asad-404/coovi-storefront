@@ -15,7 +15,7 @@ export default function TrackOrderPage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Order numbers are stored upper-case (ORD-YYYYMMDD-NNN) and matched exactly
+    // Order numbers are stored upper-case (ORD-YYYYMMDD-XXXXXX, older ones -NNN) and matched exactly
     const orderNumber = form.orderNumber.trim().toUpperCase();
     router.push(`/order-confirmation/${encodeURIComponent(orderNumber)}?phone=${encodeURIComponent(form.phone)}`);
   };
@@ -37,7 +37,7 @@ export default function TrackOrderPage() {
           <input
             type="text"
             required
-            placeholder="e.g. ORD-20260921-001"
+            placeholder="e.g. ORD-20261013-K7M3QX"
             autoComplete="off"
             autoCapitalize="characters"
             value={form.orderNumber}
