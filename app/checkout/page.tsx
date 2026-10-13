@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCartStore, cartTotal } from "@/lib/cartStore";
 import { getDeliveryFee, getProductBySlug, postOrder } from "@/lib/api";
-import { formatPrice, isAvailable } from "@/lib/utils";
+import { formatPrice, isAvailable, isPreorder, preorderText } from "@/lib/utils";
 
 const inputClass =
   "w-full rounded-sm border border-zinc-300 bg-white px-3 py-2 text-zinc-900 placeholder-zinc-500 focus:border-brand";
@@ -25,6 +25,7 @@ export default function CheckoutPage() {
   const [error, setError] = useState("");
   const [deliveryFee, setDeliveryFee] = useState<number | null>(null);
   const [stockIssues, setStockIssues] = useState<string[]>([]);
+  const [preorderNotes, setPreorderNotes] = useState<string[]>([]);
 
   // Delivery fee and live stock both come from the API — the browser's copy
   // of either could be stale or spoofed
@@ -45,11 +46,15 @@ export default function CheckoutPage() {
     Promise.allSettled(items.map((item) => getProductBySlug(item.slug))).then((results) => {
       if (!active) return;
       const issues: string[] = [];
+      const notes: string[] = [];
       results.forEach((result, i) => {
         if (result.status !== "fulfilled") return;
         const product = result.value;
         const item = items[i];
-        if (!isAvailable(product)) {
+        // Short on stock but taking pre-orders: the API turns the line into a pre-order
+        if (product.inStock && product.allowPreorder && product.stock < item.quantity) {
+          notes.push(`"${item.name}": ${preorderText(product.preorderDays).toLowerCase()}`);
+        } else if (!isAvailable(product) && !isPreorder(product)) {
           issues.push(`"${item.name}" is currently unavailable — please remove it from your cart`);
         } else if (product.stock < item.quantity) {
           issues.push(
@@ -58,6 +63,7 @@ export default function CheckoutPage() {
         }
       });
       setStockIssues(issues);
+      setPreorderNotes(notes);
     });
 
     return () => {
@@ -198,6 +204,14 @@ export default function CheckoutPage() {
             <ul role="status" className="mt-4 flex list-disc flex-col gap-1 rounded-sm border border-amber-300 bg-amber-50 p-3 pl-8 text-sm text-amber-800">
               {stockIssues.map((issue) => (
                 <li key={issue}>{issue}</li>
+              ))}
+            </ul>
+          )}
+
+          {preorderNotes.length > 0 && (
+            <ul role="status" className="mt-4 flex list-disc flex-col gap-1 rounded-sm border border-zinc-200 bg-zinc-50 p-3 pl-8 text-sm text-zinc-700">
+              {preorderNotes.map((note) => (
+                <li key={note}>{note}</li>
               ))}
             </ul>
           )}

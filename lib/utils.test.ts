@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { discountPercent, formatPrice, isAvailable, isOnSale } from "./utils";
+import { discountPercent, formatPrice, isAvailable, isOnSale, isPreorder, preorderText } from "./utils";
 
 describe("formatPrice", () => {
   it("prefixes the taka sign", () => {
@@ -54,5 +54,28 @@ describe("isAvailable", () => {
 
   it("is false when the admin switched it off, even with units left", () => {
     expect(isAvailable({ inStock: false, stock: 3 })).toBe(false);
+  });
+});
+
+describe("isPreorder", () => {
+  it("is true when out of stock, switched on and taking pre-orders", () => {
+    expect(isPreorder({ inStock: true, stock: 0, allowPreorder: true })).toBe(true);
+  });
+
+  it("is false while units are left, so the saree sells from stock", () => {
+    expect(isPreorder({ inStock: true, stock: 2, allowPreorder: true })).toBe(false);
+  });
+
+  it("is false when pre-orders are off or the product is switched off", () => {
+    expect(isPreorder({ inStock: true, stock: 0 })).toBe(false);
+    expect(isPreorder({ inStock: true, stock: 0, allowPreorder: false })).toBe(false);
+    expect(isPreorder({ inStock: false, stock: 0, allowPreorder: true })).toBe(false);
+  });
+});
+
+describe("preorderText", () => {
+  it("names the wait, falling back to 15 days", () => {
+    expect(preorderText(20)).toBe("Pre-order, ships in about 20 days");
+    expect(preorderText()).toBe("Pre-order, ships in about 15 days");
   });
 });

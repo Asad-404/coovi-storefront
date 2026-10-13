@@ -13,14 +13,16 @@ interface AddToCartButtonProps {
   };
   inStock: boolean;
   maxQuantity: number;
+  // Out of stock but taking pre-orders: no stock limit, and the button says so
+  preorder?: boolean;
 }
 
-export default function AddToCartButton({ product, inStock, maxQuantity }: AddToCartButtonProps) {
+export default function AddToCartButton({ product, inStock, maxQuantity, preorder = false }: AddToCartButtonProps) {
   const addItem = useCartStore((state) => state.addItem);
   const [quantity, setQuantity] = useState(1);
   const [added, setAdded] = useState(false);
 
-  const limit = Math.max(1, Math.min(maxQuantity, MAX_ITEM_QUANTITY));
+  const limit = preorder ? MAX_ITEM_QUANTITY : Math.max(1, Math.min(maxQuantity, MAX_ITEM_QUANTITY));
 
   function handleAdd() {
     addItem(
@@ -70,7 +72,7 @@ export default function AddToCartButton({ product, inStock, maxQuantity }: AddTo
         aria-live="polite"
         className="btn btn-primary h-13 flex-1 text-base"
       >
-        {!inStock ? "Out of stock" : added ? "Added ✓" : "Add to cart"}
+        {!inStock ? "Out of stock" : added ? "Added ✓" : preorder ? "Pre-order" : "Add to cart"}
       </button>
     </div>
   );

@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { Product } from "@/lib/types";
-import { isAvailable, isOnSale } from "@/lib/utils";
+import { isAvailable, isOnSale, isPreorder } from "@/lib/utils";
 import { useCartStore } from "@/lib/cartStore";
 import PriceTag from "@/components/PriceTag";
 
@@ -14,6 +14,7 @@ export default function ProductCard({ product }: { product: Product }) {
   const primaryImage = product.images[0];
   const secondaryImage = product.images[1];
   const available = isAvailable(product);
+  const preorder = isPreorder(product);
 
   function handleAdd() {
     addItem({
@@ -65,7 +66,7 @@ export default function ProductCard({ product }: { product: Product }) {
 
           {!available && (
             <span className="absolute inset-x-0 bottom-0 bg-white/80 py-1.5 text-center text-xs font-medium text-ink">
-              Out of stock
+              {preorder ? "Pre-order" : "Out of stock"}
             </span>
           )}
         </div>
@@ -85,14 +86,14 @@ export default function ProductCard({ product }: { product: Product }) {
         </div>
       </Link>
 
-      {available ? (
+      {available || preorder ? (
         <button
           type="button"
           onClick={handleAdd}
           aria-live="polite"
           className="btn btn-secondary mt-3 py-2.5 md:pointer-fine:opacity-0 md:transition-opacity md:focus:opacity-100 md:group-hover:opacity-100"
         >
-          {added ? "Added ✓" : "Add to cart"}
+          {added ? "Added ✓" : preorder ? "Pre-order" : "Add to cart"}
         </button>
       ) : (
         <Link
