@@ -4,7 +4,8 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCartStore, cartTotal } from "@/lib/cartStore";
-import { getDeliveryFee, getProductBySlug, postOrder } from "@/lib/api";
+import type { DeliveryArea, DeliveryOptions } from "@/lib/types";
+import { getDeliveryOptions, getProductBySlug, postOrder } from "@/lib/api";
 import { formatPrice, isAvailable, isPreorder, preorderText } from "@/lib/utils";
 
 const inputClass =
@@ -19,22 +20,25 @@ export default function CheckoutPage() {
     customerName: "",
     phone: "",
     address: "",
+    district: "",
     notes: "",
   });
+  // Only Dhaka district can be inside Dhaka; the API checks this too
+  const [area, setArea] = useState<DeliveryArea>("inside_dhaka");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
-  const [deliveryFee, setDeliveryFee] = useState<number | null>(null);
+  const [delivery, setDelivery] = useState<DeliveryOptions | null>(null);
   const [stockIssues, setStockIssues] = useState<string[]>([]);
   const [preorderNotes, setPreorderNotes] = useState<string[]>([]);
 
-  // Delivery fee and live stock both come from the API — the browser's copy
+  // Delivery fees and live stock both come from the API — the browser's copy
   // of either could be stale or spoofed
   useEffect(() => {
     let active = true;
 
-    getDeliveryFee()
-      .then((fee) => {
-        if (active) setDeliveryFee(fee);
+    getDeliveryOptions()
+      .then((options) => {
+        if (active) setDelivery(options);
       })
       .catch(() => {
         if (active) setError("Could not load the delivery fee — please refresh the page");
@@ -72,6 +76,9 @@ export default function CheckoutPage() {
   }, [items]);
 
   const subtotal = cartTotal(items);
+  const deliveryArea: DeliveryArea = form.district === "Dhaka" ? area : "outside_dhaka";
+  // Shown for the chosen district; the API charges the same amount for that area
+  const deliveryFee = delivery && form.district ? delivery.zones[deliveryArea] : null;
   const total = deliveryFee === null ? null : subtotal + deliveryFee;
 
   if (items.length === 0) {
@@ -104,6 +111,8 @@ export default function CheckoutPage() {
         customerName: form.customerName,
         phone: form.phone,
         address: form.address,
+        district: form.district,
+        deliveryArea,
         notes: form.notes || undefined,
         items: items.map(({ productId, quantity }) => ({ productId, quantity })),
       });
@@ -167,6 +176,54 @@ export default function CheckoutPage() {
             </label>
 
             <label className="flex flex-col gap-1 text-sm font-medium text-zinc-700">
+              District
+              <select
+                required
+                autoComplete="address-level1"
+                value={form.district}
+                onChange={(e) => setForm({ ...form, district: e.target.value })}
+                disabled={delivery === null}
+                className={inputClass}
+              >
+                <option value="" disabled>
+                  {delivery === null ? "Loading districts..." : "Choose your district"}
+                </option>
+                {delivery?.districts.map((district) => (
+                  <option key={district} value={district}>
+                    {district}
+                  </option>
+                ))}
+              </select>
+            </label>
+
+            {form.district === "Dhaka" && delivery && (
+              <div role="radiogroup" aria-label="Where in Dhaka" className="flex flex-col gap-2 text-sm text-zinc-700 sm:flex-row sm:gap-6">
+                <label className="flex items-center gap-2">
+                  <input
+                    type="radio"
+                    name="deliveryArea"
+                    value="inside_dhaka"
+                    checked={area === "inside_dhaka"}
+                    onChange={() => setArea("inside_dhaka")}
+                    className="accent-brand"
+                  />
+                  Dhaka city ({formatPrice(delivery.zones.inside_dhaka)} delivery)
+                </label>
+                <label className="flex items-center gap-2">
+                  <input
+                    type="radio"
+                    name="deliveryArea"
+                    value="outside_dhaka"
+                    checked={area === "outside_dhaka"}
+                    onChange={() => setArea("outside_dhaka")}
+                    className="accent-brand"
+                  />
+                  Dhaka suburbs, e.g. Savar, Keraniganj ({formatPrice(delivery.zones.outside_dhaka)} delivery)
+                </label>
+              </div>
+            )}
+
+            <label className="flex flex-col gap-1 text-sm font-medium text-zinc-700">
               Full address
               <textarea
                 required
@@ -176,7 +233,7 @@ export default function CheckoutPage() {
                 autoComplete="street-address"
                 value={form.address}
                 onChange={(e) => setForm({ ...form, address: e.target.value })}
-                placeholder="House number, road, area, city (minimum 5 characters)"
+                placeholder="House number, road, area or thana (minimum 5 characters)"
                 className={inputClass}
               />
             </label>
@@ -218,14 +275,16 @@ export default function CheckoutPage() {
 
           <button
             type="submit"
-            disabled={submitting || total === null || stockIssues.length > 0}
+            disabled={submitting || delivery === null || stockIssues.length > 0}
             className="btn btn-primary mt-6 h-12 w-full text-base sm:w-auto sm:px-12"
           >
             {submitting
               ? "Placing order..."
-              : total === null
+              : delivery === null
                 ? "Loading..."
-                : `Place order for ${formatPrice(total)}`}
+                : total === null
+                  ? "Place order"
+                  : `Place order for ${formatPrice(total)}`}
           </button>
 
           <p className="mt-4 text-sm text-zinc-500">
@@ -278,12 +337,16 @@ export default function CheckoutPage() {
             <div className="mt-2 flex justify-between text-zinc-600">
               <span>Delivery</span>
               <span className="font-medium">
-                {deliveryFee === null ? "Loading..." : formatPrice(deliveryFee)}
+                {delivery === null
+                  ? "Loading..."
+                  : deliveryFee === null
+                    ? "Choose your district"
+                    : formatPrice(deliveryFee)}
               </span>
             </div>
             <div className="mt-4 flex justify-between text-lg font-semibold text-zinc-900">
               <span>Total</span>
-              <span>{total === null ? "Loading..." : formatPrice(total)}</span>
+              <span>{total === null ? "–" : formatPrice(total)}</span>
             </div>
           </div>
         </aside>

@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import {
   CACHE_SECONDS,
   getAllProducts,
-  getDeliveryFee,
+  getDeliveryOptions,
   getFirstProducts,
   getOrderByNumber,
   getProductBySlug,
@@ -15,6 +15,8 @@ import {
 
 const API_URL = "http://localhost:5000/api";
 const TIMEOUT_MESSAGE = "Request timed out. Please check your connection and try again.";
+
+const DELIVERY_OPTIONS = { zones: { inside_dhaka: 70, outside_dhaka: 130 }, districts: ["Dhaka", "Sylhet"] };
 
 const fetchMock = vi.fn();
 
@@ -66,13 +68,13 @@ describe("serverHeaders", () => {
 describe("timeouts", () => {
   it("waits up to a minute on the server and 30 seconds in a browser", async () => {
     const timeout = vi.spyOn(AbortSignal, "timeout");
-    respond({ data: { deliveryFee: 60 } });
-    await getDeliveryFee();
+    respond({ data: DELIVERY_OPTIONS });
+    await getDeliveryOptions();
     expect(timeout).toHaveBeenLastCalledWith(60_000);
 
     vi.stubGlobal("window", {});
-    respond({ data: { deliveryFee: 60 } });
-    await getDeliveryFee();
+    respond({ data: DELIVERY_OPTIONS });
+    await getDeliveryOptions();
     expect(timeout).toHaveBeenLastCalledWith(30_000);
     timeout.mockRestore();
   });
@@ -228,22 +230,26 @@ describe("getProductBySlug", () => {
   });
 });
 
-describe("getDeliveryFee", () => {
-  it("returns data.deliveryFee", async () => {
-    respond({ data: { deliveryFee: 60 } });
-    await expect(getDeliveryFee()).resolves.toBe(60);
+describe("getDeliveryOptions", () => {
+  it("returns the fee per area and the districts", async () => {
+    respond({ data: { deliveryFee: 70, ...DELIVERY_OPTIONS } });
+    await expect(getDeliveryOptions()).resolves.toEqual(DELIVERY_OPTIONS);
     expect(requestedUrl()).toBe(`${API_URL}/orders/delivery-fee`);
-    expect((requestInit() as { next?: unknown }).next).toEqual({ revalidate: 60 });
+  });
+
+  it("refuses an older API that sends only one flat fee", async () => {
+    respond({ data: { deliveryFee: 60 } });
+    await expect(getDeliveryOptions()).rejects.toThrow("Delivery fees are not available right now");
   });
 
   it("throws on a non-OK response", async () => {
     respond({}, 503);
-    await expect(getDeliveryFee()).rejects.toThrow("API request failed with status 503");
+    await expect(getDeliveryOptions()).rejects.toThrow("API request failed with status 503");
   });
 
   it("maps AbortError to a friendly message", async () => {
     rejectWith("AbortError");
-    await expect(getDeliveryFee()).rejects.toThrow(TIMEOUT_MESSAGE);
+    await expect(getDeliveryOptions()).rejects.toThrow(TIMEOUT_MESSAGE);
   });
 });
 
@@ -330,7 +336,9 @@ describe("postOrder", () => {
   const order = {
     customerName: "Rahim",
     phone: "01700000000",
-    address: "Dhaka",
+    address: "House 1, Road 2",
+    district: "Dhaka",
+    deliveryArea: "inside_dhaka" as const,
     notes: "Call first",
     items: [
       { productId: "p1", quantity: 2 },

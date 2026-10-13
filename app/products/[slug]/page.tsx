@@ -3,8 +3,8 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { SITE_NAME, SITE_URL, pageOpenGraph, whatsappUrl } from "@/lib/site";
 import JsonLd from "@/components/JsonLd";
-import { getDeliveryFee, getProductBySlug, getProducts, getShopSettings } from "@/lib/api";
-import { discountPercent, formatPrice, isAvailable, isOnSale, isPreorder, preorderText } from "@/lib/utils";
+import { getDeliveryOptions, getProductBySlug, getProducts, getShopSettings } from "@/lib/api";
+import { describeDeliveryFees, discountPercent, isAvailable, isOnSale, isPreorder, preorderText } from "@/lib/utils";
 import type { Product } from "@/lib/types";
 import AddToCartButton from "@/components/AddToCartButton";
 import ProductImageGallery from "@/components/ProductImageGallery";
@@ -66,8 +66,8 @@ export default async function ProductDetailPage(props: Props) {
     throw error;
   }
 
-  const [deliveryFee, relatedResponse, settings] = await Promise.all([
-    getDeliveryFee().catch(() => null),
+  const [delivery, relatedResponse, settings] = await Promise.all([
+    getDeliveryOptions().catch(() => null),
     getProducts({ limit: 4 }).catch(() => null),
     getShopSettings(),
   ]);
@@ -209,8 +209,8 @@ export default async function ProductDetailPage(props: Props) {
 
               <div className="mt-2 border-t border-zinc-200">
                 <Accordion title="Delivery charge">
-                  {deliveryFee !== null
-                    ? `Delivery across Bangladesh costs ${formatPrice(deliveryFee)} per order. It is added at checkout.`
+                  {delivery !== null
+                    ? `Delivery costs ${describeDeliveryFees(delivery.zones)}. It is added at checkout.`
                     : "The delivery charge is shown at checkout."}
                 </Accordion>
                 <Accordion title="Payment">

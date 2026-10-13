@@ -1,4 +1,4 @@
-import { Order, Product, ShopSettings } from "./types";
+import { DeliveryArea, DeliveryOptions, Order, Product, ShopSettings } from "./types";
 import { WHATSAPP_NUMBER } from "./site";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5000/api";
@@ -147,7 +147,8 @@ export async function getProductBySlug(slug: string): Promise<Product> {
   }
 }
 
-export async function getDeliveryFee(): Promise<number> {
+// The fee for each delivery area and the district list. The API charges these same amounts.
+export async function getDeliveryOptions(): Promise<DeliveryOptions> {
   try {
     const res = await fetch(`${API_URL}/orders/delivery-fee`, catalogueInit());
 
@@ -156,7 +157,11 @@ export async function getDeliveryFee(): Promise<number> {
     }
 
     const json = await res.json();
-    return json.data.deliveryFee as number;
+    // An API from before delivery areas sends only one flat fee
+    if (!json.data?.zones || !Array.isArray(json.data.districts)) {
+      throw new Error("Delivery fees are not available right now");
+    }
+    return { zones: json.data.zones, districts: json.data.districts };
   } catch (error) {
     if (isTimeoutError(error)) {
       throw new Error("Request timed out. Please check your connection and try again.");
@@ -220,6 +225,8 @@ export interface OrderInput {
   customerName: string;
   phone: string;
   address: string;
+  district: string;
+  deliveryArea: DeliveryArea;
   notes?: string;
   items: { productId: string; quantity: number }[];
 }
