@@ -1,4 +1,4 @@
-import type { Product } from "./types";
+import type { DeliveryArea, Product } from "./types";
 
 export function formatPrice(price: number): string {
   return `৳${price.toLocaleString("en-US")}`;
@@ -27,4 +27,9 @@ export function isPreorder(product: Pick<Product, "inStock" | "stock" | "allowPr
 // 15 days is the API's default wait when a product does not set its own
 export function preorderText(days?: number): string {
   return `Pre-order, ships in about ${days ?? 15} days`;
+}
+
+// "৳70 in Dhaka city and ৳130 everywhere else in Bangladesh"
+export function describeDeliveryFees(zones: Record<DeliveryArea, number>): string {
+  return `${formatPrice(zones.inside_dhaka)} in Dhaka city and ${formatPrice(zones.outside_dhaka)} everywhere else in Bangladesh`;
 }

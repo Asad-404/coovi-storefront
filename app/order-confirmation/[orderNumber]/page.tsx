@@ -150,6 +150,7 @@ export default async function OrderConfirmationPage(props: Props) {
           </p>
           <p>
             <span className="font-medium">Delivering to:</span> {order.address}
+            {order.district ? `, ${order.district}` : ""}
           </p>
         </div>
       </div>

@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import PolicyPage from "@/components/PolicyPage";
-import { getDeliveryFee } from "@/lib/api";
+import { getDeliveryOptions } from "@/lib/api";
 import { pageOpenGraph } from "@/lib/site";
-import { formatPrice } from "@/lib/utils";
+import { describeDeliveryFees } from "@/lib/utils";
 
 export const metadata: Metadata = {
   title: "Delivery and payment",
@@ -15,7 +15,7 @@ export const metadata: Metadata = {
 export const revalidate = 3600;
 
 export default async function DeliveryPolicyPage() {
-  const fee = await getDeliveryFee().catch(() => null);
+  const delivery = await getDeliveryOptions().catch(() => null);
 
   return (
     <PolicyPage
@@ -26,9 +26,9 @@ export default async function DeliveryPolicyPage() {
           heading: "Delivery charge",
           body: (
             <p>
-              {fee !== null
-                ? `Delivery costs ${formatPrice(fee)} per order, wherever in Bangladesh you are.`
-                : "The delivery charge is the same for every order and is shown at checkout."}{" "}
+              {delivery !== null
+                ? `Delivery costs ${describeDeliveryFees(delivery.zones)}, per order.`
+                : "The delivery charge depends on your district and is shown at checkout."}{" "}
               It is added to your total at checkout, so you see the full amount before you place the order.
             </p>
           ),

@@ -40,12 +40,23 @@ export interface OrderItem {
   preorderDays?: number;
 }
 
+// Only Dhaka city is inside Dhaka; Dhaka suburbs and every other district are outside
+export type DeliveryArea = "inside_dhaka" | "outside_dhaka";
+
+// GET /orders/delivery-fee: the fee per area and the districts checkout offers
+export interface DeliveryOptions {
+  zones: Record<DeliveryArea, number>;
+  districts: string[];
+}
+
 export interface Order {
   _id: string;
   orderNumber: string;
   customerName: string;
   phone: string;
   address: string;
+  district?: string;
+  deliveryArea?: DeliveryArea;
   items: OrderItem[];
   subtotal: number;
   deliveryFee: number;
