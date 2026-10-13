@@ -7,6 +7,7 @@ import {
   getProductBySlug,
   getProducts,
   postOrder,
+  serverHeaders,
 } from "./api";
 
 const API_URL = "http://localhost:5000/api";
@@ -32,7 +33,46 @@ const requestInit = () => fetchMock.mock.calls[0][1] as RequestInit;
 
 beforeEach(() => {
   fetchMock.mockReset();
+  vi.unstubAllGlobals();
+  vi.unstubAllEnvs();
   vi.stubGlobal("fetch", fetchMock);
+});
+
+describe("serverHeaders", () => {
+  it("is empty without a storefront key", () => {
+    vi.stubEnv("STOREFRONT_API_KEY", "");
+    expect(serverHeaders("203.0.113.7")).toEqual({});
+  });
+
+  it("sends the key, and the shopper's address when given, on the server", () => {
+    vi.stubEnv("STOREFRONT_API_KEY", "secret");
+    expect(serverHeaders()).toEqual({ "x-coovi-storefront-key": "secret" });
+    expect(serverHeaders("203.0.113.7")).toEqual({
+      "x-coovi-storefront-key": "secret",
+      "x-coovi-client-ip": "203.0.113.7",
+    });
+  });
+
+  it("never sends the key from a browser", () => {
+    vi.stubEnv("STOREFRONT_API_KEY", "secret");
+    vi.stubGlobal("window", {});
+    expect(serverHeaders("203.0.113.7")).toEqual({});
+  });
+});
+
+describe("timeouts", () => {
+  it("waits up to a minute on the server and 30 seconds in a browser", async () => {
+    const timeout = vi.spyOn(AbortSignal, "timeout");
+    respond({ data: { deliveryFee: 60 } });
+    await getDeliveryFee();
+    expect(timeout).toHaveBeenLastCalledWith(60_000);
+
+    vi.stubGlobal("window", {});
+    respond({ data: { deliveryFee: 60 } });
+    await getDeliveryFee();
+    expect(timeout).toHaveBeenLastCalledWith(30_000);
+    timeout.mockRestore();
+  });
 });
 
 describe("getProducts", () => {
@@ -44,6 +84,15 @@ describe("getProducts", () => {
     expect(requestedUrl()).toBe(`${API_URL}/products`);
     expect(requestInit().signal).toBeInstanceOf(AbortSignal);
     expect(result).toEqual({ data: [{ _id: "p1" }], pagination });
+  });
+
+  it("caches the response on the server for a minute and identifies the storefront", async () => {
+    vi.stubEnv("STOREFRONT_API_KEY", "secret");
+    respond({ data: [], pagination });
+    await getProducts();
+    const init = requestInit() as RequestInit & { next?: { revalidate?: number } };
+    expect(init.next).toEqual({ revalidate: 60 });
+    expect(init.headers).toEqual({ "x-coovi-storefront-key": "secret" });
   });
 
   it("passes search, sort, page and limit as query params", async () => {
@@ -160,6 +209,7 @@ describe("getProductBySlug", () => {
     respond({ data: { _id: "p1", slug: "soap" } });
     await expect(getProductBySlug("soap")).resolves.toEqual({ _id: "p1", slug: "soap" });
     expect(requestedUrl()).toBe(`${API_URL}/products/soap`);
+    expect((requestInit() as { next?: unknown }).next).toEqual({ revalidate: 60 });
   });
 
   it("throws on 404", async () => {
@@ -180,6 +230,7 @@ describe("getDeliveryFee", () => {
     respond({ data: { deliveryFee: 60 } });
     await expect(getDeliveryFee()).resolves.toBe(60);
     expect(requestedUrl()).toBe(`${API_URL}/orders/delivery-fee`);
+    expect((requestInit() as { next?: unknown }).next).toEqual({ revalidate: 60 });
   });
 
   it("throws on a non-OK response", async () => {
@@ -202,6 +253,15 @@ describe("getOrderByNumber", () => {
     const url = new URL(requestedUrl());
     expect(url.pathname).toBe("/api/orders/CV-1001");
     expect(url.searchParams.get("phone")).toBe("+8801700000000");
+  });
+
+  it("never caches an order and forwards the shopper's address", async () => {
+    vi.stubEnv("STOREFRONT_API_KEY", "secret");
+    respond({ data: { orderNumber: "CV-1001" } });
+    await getOrderByNumber("CV-1001", "01712345678", "203.0.113.7");
+    const init = requestInit();
+    expect(init.cache).toBe("no-store");
+    expect(init.headers).toEqual({ "x-coovi-storefront-key": "secret", "x-coovi-client-ip": "203.0.113.7" });
   });
 
   it("encodes the order number into the path", async () => {
