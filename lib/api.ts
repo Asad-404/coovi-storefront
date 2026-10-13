@@ -1,4 +1,5 @@
-import { Order, Product } from "./types";
+import { Order, Product, ShopSettings } from "./types";
+import { WHATSAPP_NUMBER } from "./site";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5000/api";
 const TIMEOUT_MS = 8000;
@@ -133,6 +134,34 @@ export async function getDeliveryFee(): Promise<number> {
       throw new Error("Request timed out. Please check your connection and try again.");
     }
     throw error;
+  }
+}
+
+// What the shop showed before settings existed; used whenever the API can't be reached
+export const DEFAULT_SHOP_SETTINGS: ShopSettings = {
+  whatsappNumber: WHATSAPP_NUMBER,
+  supportPhone: "",
+  announcementText: "Shop the festive collection",
+  announcementActive: true,
+};
+
+const SETTINGS_REVALIDATE_SECONDS = 60;
+
+// Shop settings from the admin Settings page, cached for a minute. Never throws: the header is on every
+// page, so if the API is down the shop falls back to the defaults instead of showing an error.
+export async function getShopSettings(): Promise<ShopSettings> {
+  try {
+    const res = await fetch(`${API_URL}/settings`, {
+      signal: AbortSignal.timeout(TIMEOUT_MS),
+      next: { revalidate: SETTINGS_REVALIDATE_SECONDS },
+    });
+
+    if (!res.ok) return DEFAULT_SHOP_SETTINGS;
+
+    const data = (await res.json()).data as Partial<ShopSettings> | undefined;
+    return { ...DEFAULT_SHOP_SETTINGS, ...data };
+  } catch {
+    return DEFAULT_SHOP_SETTINGS;
   }
 }
 

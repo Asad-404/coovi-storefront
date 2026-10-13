@@ -6,6 +6,8 @@ import {
   getOrderByNumber,
   getProductBySlug,
   getProducts,
+  getShopSettings,
+  DEFAULT_SHOP_SETTINGS,
   postOrder,
 } from "./api";
 
@@ -190,6 +192,46 @@ describe("getDeliveryFee", () => {
   it("maps AbortError to a friendly message", async () => {
     rejectWith("AbortError");
     await expect(getDeliveryFee()).rejects.toThrow(TIMEOUT_MESSAGE);
+  });
+});
+
+describe("getShopSettings", () => {
+  const saved = {
+    whatsappNumber: "8801712345678",
+    supportPhone: "01812345678",
+    announcementText: "Eid sale",
+    announcementActive: false,
+  };
+
+  it("returns the saved settings and caches them for a minute", async () => {
+    respond({ success: true, data: saved });
+    await expect(getShopSettings()).resolves.toEqual(saved);
+    expect(requestedUrl()).toBe(`${API_URL}/settings`);
+    expect((requestInit() as RequestInit & { next?: { revalidate: number } }).next).toEqual({ revalidate: 60 });
+  });
+
+  it("fills a missing field from the defaults", async () => {
+    respond({ success: true, data: { whatsappNumber: "8801712345678" } });
+    await expect(getShopSettings()).resolves.toEqual({ ...DEFAULT_SHOP_SETTINGS, whatsappNumber: "8801712345678" });
+  });
+
+  it("falls back to the defaults on a non-OK response", async () => {
+    respond({}, 503);
+    await expect(getShopSettings()).resolves.toEqual(DEFAULT_SHOP_SETTINGS);
+  });
+
+  it("falls back to the defaults when the request fails", async () => {
+    rejectWith("TimeoutError");
+    await expect(getShopSettings()).resolves.toEqual(DEFAULT_SHOP_SETTINGS);
+  });
+
+  it("starts from what the shop showed before settings existed", () => {
+    expect(DEFAULT_SHOP_SETTINGS).toEqual({
+      whatsappNumber: "8801700000000",
+      supportPhone: "",
+      announcementText: "Shop the festive collection",
+      announcementActive: true,
+    });
   });
 });
 
