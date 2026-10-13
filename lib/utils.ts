@@ -18,3 +18,13 @@ export function discountPercent(product: Pick<Product, "price" | "compareAtPrice
 export function isAvailable(product: Pick<Product, "inStock" | "stock">): boolean {
   return product.inStock && product.stock > 0;
 }
+
+// Out of stock but taking pre-orders: still orderable, and the API marks the line as a pre-order
+export function isPreorder(product: Pick<Product, "inStock" | "stock" | "allowPreorder">): boolean {
+  return product.inStock && product.stock <= 0 && product.allowPreorder === true;
+}
+
+// 15 days is the API's default wait when a product does not set its own
+export function preorderText(days?: number): string {
+  return `Pre-order, ships in about ${days ?? 15} days`;
+}

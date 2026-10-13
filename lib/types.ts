@@ -12,6 +12,9 @@ export interface Product {
   category: string;
   stock: number;
   inStock: boolean;
+  // Out of stock pre-orders: orderable when on, shipping in about preorderDays
+  allowPreorder?: boolean;
+  preorderDays?: number;
   createdAt: string;
   updatedAt: string;
 }
@@ -32,6 +35,9 @@ export interface OrderItem {
   quantity: number;
   image: string;
   size?: string;
+  // Sourced for this customer; ships in about preorderDays
+  preorder?: boolean;
+  preorderDays?: number;
 }
 
 export interface Order {

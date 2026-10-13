@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { getOrderByNumber } from "@/lib/api";
-import { formatPrice } from "@/lib/utils";
+import { formatPrice, preorderText } from "@/lib/utils";
 
 type Props = PageProps<"/order-confirmation/[orderNumber]">;
 
@@ -112,6 +112,9 @@ export default async function OrderConfirmationPage(props: Props) {
                 <p className="font-medium text-zinc-900">
                   {item.name}
                 </p>
+                {item.preorder && (
+                  <p className="text-sm text-amber-700">{preorderText(item.preorderDays)}</p>
+                )}
                 <p className="text-sm text-zinc-500">
                   {formatPrice(item.price)} × {item.quantity}
                 </p>
