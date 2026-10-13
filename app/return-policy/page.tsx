@@ -33,21 +33,6 @@ export default function ReturnPolicyPage() {
           ),
         },
         {
-          heading: "If you find a problem after delivery",
-          body: (
-            <>
-              <p>
-                If you notice a problem after you have paid, such as the wrong item or a defect that was not visible
-                at delivery, contact us as soon as possible. Send your order number and clear photos of the saree.
-              </p>
-              <p>
-                Where the problem is on our side (wrong item, damage or a fabric defect), we will arrange an exchange
-                or a refund. We will tell you how it will be handled when you contact us.
-              </p>
-            </>
-          ),
-        },
-        {
           heading: "What we cannot accept",
           body: (
             <ul className="list-disc space-y-1 pl-6">
