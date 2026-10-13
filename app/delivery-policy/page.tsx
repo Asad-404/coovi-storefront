@@ -49,7 +49,8 @@ export default async function DeliveryPolicyPage() {
               <p>
                 After you order, your order is <strong>Pending</strong> until we confirm it, then{" "}
                 <strong>Processing</strong>, <strong>Shipped</strong> and finally <strong>Delivered</strong>. If an
-                order is cancelled it shows <strong>Cancelled</strong>.
+                order is cancelled it shows <strong>Cancelled</strong>, and a parcel that comes back to us shows{" "}
+                <strong>Returned</strong>.
               </p>
               <p>
                 Track it on the{" "}

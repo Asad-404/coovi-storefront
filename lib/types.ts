@@ -63,7 +63,7 @@ export interface Order {
   discount?: number;
   deliveryFee: number;
   total: number;
-  status: "Pending" | "Processing" | "Shipped" | "Delivered" | "Cancelled";
+  status: "Pending" | "Processing" | "Shipped" | "Delivered" | "Cancelled" | "Returned";
   paymentMethod: string;
   notes?: string;
   createdAt: string;

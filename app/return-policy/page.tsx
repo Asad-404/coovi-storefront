@@ -25,20 +25,9 @@ export default function ReturnPolicyPage() {
                 received the wrong saree, or it is damaged, you do not have to pay. Refuse the parcel and message us
                 with your order number.
               </p>
-            </>
-          ),
-        },
-        {
-          heading: "If you find a problem after delivery",
-          body: (
-            <>
               <p>
-                If you notice a problem after you have paid, such as the wrong item or a defect that was not visible
-                at delivery, contact us as soon as possible. Send your order number and clear photos of the saree.
-              </p>
-              <p>
-                Where the problem is on our side (wrong item, damage or a fabric defect), we will arrange an exchange
-                or a refund. We will tell you how it will be handled when you contact us.
+                We do not accept returns once you have paid and kept the parcel, so please check it carefully before
+                you pay.
               </p>
             </>
           ),
