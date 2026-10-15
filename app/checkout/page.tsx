@@ -6,7 +6,9 @@ import { useRouter } from "next/navigation";
 import { useCartStore, cartTotal } from "@/lib/cartStore";
 import type { DeliveryArea, DeliveryOptions } from "@/lib/types";
 import { getDeliveryOptions, getProductBySlug, postOrder } from "@/lib/api";
+import { orderPagePath } from "@/lib/orderAccess";
 import { formatPrice, isAvailable, isPreorder, preorderText } from "@/lib/utils";
+import { rememberOrderPhone } from "@/app/order-confirmation/actions";
 
 const inputClass =
   "w-full rounded-sm border border-zinc-300 bg-white px-3 py-2 text-zinc-900 placeholder-zinc-500 focus:border-brand";
@@ -117,12 +119,12 @@ export default function CheckoutPage() {
         items: items.map(({ productId, quantity }) => ({ productId, quantity })),
       });
 
+      // Order number + phone together act as the guest's credentials on the
+      // confirmation page; the phone goes in a cookie, not in the link
+      // If this fails the order page simply asks for the phone again
+      await rememberOrderPhone(order.orderNumber, form.phone).catch(() => false);
       clearCart();
-      // The phone travels with the link: order number + phone together act
-      // as the guest's credentials on the confirmation page
-      router.push(
-        `/order-confirmation/${order.orderNumber}?phone=${encodeURIComponent(form.phone)}`
-      );
+      router.push(orderPagePath(order.orderNumber));
     } catch (err) {
       setError(err instanceof Error ? err.message : "Your order could not be placed. Check your connection and try again.");
       setSubmitting(false);

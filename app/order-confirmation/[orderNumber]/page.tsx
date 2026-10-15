@@ -1,10 +1,12 @@
 import Image from "next/image";
 import Link from "next/link";
-import { headers } from "next/headers";
+import { cookies, headers } from "next/headers";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { getOrderByNumber } from "@/lib/api";
 import { clientIpFrom } from "@/lib/clientIp";
+import { ORDER_PHONE_COOKIE } from "@/lib/orderAccess";
+import { openOrder } from "../actions";
 import { formatPrice, preorderText } from "@/lib/utils";
 
 type Props = PageProps<"/order-confirmation/[orderNumber]">;
@@ -20,10 +22,8 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
 
 export default async function OrderConfirmationPage(props: Props) {
   const { orderNumber } = await props.params;
-  const { phone } = await props.searchParams;
-
-  // ?phone= can be a single value or a repeated ?phone=a&phone=b — take one
-  const phoneValue = Array.isArray(phone) ? phone[0] : phone;
+  // Set by checkout or the phone form below, and only sent to this order's page
+  const phoneValue = (await cookies()).get(ORDER_PHONE_COOKIE)?.value;
 
   // The order number alone must NOT be enough to see the order: number +
   // phone together act as the guest's credentials. Without a phone we ask
@@ -38,8 +38,9 @@ export default async function OrderConfirmationPage(props: Props) {
           Enter the phone number you used at checkout to view order{" "}
           <span className="font-mono">{orderNumber}</span>.
         </p>
-        {/* A plain GET form re-submits to this same URL with ?phone=... */}
-        <form method="get" className="flex w-full flex-col gap-3">
+        {/* Posted, not put in the address: the phone is kept in a cookie for this page */}
+        <form action={openOrder} className="flex w-full flex-col gap-3">
+          <input type="hidden" name="orderNumber" value={orderNumber} />
           <label htmlFor="order-phone" className="sr-only">
             Phone number used at checkout
           </label>
