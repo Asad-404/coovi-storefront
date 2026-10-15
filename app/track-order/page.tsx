@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { normalizeOrderNumber, orderPagePath } from "@/lib/orderAccess";
+import { rememberOrderPhone } from "@/app/order-confirmation/actions";
 
 const inputClass =
   "w-full rounded-sm border border-zinc-300 bg-white px-3 py-2 text-zinc-900 placeholder-zinc-500 focus:border-brand";
@@ -13,11 +15,13 @@ export default function TrackOrderPage() {
     phone: "",
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     // Order numbers are stored upper-case (ORD-YYYYMMDD-XXXXXX, older ones -NNN) and matched exactly
-    const orderNumber = form.orderNumber.trim().toUpperCase();
-    router.push(`/order-confirmation/${encodeURIComponent(orderNumber)}?phone=${encodeURIComponent(form.phone)}`);
+    const orderNumber = normalizeOrderNumber(form.orderNumber);
+    // The phone goes in a cookie for that order's page, never in the link
+    await rememberOrderPhone(orderNumber, form.phone).catch(() => false);
+    router.push(orderPagePath(orderNumber));
   };
 
   return (
