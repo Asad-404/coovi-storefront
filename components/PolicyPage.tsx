@@ -6,7 +6,7 @@ export interface PolicySection {
   body: React.ReactNode;
 }
 
-export const POLICY_UPDATED = "13 October 2026";
+export const POLICY_UPDATED = "20 October 2026";
 
 export default function PolicyPage({
   title,
