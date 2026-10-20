@@ -1,5 +1,15 @@
 import { describe, expect, it } from "vitest";
-import { describeDeliveryFees, discountPercent, formatPrice, isAvailable, isOnSale, isPreorder, preorderText } from "./utils";
+import {
+  describeDeliveryFees,
+  discountPercent,
+  formatPrice,
+  isAvailable,
+  isOnSale,
+  isPreorder,
+  preorderText,
+  shareDescription,
+  shareImages,
+} from "./utils";
 
 describe("formatPrice", () => {
   it("prefixes the taka sign", () => {
@@ -85,5 +95,48 @@ describe("describeDeliveryFees", () => {
     expect(describeDeliveryFees({ inside_dhaka: 70, outside_dhaka: 1300 })).toBe(
       "৳70 in Dhaka city and ৳1,300 everywhere else in Bangladesh"
     );
+  });
+});
+
+describe("shareDescription", () => {
+  const base = { price: 2500, inStock: true, stock: 3, allowPreorder: false };
+
+  it("leads with price and stock, then the product text", () => {
+    expect(shareDescription({ ...base, description: " Soft cotton saree. " })).toBe(
+      "৳2,500 · In stock · Cash on delivery across Bangladesh. Soft cotton saree.",
+    );
+  });
+
+  it("shows the original price of a product on sale", () => {
+    expect(shareDescription({ ...base, compareAtPrice: 3000 })).toBe(
+      "৳2,500 (was ৳3,000) · In stock · Cash on delivery across Bangladesh.",
+    );
+  });
+
+  it("says pre-order or out of stock", () => {
+    expect(shareDescription({ ...base, stock: 0, allowPreorder: true })).toMatch(/· Pre-order ·/);
+    expect(shareDescription({ ...base, stock: 0 })).toMatch(/· Out of stock ·/);
+  });
+
+  it("keeps it to 200 characters", () => {
+    expect(shareDescription({ ...base, description: "x".repeat(500) })).toHaveLength(200);
+  });
+});
+
+describe("shareImages", () => {
+  it("uses the uploaded share image with its size", () => {
+    expect(shareImages({ name: "Red saree", images: ["https://a/1.jpg"], shareImage: "https://a/wide.jpg" })).toEqual([
+      { url: "https://a/wide.jpg", width: 1200, height: 630, alt: "Red saree" },
+    ]);
+  });
+
+  it("falls back to the first photo", () => {
+    expect(shareImages({ name: "Red saree", images: ["https://a/1.jpg", "https://a/2.jpg"] })).toEqual([
+      { url: "https://a/1.jpg", alt: "Red saree" },
+    ]);
+  });
+
+  it("returns nothing when there is no photo", () => {
+    expect(shareImages({ name: "Red saree", images: [] })).toEqual([]);
   });
 });

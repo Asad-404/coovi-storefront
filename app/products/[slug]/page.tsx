@@ -4,7 +4,16 @@ import type { Metadata } from "next";
 import { SITE_NAME, SITE_URL, pageOpenGraph, whatsappUrl } from "@/lib/site";
 import JsonLd from "@/components/JsonLd";
 import { getDeliveryOptions, getProductBySlug, getProducts, getShopSettings } from "@/lib/api";
-import { describeDeliveryFees, discountPercent, isAvailable, isOnSale, isPreorder, preorderText } from "@/lib/utils";
+import {
+  describeDeliveryFees,
+  discountPercent,
+  isAvailable,
+  isOnSale,
+  isPreorder,
+  preorderText,
+  shareDescription,
+  shareImages,
+} from "@/lib/utils";
 import type { Product } from "@/lib/types";
 import AddToCartButton from "@/components/AddToCartButton";
 import ProductImageGallery from "@/components/ProductImageGallery";
@@ -18,9 +27,9 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
   const { slug } = await props.params;
   try {
     const product = await getProductBySlug(slug);
-    const description = (product.description ?? `Buy ${product.name} at ${SITE_NAME}. Cash on delivery anywhere in Bangladesh.`).slice(0, 200);
+    const description = shareDescription(product);
     const path = `/products/${product.slug}`;
-    const images = product.images.slice(0, 4);
+    const images = shareImages(product);
     return {
       title: product.name,
       description,
