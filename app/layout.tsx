@@ -3,6 +3,7 @@ import { Hind_Siliguri, Nunito, Tiro_Bangla } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import MetaPixel from "@/components/MetaPixel";
 import { BRAND_NAVY, SITE_DESCRIPTION, SITE_NAME, SITE_TAGLINE, SITE_URL } from "@/lib/site";
 
 // Nunito is only for the Coovi wordmark; it has no Bengali letters
@@ -58,6 +59,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <Header />
         <div className="flex flex-1 flex-col">{children}</div>
         <Footer />
+        <MetaPixel />
       </body>
     </html>
   );
