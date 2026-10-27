@@ -33,3 +33,31 @@ export function preorderText(days?: number): string {
 export function describeDeliveryFees(zones: Record<DeliveryArea, number>): string {
   return `${formatPrice(zones.inside_dhaka)} in Dhaka city and ${formatPrice(zones.outside_dhaka)} everywhere else in Bangladesh`;
 }
+
+// Facebook, Messenger and WhatsApp ignore price tags in a normal link preview, so the price and
+// stock lead the description: "৳2,500 (was ৳3,000) · In stock · Cash on delivery across Bangladesh. <text>"
+export function shareDescription(
+  product: Pick<Product, "price" | "compareAtPrice" | "inStock" | "stock" | "allowPreorder" | "description">,
+): string {
+  const price = isOnSale(product)
+    ? `${formatPrice(product.price)} (was ${formatPrice(product.compareAtPrice as number)})`
+    : formatPrice(product.price);
+  const stock = isAvailable(product) ? "In stock" : isPreorder(product) ? "Pre-order" : "Out of stock";
+  const lead = `${price} · ${stock} · Cash on delivery across Bangladesh.`;
+  const text = product.description?.trim();
+  return (text ? `${lead} ${text}` : lead).slice(0, 200);
+}
+
+export interface ShareImage {
+  url: string;
+  alt: string;
+  width?: number;
+  height?: number;
+}
+
+// The uploaded 1200x630 share image, with its size so Facebook shows it on the very first share.
+// Without one, the first product photo (its size is unknown, so none is sent)
+export function shareImages(product: Pick<Product, "name" | "images" | "shareImage">): ShareImage[] {
+  if (product.shareImage) return [{ url: product.shareImage, width: 1200, height: 630, alt: product.name }];
+  return product.images.slice(0, 1).map((url) => ({ url, alt: product.name }));
+}

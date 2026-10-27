@@ -8,6 +8,8 @@ export interface Product {
   price: number;
   compareAtPrice?: number;
   images: string[];
+  // Wide 1200x630 picture for social media link previews, set in the admin
+  shareImage?: string;
   size?: string;
   category: string;
   stock: number;
