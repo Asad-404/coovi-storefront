@@ -20,6 +20,7 @@ import ProductImageGallery from "@/components/ProductImageGallery";
 import ProductTabs from "@/components/ProductTabs";
 import ProductCard from "@/components/ProductCard";
 import PriceTag from "@/components/PriceTag";
+import { TrackViewContent } from "@/components/MetaPixelEvents";
 
 type Props = PageProps<"/products/[slug]">;
 
@@ -134,6 +135,7 @@ export default async function ProductDetailPage(props: Props) {
   return (
     <main className="w-full">
       <JsonLd data={structuredData} />
+      <TrackViewContent productId={product._id} price={product.price} />
       <section className="bg-zinc-50">
         <div className="mx-auto max-w-[1170px] px-4 pb-14">
           <nav className="py-4 text-xs text-zinc-600" aria-label="Breadcrumb">

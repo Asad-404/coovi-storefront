@@ -8,6 +8,7 @@ import { clientIpFrom } from "@/lib/clientIp";
 import { ORDER_PHONE_COOKIE } from "@/lib/orderAccess";
 import { openOrder } from "../actions";
 import { formatPrice, preorderText } from "@/lib/utils";
+import { TrackPurchase } from "@/components/MetaPixelEvents";
 
 type Props = PageProps<"/order-confirmation/[orderNumber]">;
 
@@ -77,6 +78,16 @@ export default async function OrderConfirmationPage(props: Props) {
 
   return (
     <main className="mx-auto w-full max-w-3xl px-4 pb-16 sm:px-6">
+      {/* Only the order number, total, status, date and product ids reach the pixel, never the customer's details */}
+      <TrackPurchase
+        order={{
+          orderNumber: order.orderNumber,
+          total: order.total,
+          status: order.status,
+          createdAt: order.createdAt,
+          items: order.items.map(({ productId, quantity }) => ({ productId, quantity })),
+        }}
+      />
       <div className="flex flex-col items-center gap-3 py-12 text-center">
         <div aria-hidden="true" className="flex h-16 w-16 items-center justify-center rounded-full bg-green-100 text-3xl text-green-700">
           ✓

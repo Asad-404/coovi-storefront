@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCartStore, cartTotal } from "@/lib/cartStore";
@@ -9,6 +9,7 @@ import { getDeliveryOptions, getProductBySlug, postOrder } from "@/lib/api";
 import { orderPagePath } from "@/lib/orderAccess";
 import { formatPrice, isAvailable, isPreorder, preorderText } from "@/lib/utils";
 import { rememberOrderPhone } from "@/app/order-confirmation/actions";
+import { trackInitiateCheckout } from "@/lib/metaPixel";
 
 const inputClass =
   "w-full rounded-sm border border-zinc-300 bg-white px-3 py-2 text-zinc-900 placeholder-zinc-500 focus:border-brand";
@@ -32,6 +33,14 @@ export default function CheckoutPage() {
   const [delivery, setDelivery] = useState<DeliveryOptions | null>(null);
   const [stockIssues, setStockIssues] = useState<string[]>([]);
   const [preorderNotes, setPreorderNotes] = useState<string[]>([]);
+
+  // Meta Pixel: once per visit to checkout, as soon as the saved cart has something in it
+  const checkoutTracked = useRef(false);
+  useEffect(() => {
+    if (checkoutTracked.current || items.length === 0) return;
+    checkoutTracked.current = true;
+    trackInitiateCheckout(items);
+  }, [items]);
 
   // Delivery fees and live stock both come from the API — the browser's copy
   // of either could be stale or spoofed

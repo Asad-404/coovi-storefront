@@ -1,14 +1,14 @@
 import type { NextConfig } from "next";
 
 // Security headers on every page. The Content Security Policy keeps the site out of other sites'
-// frames (clickjacking) and only runs scripts from this site; Next.js needs 'unsafe-inline' for its
+// frames (clickjacking) and only runs scripts from this site and Meta's pixel loader; Next.js needs 'unsafe-inline' for its
 // own inline scripts without nonces. Images and API calls may use any https address (product photos,
 // the API on Render). 'unsafe-eval' is only for `next dev`.
 const isDev = process.env.NODE_ENV === "development";
 
 const contentSecurityPolicy = [
   "default-src 'self'",
-  `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""}`,
+  `script-src 'self' 'unsafe-inline' https://connect.facebook.net${isDev ? " 'unsafe-eval'" : ""}`,
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' blob: data: https:",
   "font-src 'self'",
