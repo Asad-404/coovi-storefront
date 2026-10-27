@@ -182,8 +182,12 @@ export default function CheckoutPage() {
                 value={form.phone}
                 onChange={(e) => setForm({ ...form, phone: e.target.value })}
                 placeholder="01712345678 (11 digits)"
+                aria-describedby="phone-hint"
                 className={inputClass}
               />
+              <span id="phone-hint" className="font-normal text-zinc-500">
+                We will call this number to confirm your order.
+              </span>
             </label>
 
             <label className="flex flex-col gap-1 text-sm font-medium text-zinc-700">
