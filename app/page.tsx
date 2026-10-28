@@ -62,8 +62,8 @@ export default async function Home(props: PageProps<"/">) {
       <PromoBanner />
 
       {newArrivals.length > 0 && (
-        <section className="mx-auto max-w-[1120px] px-4">
-          <div className="rounded-sm border border-frost bg-mist px-4 py-10 sm:px-6">
+        <section className="mx-auto max-w-280 px-2">
+          <div className="rounded-sm border border-frost bg-mist px-2 py-4 sm:px-4">
             <SectionTitle title="New arrivals" subtitle="Fresh designs, limited pieces per design." />
             <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
               {newArrivals.map((product) => (
@@ -74,7 +74,7 @@ export default async function Home(props: PageProps<"/">) {
         </section>
       )}
 
-      <section id="shop" className="mx-auto max-w-[1120px] scroll-mt-24 px-4 py-14">
+      <section id="shop" className="mx-auto max-w-280 scroll-mt-24 px-2 py-10">
         <SectionTitle title="All sarees" />
 
         {products === null ? (
@@ -95,7 +95,7 @@ export default async function Home(props: PageProps<"/">) {
           </p>
         ) : (
           <>
-            <div className="grid grid-cols-2 gap-x-4 gap-y-10 sm:gap-x-[30px] md:grid-cols-3">
+            <div className="grid grid-cols-2 gap-x-4 gap-y-10 sm:gap-x-7.5 md:grid-cols-3">
               {products.data.map((product) => (
                 <ProductCard key={product._id} product={product} />
               ))}

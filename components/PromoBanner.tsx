@@ -1,8 +1,8 @@
 export default function PromoBanner() {
   return (
-    <section className="mx-auto max-w-[1120px] px-4 py-10">
+    <section className="mx-auto max-w-280 px-2 py-10">
       <div className="grid items-center gap-6 md:grid-cols-[510px_1fr]">
-        <div className="flex h-[210px] flex-col justify-center gap-2 rounded-sm bg-brand px-8 text-white">
+        <div className="flex h-52.5 flex-col justify-center gap-2 rounded-sm bg-brand px-8 text-white">
           <p className="text-sm font-semibold text-logo-dot">Pay at your door</p>
           <p className="font-display text-4xl leading-tight">
             Cash on
