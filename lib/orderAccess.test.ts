@@ -7,6 +7,7 @@ describe("orderAccess", () => {
   });
 
   it("accepts real order numbers and rejects anything else", () => {
+    expect(isOrderNumber("K7M3QX")).toBe(true);
     expect(isOrderNumber("ORD-20261013-K7M3QX")).toBe(true);
     expect(isOrderNumber("ORD-20261013-001")).toBe(true);
     expect(isOrderNumber("")).toBe(false);
