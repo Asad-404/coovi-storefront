@@ -22,7 +22,7 @@ export default function CartPage() {
         </svg>
         <h1 className="text-3xl text-ink sm:text-4xl">Your cart is currently empty.</h1>
         <Link
-          href="/shop"
+          href="/saree"
           className="btn btn-primary"
         >
           Return to shop

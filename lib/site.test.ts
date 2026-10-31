@@ -27,8 +27,8 @@ describe("SITE_URL", () => {
 describe("pageOpenGraph", () => {
   it("builds an Open Graph block that keeps the site name and locale", async () => {
     const { pageOpenGraph } = await loadSite();
-    expect(pageOpenGraph("/shop", "Sarees | Coovi")).toEqual({
-      url: "/shop",
+    expect(pageOpenGraph("/saree", "Sarees | Coovi")).toEqual({
+      url: "/saree",
       title: "Sarees | Coovi",
       type: "website",
       siteName: "Coovi",

@@ -31,6 +31,10 @@ const nextConfig: NextConfig = {
   async headers() {
     return [{ source: "/(.*)", headers: securityHeaders }];
   },
+  async redirects() {
+    // The collection used to live at /shop; keep old links and search results working
+    return [{ source: "/shop", destination: "/saree", permanent: true }];
+  },
   images: {
     remotePatterns: [
       {

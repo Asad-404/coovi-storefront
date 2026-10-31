@@ -19,7 +19,7 @@ export default function NotFound() {
       </p>
       <div className="mt-2 flex flex-wrap justify-center gap-3">
         <Link
-          href="/shop"
+          href="/saree"
           className="btn btn-primary"
         >
           Browse sarees

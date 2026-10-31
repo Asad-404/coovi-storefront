@@ -16,7 +16,7 @@ export async function GET() {
       })
       .join("\n");
   } catch {
-    productLines = `- See the full list at ${SITE_URL}/shop`;
+    productLines = `- See the full list at ${SITE_URL}/saree`;
   }
 
   const body = `# ${SITE_NAME}
@@ -27,7 +27,7 @@ ${SITE_NAME} is an online saree shop in Bangladesh. Prices are in Bangladeshi ta
 
 ## Pages
 
-- [All sarees](${SITE_URL}/shop): browse, sort and search the full collection
+- [All sarees](${SITE_URL}/saree): browse, sort and search the full collection
 - [On sale](${SITE_URL}/sale): sarees with a reduced price
 - [About](${SITE_URL}/about)
 - [Contact](${SITE_URL}/contact)
