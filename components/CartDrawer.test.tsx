@@ -40,6 +40,13 @@ describe("CartDrawer", () => {
     expect(dialog.contains(document.activeElement)).toBe(true);
   });
 
+  it("slides inside a wrapper that cannot scroll or change width, so the panel does not shake", () => {
+    render(<CartDrawer isOpen onClose={() => {}} />);
+    const wrapper = screen.getByRole("dialog").parentElement;
+    expect(wrapper?.className).toContain("overflow-clip");
+    expect(wrapper?.className).toContain("w-screen");
+  });
+
   it("closes on Escape", () => {
     const onClose = vi.fn();
     render(<CartDrawer isOpen onClose={onClose} />);
