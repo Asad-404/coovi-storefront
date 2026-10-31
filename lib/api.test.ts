@@ -9,6 +9,7 @@ import {
   getProducts,
   getShopSettings,
   DEFAULT_SHOP_SETTINGS,
+  OrderNotFoundError,
   postOrder,
   serverHeaders,
 } from "./api";
@@ -324,6 +325,13 @@ describe("getOrderByNumber", () => {
     await expect(getOrderByNumber("CV-404", "017")).rejects.toThrow(
       "API request failed with status 404"
     );
+  });
+
+  it("tells a missing order apart from the API being busy", async () => {
+    respond({}, 404);
+    await expect(getOrderByNumber("CV-404", "017")).rejects.toBeInstanceOf(OrderNotFoundError);
+    respond({}, 429);
+    await expect(getOrderByNumber("CV-1001", "017")).rejects.not.toBeInstanceOf(OrderNotFoundError);
   });
 
   it("maps AbortError to a friendly message", async () => {

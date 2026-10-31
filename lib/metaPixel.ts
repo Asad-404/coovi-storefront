@@ -11,7 +11,7 @@ export const CURRENCY = "BDT";
 export const REPORTED_ORDERS_KEY = "coovi-pixel-orders";
 const MAX_REPORTED_ORDERS = 50;
 
-// An order page opened later (Track order, another device) is a visit, not a new sale
+// A confirmation page opened later (an old link, another device) is a visit, not a new sale
 export const PURCHASE_WINDOW_MS = 60 * 60 * 1000;
 
 type Fbq = ((...args: unknown[]) => void) & {
