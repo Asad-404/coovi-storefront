@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 
-const slant = "polygon(7% 0, 100% 0, 93% 100%, 0 100%)";
+export const slant = "polygon(7% 0, 100% 0, 93% 100%, 0 100%)";
 
 export default function HomeHero({ images }: { images: string[] }) {
   return (

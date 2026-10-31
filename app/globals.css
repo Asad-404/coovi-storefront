@@ -12,6 +12,9 @@
   --color-logo-dot: #06b5e4;
   --color-mist: #f6f5f2;
   --color-frost: #e6e3dc;
+  /* Home hero only: a solid blue-grey from the logo's navy, with a deeper glow in one corner */
+  --color-haze: #d5e2ec;
+  --color-haze-deep: #afc8da;
   --color-ink: #0f1b33;
   --font-sans: var(--font-hind-siliguri), system-ui, sans-serif;
   --font-display: var(--font-tiro-bangla), Georgia, serif;
