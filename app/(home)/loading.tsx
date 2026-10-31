@@ -1,4 +1,4 @@
-import { slant } from "@/components/HomeHero";
+import { panelOverlap, panelShape, stripSlope } from "@/components/HomeHero";
 import Skeleton, { ProductGridSkeleton } from "@/components/Skeleton";
 
 // Lives in a route group because app/loading.tsx would also wrap every other route,
@@ -22,10 +22,16 @@ export default function Loading() {
               <Skeleton className="mt-2 h-13 w-full sm:w-52" />
             </div>
 
-            <div className="flex h-[210px] w-full overflow-hidden sm:h-[320px] lg:mr-[8%] lg:h-auto lg:w-[46%]">
+            <div className={`flex h-[210px] w-full overflow-hidden sm:h-[320px] lg:mr-[8%] lg:h-auto lg:w-[46%] ${stripSlope}`}>
               {Array.from({ length: 3 }).map((_, index) => (
-                <div key={index} className={`h-full flex-1 ${index > 0 ? "ml-[-2.5%]" : ""}`} style={{ clipPath: slant }}>
-                  <Skeleton className="h-full" />
+                <div
+                  key={index}
+                  className="relative h-full min-w-0 flex-1 bg-white"
+                  style={{ clipPath: panelShape, marginLeft: index > 0 ? panelOverlap : undefined }}
+                >
+                  <div className="absolute inset-x-[3px] inset-y-0" style={{ clipPath: panelShape }}>
+                    <Skeleton className="h-full" />
+                  </div>
                 </div>
               ))}
             </div>

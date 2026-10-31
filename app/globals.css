@@ -64,6 +64,22 @@ body {
   .btn-secondary {
     @apply border border-brand text-brand hover:bg-brand hover:text-white;
   }
+
+  /* Home hero light sweep. The resting style is what "reduce motion" visitors see: parked outside the panel. */
+  .hero-sheen {
+    transform: translateX(-200%) skewX(-9deg);
+    animation: hero-sheen 7s ease-in-out infinite;
+  }
+}
+
+@keyframes hero-sheen {
+  0% {
+    transform: translateX(-200%) skewX(-9deg);
+  }
+  35%,
+  100% {
+    transform: translateX(300%) skewX(-9deg);
+  }
 }
 
 h1,
