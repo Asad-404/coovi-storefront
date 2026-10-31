@@ -113,7 +113,7 @@ export default async function ProductDetailPage(props: Props) {
       "@type": "BreadcrumbList",
       itemListElement: [
         { "@type": "ListItem", position: 1, name: "Home", item: SITE_URL },
-        { "@type": "ListItem", position: 2, name: "Saree", item: `${SITE_URL}/shop` },
+        { "@type": "ListItem", position: 2, name: "Saree", item: `${SITE_URL}/saree` },
         { "@type": "ListItem", position: 3, name: product.name, item: productUrl },
       ],
     },
@@ -128,7 +128,7 @@ export default async function ProductDetailPage(props: Props) {
           <nav className="py-4 text-xs text-zinc-600" aria-label="Breadcrumb">
             <Link href="/" className="text-ink hover:text-brand">Home</Link>
             <span className="mx-2 text-zinc-300">/</span>
-            <Link href="/shop" className="text-ink hover:text-brand">Saree</Link>
+            <Link href="/saree" className="text-ink hover:text-brand">Saree</Link>
             <span className="mx-2 text-zinc-300">/</span>
             <span>{title}</span>
           </nav>

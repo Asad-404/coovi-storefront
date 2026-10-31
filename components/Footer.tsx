@@ -7,7 +7,7 @@ export default function Footer() {
       <div className="flex flex-col items-center gap-5 px-4 py-14">
         <Logo size="lg" />
         <nav className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-zinc-700">
-          <Link href="/shop" className="hover:text-brand">Saree</Link>
+          <Link href="/saree" className="hover:text-brand">Saree</Link>
           <Link href="/sale" className="hover:text-brand">On sale</Link>
           <Link href="/track-order" className="hover:text-brand">Track order</Link>
           <Link href="/about" className="hover:text-brand">About</Link>

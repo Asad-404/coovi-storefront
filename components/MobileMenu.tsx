@@ -7,7 +7,7 @@ import { useDialog } from "@/lib/useDialog";
 
 const links = [
   { href: "/", label: "Home" },
-  { href: "/shop", label: "Saree" },
+  { href: "/saree", label: "Saree" },
   { href: "/sale", label: "On sale" },
   { href: "/track-order", label: "Track order" },
   { href: "/about", label: "About" },
@@ -27,7 +27,7 @@ export default function MobileMenu() {
     event.preventDefault();
     const trimmed = term.trim();
     setOpen(false);
-    router.push(trimmed ? `/shop?search=${encodeURIComponent(trimmed)}` : "/shop");
+    router.push(trimmed ? `/saree?search=${encodeURIComponent(trimmed)}` : "/saree");
   }
 
   return (

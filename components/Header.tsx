@@ -8,7 +8,7 @@ import { whatsappUrl } from "@/lib/site";
 
 const navLinks = [
   { href: "/", label: "Home" },
-  { href: "/shop", label: "Saree" },
+  { href: "/saree", label: "Saree" },
   { href: "/sale", label: "On sale" },
   { href: "/track-order", label: "Track order" },
 ];
@@ -71,7 +71,7 @@ export default async function Header() {
       </header>
 
       {settings.announcementActive && settings.announcementText && (
-        <Link href="/shop" className="block bg-brand py-3.5 text-center text-sm font-semibold text-white hover:bg-brand-dark">
+        <Link href="/saree" className="block bg-brand py-3.5 text-center text-sm font-semibold text-white hover:bg-brand-dark">
           {settings.announcementText}
         </Link>
       )}

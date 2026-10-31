@@ -25,7 +25,7 @@ export default function SearchBar() {
     event.preventDefault();
     const trimmed = term.trim();
     setOpen(false);
-    router.push(trimmed ? `/shop?search=${encodeURIComponent(trimmed)}` : "/shop");
+    router.push(trimmed ? `/saree?search=${encodeURIComponent(trimmed)}` : "/saree");
   }
 
   return (

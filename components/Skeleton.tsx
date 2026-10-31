@@ -55,7 +55,7 @@ export function PageHeadingSkeleton({ description = false }: { description?: boo
   );
 }
 
-// The sort control, result count and grid shared by /shop and /sale
+// The sort control, result count and grid shared by /saree and /sale
 export function ProductListingSkeleton() {
   return (
     <main className="w-full pb-16">

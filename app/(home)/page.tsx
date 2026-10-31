@@ -32,7 +32,7 @@ const siteStructuredData = [
     url: SITE_URL,
     potentialAction: {
       "@type": "SearchAction",
-      target: `${SITE_URL}/shop?search={search_term_string}`,
+      target: `${SITE_URL}/saree?search={search_term_string}`,
       "query-input": "required name=search_term_string",
     },
   },
@@ -40,9 +40,9 @@ const siteStructuredData = [
 
 export default async function Home(props: PageProps<"/">) {
   const { search } = await props.searchParams;
-  // Old search links pointed at "/?search=..."; the search results live on /shop now
+  // Old search links pointed at "/?search=..."; the search results live on /saree now
   if (typeof search === "string" && search) {
-    redirect(`/shop?search=${encodeURIComponent(search)}`);
+    redirect(`/saree?search=${encodeURIComponent(search)}`);
   }
 
   let products = null;
@@ -103,7 +103,7 @@ export default async function Home(props: PageProps<"/">) {
 
             <div className="mt-12 flex flex-col items-center gap-2">
               <Link
-                href="/shop"
+                href="/saree"
                 className="btn btn-primary"
               >
                 Shop all sarees

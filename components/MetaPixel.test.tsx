@@ -47,7 +47,7 @@ describe("MetaPixel", () => {
     rerender(<MetaPixel />);
     expect(tracked()).toHaveLength(1);
 
-    navigation.pathname = "/shop";
+    navigation.pathname = "/saree";
     rerender(<MetaPixel />);
     expect(tracked()).toEqual([
       ["track", "PageView"],
