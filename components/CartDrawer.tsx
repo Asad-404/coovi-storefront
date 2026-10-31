@@ -45,8 +45,10 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
       )}
 
       {/* The wrapper clips the closed drawer so it cannot widen the page on phones */}
+      {/* overflow-clip, not hidden: focusing the off-screen panel would scroll a hidden wrapper and fight the slide */}
+      {/* w-screen, not inset-0: the scrollbar coming back on close would narrow the wrapper and pull the panel left */}
       {/* inert while closed: the off-screen panel must not take Tab focus or be read out */}
-      <div className={`fixed inset-0 z-50 overflow-hidden ${isOpen ? "" : "pointer-events-none"}`} inert={!isOpen}>
+      <div className={`fixed inset-y-0 left-0 z-50 w-screen overflow-clip ${isOpen ? "" : "pointer-events-none"}`} inert={!isOpen}>
       <div
         ref={panelRef}
         role="dialog"
