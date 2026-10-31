@@ -4,7 +4,7 @@
 export const ORDER_PHONE_COOKIE = "coovi_order_phone";
 
 const PHONE_PATTERN = /^01[0-9]{9}$/;
-// ORD-YYYYMMDD-XXXXXX (older orders end in -NNN)
+// 6 characters, e.g. K7M3QX (links from before 2026-10-31 use ORD-YYYYMMDD-XXXXXX)
 const ORDER_NUMBER_PATTERN = /^[A-Z0-9-]{1,40}$/;
 
 // Order numbers are stored upper-case and matched exactly
