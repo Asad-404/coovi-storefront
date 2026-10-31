@@ -23,3 +23,7 @@ export function isPhone(phone: string): boolean {
 export function orderPagePath(orderNumber: string): string {
   return `/order-confirmation/${encodeURIComponent(orderNumber)}`;
 }
+
+export function orderTrackingPath(orderNumber: string): string {
+  return `/track-order/${encodeURIComponent(orderNumber)}`;
+}

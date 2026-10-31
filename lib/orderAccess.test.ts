@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { isOrderNumber, isPhone, normalizeOrderNumber, orderPagePath } from "./orderAccess";
+import { isOrderNumber, isPhone, normalizeOrderNumber, orderPagePath, orderTrackingPath } from "./orderAccess";
 
 describe("orderAccess", () => {
   it("normalizes order numbers the way they are stored", () => {
@@ -24,5 +24,10 @@ describe("orderAccess", () => {
   it("builds the order page path without the phone", () => {
     expect(orderPagePath("ORD-20261013-K7M3QX")).toBe("/order-confirmation/ORD-20261013-K7M3QX");
     expect(orderPagePath("a b")).toBe("/order-confirmation/a%20b");
+  });
+
+  it("builds the tracking page path without the phone", () => {
+    expect(orderTrackingPath("K7M3QX")).toBe("/track-order/K7M3QX");
+    expect(orderTrackingPath("a b")).toBe("/track-order/a%20b");
   });
 });

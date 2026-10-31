@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { normalizeOrderNumber, orderPagePath } from "@/lib/orderAccess";
-import { rememberOrderPhone } from "@/app/order-confirmation/actions";
+import { normalizeOrderNumber, orderTrackingPath } from "@/lib/orderAccess";
+import { rememberTrackingPhone } from "@/app/order-confirmation/actions";
 
 const inputClass =
   "w-full rounded-sm border border-zinc-300 bg-white px-3 py-2 text-zinc-900 placeholder-zinc-500 focus:border-brand";
@@ -14,14 +14,23 @@ export default function TrackOrderPage() {
     orderNumber: "",
     phone: "",
   });
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setSubmitting(true);
+    setError("");
     // Order numbers are stored upper-case (6 characters, e.g. K7M3QX) and matched exactly
     const orderNumber = normalizeOrderNumber(form.orderNumber);
-    // The phone goes in a cookie for that order's page, never in the link
-    await rememberOrderPhone(orderNumber, form.phone).catch(() => false);
-    router.push(orderPagePath(orderNumber));
+    // The phone goes in a cookie for that order's tracking page, never in the link
+    const remembered = await rememberTrackingPhone(orderNumber, form.phone).catch(() => false);
+    if (!remembered) {
+      setError("We could not check that order. Check the order number and phone number, then try again.");
+      setSubmitting(false);
+      return;
+    }
+    router.push(orderTrackingPath(orderNumber));
   };
 
   return (
@@ -71,11 +80,18 @@ export default function TrackOrderPage() {
           </span>
         </label>
 
+        {error && (
+          <p role="alert" className="text-sm text-red-700">
+            {error}
+          </p>
+        )}
+
         <button
           type="submit"
+          disabled={submitting}
           className="btn btn-primary h-12 w-full text-base"
         >
-          Track order
+          {submitting ? "Checking..." : "Track order"}
         </button>
       </form>
 

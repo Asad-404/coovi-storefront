@@ -193,6 +193,14 @@ export async function getShopSettings(): Promise<ShopSettings> {
   }
 }
 
+// The API found no order with this number and phone, as opposed to being down or busy
+export class OrderNotFoundError extends Error {
+  constructor() {
+    super("API request failed with status 404");
+    this.name = "OrderNotFoundError";
+  }
+}
+
 // clientIp is the shopper's own address, so the API limits order lookups per shopper rather than
 // per storefront server. A customer's order is never cached.
 export async function getOrderByNumber(orderNumber: string, phone: string, clientIp?: string): Promise<Order> {
@@ -203,6 +211,10 @@ export async function getOrderByNumber(orderNumber: string, phone: string, clien
       headers: serverHeaders(clientIp),
       signal: timeoutSignal(),
     });
+
+    if (res.status === 404) {
+      throw new OrderNotFoundError();
+    }
 
     if (!res.ok) {
       throw new Error(`API request failed with status ${res.status}`);

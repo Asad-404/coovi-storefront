@@ -64,7 +64,8 @@ GitHub Actions (`.github/workflows/ci.yml`) runs on every pull request and on pu
 
 ```
 app/          Routes: home, products/[slug], cart, checkout,
-              order-confirmation/[orderNumber], track-order, about, contact
+              order-confirmation/[orderNumber], track-order,
+              track-order/[orderNumber], about, contact
 components/   UI components (cart drawer, filters, product card, gallery, ...)
 lib/
   api.ts        API client (fetch with an 8s timeout)
