@@ -21,6 +21,7 @@ pnpm coverage
 - Zustand persists the guest cart in the browser. Checkout must use the API contract and send product IDs and quantities; the API remains authoritative for prices, stock, delivery fees, and totals.
 - Read the relevant Next.js guide under `node_modules/next/dist/docs/` before changing Next.js-specific code. The imported `AGENTS.md` contains the generated version-specific rule; do not duplicate or remove it.
 - The API contract shared with the other apps is `..\API_ENDPOINTS.md`.
+- Give each new route its own `loading.tsx`, built from `components/Skeleton.tsx`. Do not add `app/loading.tsx`: it wraps every route, so its skeleton flashes on the way to them. The home page and its skeleton live in the `app/(home)/` route group for this reason.
 
 ### Design rules
 

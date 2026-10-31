@@ -63,9 +63,11 @@ GitHub Actions (`.github/workflows/ci.yml`) runs on every pull request and on pu
 ## Project structure
 
 ```
-app/          Routes: home, products/[slug], cart, checkout,
+app/          Routes: home (in the (home) route group), shop, sale,
+              products/[slug], cart, checkout,
               order-confirmation/[orderNumber], track-order,
-              track-order/[orderNumber], about, contact
+              track-order/[orderNumber], about, contact, policy pages.
+              Each route has its own loading.tsx, built from components/Skeleton.tsx
 components/   UI components (cart drawer, filters, product card, gallery, ...)
 lib/
   api.ts        API client (fetch with an 8s timeout)
