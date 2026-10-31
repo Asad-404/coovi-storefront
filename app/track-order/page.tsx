@@ -17,7 +17,7 @@ export default function TrackOrderPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Order numbers are stored upper-case (6 characters, older links ORD-YYYYMMDD-XXXXXX) and matched exactly
+    // Order numbers are stored upper-case (6 characters, e.g. K7M3QX) and matched exactly
     const orderNumber = normalizeOrderNumber(form.orderNumber);
     // The phone goes in a cookie for that order's page, never in the link
     await rememberOrderPhone(orderNumber, form.phone).catch(() => false);
