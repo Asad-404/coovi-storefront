@@ -50,7 +50,8 @@ export default function ProductImageGallery({ images, productName }: ProductImag
                 src={primaryImage}
                 alt={productName}
                 fill
-                priority
+                loading="eager"
+                fetchPriority="high"
                 sizes="(max-width: 1024px) 100vw, 700px"
                 className="object-cover"
               />
