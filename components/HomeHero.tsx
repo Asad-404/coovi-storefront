@@ -89,7 +89,7 @@ export default function HomeHero({ images }: { images: string[] }) {
                       src={src}
                       alt=""
                       fill
-                      priority={index === 0}
+                      loading="eager"
                       sizes="(max-width: 1024px) 45vw, 22vw"
                       className="object-cover"
                     />
