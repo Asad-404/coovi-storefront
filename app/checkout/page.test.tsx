@@ -17,7 +17,6 @@ vi.mock("@/lib/api", () => ({
   postOrder: vi.fn(),
 }));
 vi.mock("@/app/order-confirmation/actions", () => ({ rememberOrderPhone: vi.fn(async () => true) }));
-vi.mock("@/lib/metaPixel", () => ({ trackInitiateCheckout: vi.fn() }));
 
 const inside = () => screen.getByRole<HTMLInputElement>("radio", { name: /Inside Dhaka/ });
 const outside = () => screen.getByRole<HTMLInputElement>("radio", { name: /Outside Dhaka/ });

@@ -64,17 +64,6 @@ export default function PrivacyPolicyPage() {
           ),
         },
         {
-          heading: "Cookies and tracking",
-          body: (
-            <p>
-              We use the Meta (Facebook) Pixel to measure our Facebook and Instagram ads. It sets cookies and tells
-              Meta which pages and sarees you view, what you add to your cart and when an order is placed, with the
-              order total and product codes. It never receives your name, phone number or address. You can limit
-              this with your browser&apos;s cookie settings or an ad blocker, and in your Facebook ad preferences.
-            </p>
-          ),
-        },
-        {
           heading: "Your choices",
           body: (
             <p>
