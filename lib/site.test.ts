@@ -33,6 +33,14 @@ describe("pageOpenGraph", () => {
       type: "website",
       siteName: "Coovi",
       locale: "en_BD",
+      images: [
+        {
+          url: "/opengraph-image",
+          width: 1200,
+          height: 630,
+          alt: "Coovi - handcrafted sarees, delivered across Bangladesh",
+        },
+      ],
     });
   });
 

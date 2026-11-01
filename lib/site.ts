@@ -14,7 +14,23 @@ export function whatsappUrl(message?: string, number: string = WHATSAPP_NUMBER):
   return `https://wa.me/${number}${message ? `?text=${encodeURIComponent(message)}` : ""}`;
 }
 
+// The share card from app/opengraph-image.tsx. A page-level openGraph drops it unless it is named again.
+const DEFAULT_SHARE_IMAGE = {
+  url: "/opengraph-image",
+  width: 1200,
+  height: 630,
+  alt: "Coovi - handcrafted sarees, delivered across Bangladesh",
+};
+
 // Open Graph block for a page. A page-level openGraph replaces the layout's, so shared fields are repeated here.
 export function pageOpenGraph(path: string, title: string, extra: Record<string, unknown> = {}) {
-  return { url: path, title, type: "website" as const, siteName: SITE_NAME, locale: "en_BD", ...extra };
+  return {
+    url: path,
+    title,
+    type: "website" as const,
+    siteName: SITE_NAME,
+    locale: "en_BD",
+    images: [DEFAULT_SHARE_IMAGE],
+    ...extra,
+  };
 }
