@@ -6,6 +6,7 @@ import {
   isAvailable,
   isOnSale,
   isPreorder,
+  joinAddress,
   preorderText,
   shareDescription,
   shareImages,
@@ -23,6 +24,16 @@ describe("formatPrice", () => {
 
   it("handles zero", () => {
     expect(formatPrice(0)).toBe("৳0");
+  });
+});
+
+describe("joinAddress", () => {
+  it("joins the parts with commas", () => {
+    expect(joinAddress("House 12, Road 5", "Flat 4B", "Dhanmondi")).toBe("House 12, Road 5, Flat 4B, Dhanmondi");
+  });
+
+  it("skips empty parts and trims spaces", () => {
+    expect(joinAddress(" House 12 ", "", "  ", "Dhanmondi ")).toBe("House 12, Dhanmondi");
   });
 });
 

@@ -7,12 +7,21 @@ import { useCartStore, cartTotal } from "@/lib/cartStore";
 import type { DeliveryArea, DeliveryOptions } from "@/lib/types";
 import { getDeliveryOptions, getProductBySlug, postOrder } from "@/lib/api";
 import { orderPagePath } from "@/lib/orderAccess";
-import { formatPrice, isAvailable, isPreorder, preorderText } from "@/lib/utils";
+import { formatPrice, isAvailable, isPreorder, joinAddress, preorderText } from "@/lib/utils";
 import { rememberOrderPhone } from "@/app/order-confirmation/actions";
 import { trackInitiateCheckout } from "@/lib/metaPixel";
 
 const inputClass =
   "w-full rounded-sm border border-zinc-300 bg-white px-3 py-2 text-zinc-900 placeholder-zinc-500 focus:border-brand";
+
+const AREA_OPTIONS: { value: DeliveryArea; label: string; hint: string }[] = [
+  { value: "inside_dhaka", label: "Inside Dhaka", hint: "Dhaka city only" },
+  {
+    value: "outside_dhaka",
+    label: "Outside Dhaka",
+    hint: "All other districts, and suburbs such as Savar and Keraniganj",
+  },
+];
 
 export default function CheckoutPage() {
   const items = useCartStore((state) => state.items);
@@ -22,12 +31,15 @@ export default function CheckoutPage() {
   const [form, setForm] = useState({
     customerName: "",
     phone: "",
-    address: "",
+    street: "",
+    flat: "",
+    thana: "",
     district: "",
     notes: "",
   });
-  // Only Dhaka district can be inside Dhaka; the API checks this too
-  const [area, setArea] = useState<DeliveryArea>("inside_dhaka");
+  // Nothing is chosen at first: starting on the cheaper fee would undercharge anyone who misses it.
+  // Inside Dhaka always goes with district Dhaka; the API refuses any other pair
+  const [area, setArea] = useState<DeliveryArea | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
   const [delivery, setDelivery] = useState<DeliveryOptions | null>(null);
@@ -87,9 +99,8 @@ export default function CheckoutPage() {
   }, [items]);
 
   const subtotal = cartTotal(items);
-  const deliveryArea: DeliveryArea = form.district === "Dhaka" ? area : "outside_dhaka";
-  // Shown for the chosen district; the API charges the same amount for that area
-  const deliveryFee = delivery && form.district ? delivery.zones[deliveryArea] : null;
+  // Shown for the chosen area; the API charges the same amount for that area
+  const deliveryFee = delivery && area ? delivery.zones[area] : null;
   const total = deliveryFee === null ? null : subtotal + deliveryFee;
 
   if (items.length === 0) {
@@ -111,8 +122,21 @@ export default function CheckoutPage() {
     );
   }
 
+  function chooseArea(next: DeliveryArea) {
+    setArea(next);
+    if (next === "inside_dhaka") setForm({ ...form, district: "Dhaka" });
+  }
+
+  // Dhaka keeps the chosen area, because a Dhaka suburb is outside Dhaka city
+  function chooseDistrict(district: string) {
+    setForm({ ...form, district });
+    if (district !== "Dhaka") setArea("outside_dhaka");
+  }
+
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    // The required radios stop this in the browser
+    if (area === null) return;
     setSubmitting(true);
     setError("");
 
@@ -121,9 +145,9 @@ export default function CheckoutPage() {
       const order = await postOrder({
         customerName: form.customerName,
         phone: form.phone,
-        address: form.address,
+        address: joinAddress(form.street, form.flat, form.thana),
         district: form.district,
-        deliveryArea,
+        deliveryArea: area,
         notes: form.notes || undefined,
         items: items.map(({ productId, quantity }) => ({ productId, quantity })),
       });
@@ -146,125 +170,187 @@ export default function CheckoutPage() {
         Checkout
       </h1>
 
-      <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
-        <form onSubmit={handleSubmit} className="lg:col-span-2">
-          <fieldset className="flex flex-col gap-4">
-            <legend className="mb-2 text-lg font-semibold text-zinc-900">
-              Delivery details
-            </legend>
+      <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-8 lg:grid-cols-2 lg:gap-12">
+        <fieldset className="flex h-fit flex-col gap-4">
+          <legend className="mb-2 text-lg font-semibold text-zinc-900">
+            Delivery details
+          </legend>
 
-            <label className="flex flex-col gap-1 text-sm font-medium text-zinc-700">
-              Full name
-              <input
-                type="text"
-                required
-                minLength={1}
-                maxLength={100}
-                autoComplete="name"
-                value={form.customerName}
-                onChange={(e) => setForm({ ...form, customerName: e.target.value })}
-                placeholder="e.g. Fatima Rahman"
-                className={inputClass}
-              />
-            </label>
+          <label className="flex flex-col gap-1 text-sm font-medium text-zinc-700">
+            Full name
+            <input
+              type="text"
+              required
+              minLength={1}
+              maxLength={100}
+              autoComplete="name"
+              value={form.customerName}
+              onChange={(e) => setForm({ ...form, customerName: e.target.value })}
+              placeholder="e.g. Fatima Rahman"
+              className={inputClass}
+            />
+          </label>
 
-            <label className="flex flex-col gap-1 text-sm font-medium text-zinc-700">
-              Phone number
-              <input
-                type="tel"
-                required
-                pattern="01[0-9]{9}"
-                minLength={11}
-                maxLength={11}
-                inputMode="numeric"
-                autoComplete="tel-national"
-                title="11-digit mobile number starting with 01, for example 01712345678"
-                value={form.phone}
-                onChange={(e) => setForm({ ...form, phone: e.target.value })}
-                placeholder="01712345678 (11 digits)"
-                aria-describedby="phone-hint"
-                className={inputClass}
-              />
-              <span id="phone-hint" className="font-normal text-zinc-500">
-                We will call this number to confirm your order.
-              </span>
-            </label>
+          <label className="flex flex-col gap-1 text-sm font-medium text-zinc-700">
+            Phone number
+            <input
+              type="tel"
+              required
+              pattern="01[0-9]{9}"
+              minLength={11}
+              maxLength={11}
+              inputMode="numeric"
+              autoComplete="tel-national"
+              title="11-digit mobile number starting with 01, for example 01712345678"
+              value={form.phone}
+              onChange={(e) => setForm({ ...form, phone: e.target.value })}
+              placeholder="01712345678 (11 digits)"
+              aria-describedby="phone-hint"
+              className={inputClass}
+            />
+            <span id="phone-hint" className="font-normal text-zinc-500">
+              We will call this number to confirm your order.
+            </span>
+          </label>
 
-            <label className="flex flex-col gap-1 text-sm font-medium text-zinc-700">
-              District
-              <select
-                required
-                autoComplete="address-level1"
-                value={form.district}
-                onChange={(e) => setForm({ ...form, district: e.target.value })}
-                disabled={delivery === null}
-                className={inputClass}
-              >
-                <option value="" disabled>
-                  {delivery === null ? "Loading districts..." : "Choose your district"}
+          {/* Short enough that the joined address and district fit Steadfast's 250 characters */}
+          <label className="flex flex-col gap-1 text-sm font-medium text-zinc-700">
+            House and road
+            <input
+              type="text"
+              required
+              minLength={3}
+              maxLength={120}
+              autoComplete="address-line1"
+              value={form.street}
+              onChange={(e) => setForm({ ...form, street: e.target.value })}
+              placeholder="e.g. House 12, Road 5"
+              className={inputClass}
+            />
+          </label>
+
+          <label className="flex flex-col gap-1 text-sm font-medium text-zinc-700">
+            Flat or floor (optional)
+            <input
+              type="text"
+              maxLength={40}
+              autoComplete="address-line2"
+              value={form.flat}
+              onChange={(e) => setForm({ ...form, flat: e.target.value })}
+              placeholder="e.g. Flat 4B"
+              className={inputClass}
+            />
+          </label>
+
+          <label className="flex flex-col gap-1 text-sm font-medium text-zinc-700">
+            Area or thana
+            <input
+              type="text"
+              required
+              minLength={2}
+              maxLength={60}
+              autoComplete="address-level2"
+              value={form.thana}
+              onChange={(e) => setForm({ ...form, thana: e.target.value })}
+              placeholder="e.g. Dhanmondi"
+              className={inputClass}
+            />
+          </label>
+
+          <label className="flex flex-col gap-1 text-sm font-medium text-zinc-700">
+            District
+            <select
+              required
+              autoComplete="address-level1"
+              value={form.district}
+              onChange={(e) => chooseDistrict(e.target.value)}
+              disabled={delivery === null}
+              className={inputClass}
+            >
+              <option value="" disabled>
+                {delivery === null ? "Loading districts..." : "Choose your district"}
+              </option>
+              {delivery?.districts.map((district) => (
+                <option key={district} value={district}>
+                  {district}
                 </option>
-                {delivery?.districts.map((district) => (
-                  <option key={district} value={district}>
-                    {district}
-                  </option>
+              ))}
+            </select>
+          </label>
+
+          <label className="flex flex-col gap-1 text-sm font-medium text-zinc-700">
+            Order notes (optional)
+            <textarea
+              rows={2}
+              maxLength={500}
+              value={form.notes}
+              onChange={(e) => setForm({ ...form, notes: e.target.value })}
+              placeholder="Anything we should know?"
+              className={inputClass}
+            />
+          </label>
+        </fieldset>
+
+        <div className="h-fit">
+          <section className="rounded-sm border border-zinc-200 p-6">
+            <h2 className="text-lg text-zinc-900">
+              Order summary
+            </h2>
+
+            <ul className="mt-4 flex flex-col gap-3">
+              {items.map((item) => (
+                <li
+                  key={item.productId}
+                  className="flex justify-between gap-2 text-sm text-zinc-600"
+                >
+                  <span>
+                    {item.name}
+                    <span className="text-zinc-500"> × {item.quantity}</span>
+                  </span>
+                  <span className="whitespace-nowrap font-medium">
+                    {formatPrice(item.price * item.quantity)}
+                  </span>
+                </li>
+              ))}
+            </ul>
+
+            <div className="mt-4 flex justify-between border-t border-zinc-200 pt-4 text-zinc-600">
+              <span>Subtotal</span>
+              <span className="font-medium">{formatPrice(subtotal)}</span>
+            </div>
+
+            <fieldset className="mt-4 border-t border-zinc-200 pt-4">
+              <legend className="float-left w-full text-zinc-600">Delivery</legend>
+              <div className="clear-both flex flex-col gap-3 pt-3">
+                {AREA_OPTIONS.map((option) => (
+                  <label key={option.value} className="flex items-start gap-2 text-zinc-700">
+                    <input
+                      type="radio"
+                      required
+                      name="deliveryArea"
+                      value={option.value}
+                      checked={area === option.value}
+                      onChange={() => chooseArea(option.value)}
+                      disabled={delivery === null}
+                      className="mt-1.5 accent-brand"
+                    />
+                    <span className="flex-1">
+                      <span className="block font-medium">{option.label}</span>
+                      <span className="block text-sm text-zinc-500">{option.hint}</span>
+                    </span>
+                    <span className="whitespace-nowrap font-medium">
+                      {delivery === null ? "Loading..." : formatPrice(delivery.zones[option.value])}
+                    </span>
+                  </label>
                 ))}
-              </select>
-            </label>
-
-            {form.district === "Dhaka" && delivery && (
-              <div role="radiogroup" aria-label="Where in Dhaka" className="flex flex-col gap-2 text-sm text-zinc-700 sm:flex-row sm:gap-6">
-                <label className="flex items-center gap-2">
-                  <input
-                    type="radio"
-                    name="deliveryArea"
-                    value="inside_dhaka"
-                    checked={area === "inside_dhaka"}
-                    onChange={() => setArea("inside_dhaka")}
-                    className="accent-brand"
-                  />
-                  Dhaka city ({formatPrice(delivery.zones.inside_dhaka)} delivery)
-                </label>
-                <label className="flex items-center gap-2">
-                  <input
-                    type="radio"
-                    name="deliveryArea"
-                    value="outside_dhaka"
-                    checked={area === "outside_dhaka"}
-                    onChange={() => setArea("outside_dhaka")}
-                    className="accent-brand"
-                  />
-                  Dhaka suburbs, e.g. Savar, Keraniganj ({formatPrice(delivery.zones.outside_dhaka)} delivery)
-                </label>
               </div>
-            )}
+            </fieldset>
 
-            <label className="flex flex-col gap-1 text-sm font-medium text-zinc-700">
-              Full address
-              <textarea
-                required
-                minLength={5}
-                maxLength={500}
-                rows={3}
-                autoComplete="street-address"
-                value={form.address}
-                onChange={(e) => setForm({ ...form, address: e.target.value })}
-                placeholder="House number, road, area or thana (minimum 5 characters)"
-                className={inputClass}
-              />
-            </label>
-
-            <label className="flex flex-col gap-1 text-sm font-medium text-zinc-700">
-              Order notes (optional)
-              <textarea
-                rows={2}
-                maxLength={500}
-                value={form.notes}
-                onChange={(e) => setForm({ ...form, notes: e.target.value })}
-                placeholder="Anything we should know?"
-                className={inputClass}
-              />
-            </label>
-          </fieldset>
+            <div className="mt-4 flex justify-between border-t border-zinc-200 pt-4 text-lg font-semibold text-zinc-900">
+              <span>Total</span>
+              <span>{total === null ? "–" : formatPrice(total)}</span>
+            </div>
+          </section>
 
           {error && (
             <p role="alert" className="mt-4 rounded-sm border border-red-300 bg-red-50 p-3 text-sm text-red-700">
@@ -291,7 +377,7 @@ export default function CheckoutPage() {
           <button
             type="submit"
             disabled={submitting || delivery === null || stockIssues.length > 0}
-            className="btn btn-primary mt-6 h-12 w-full text-base sm:w-auto sm:px-12"
+            className="btn btn-primary mt-6 h-12 w-full text-base"
           >
             {submitting
               ? "Placing order..."
@@ -320,52 +406,8 @@ export default function CheckoutPage() {
             </Link>
             .
           </p>
-        </form>
-
-        <aside className="h-fit rounded-sm border border-zinc-200 p-6">
-          <h2 className="text-lg text-zinc-900">
-            Order summary
-          </h2>
-
-          <ul className="mt-4 flex flex-col gap-3">
-            {items.map((item) => (
-              <li
-                key={item.productId}
-                className="flex justify-between gap-2 text-sm text-zinc-600"
-              >
-                <span>
-                  {item.name}
-                  <span className="text-zinc-500"> × {item.quantity}</span>
-                </span>
-                <span className="whitespace-nowrap font-medium">
-                  {formatPrice(item.price * item.quantity)}
-                </span>
-              </li>
-            ))}
-          </ul>
-
-          <div className="mt-4 border-t border-zinc-200 pt-4">
-            <div className="flex justify-between text-zinc-600">
-              <span>Subtotal</span>
-              <span className="font-medium">{formatPrice(subtotal)}</span>
-            </div>
-            <div className="mt-2 flex justify-between text-zinc-600">
-              <span>Delivery</span>
-              <span className="font-medium">
-                {delivery === null
-                  ? "Loading..."
-                  : deliveryFee === null
-                    ? "Choose your district"
-                    : formatPrice(deliveryFee)}
-              </span>
-            </div>
-            <div className="mt-4 flex justify-between text-lg font-semibold text-zinc-900">
-              <span>Total</span>
-              <span>{total === null ? "–" : formatPrice(total)}</span>
-            </div>
-          </div>
-        </aside>
-      </div>
+        </div>
+      </form>
     </main>
   );
 }

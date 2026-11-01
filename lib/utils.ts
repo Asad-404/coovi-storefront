@@ -34,6 +34,14 @@ export function describeDeliveryFees(zones: Record<DeliveryArea, number>): strin
   return `${formatPrice(zones.inside_dhaka)} in Dhaka city and ${formatPrice(zones.outside_dhaka)} everywhere else in Bangladesh`;
 }
 
+// The API stores one address string: "House 12, Road 5, Flat 4B, Dhanmondi", skipping empty parts
+export function joinAddress(...parts: string[]): string {
+  return parts
+    .map((part) => part.trim())
+    .filter(Boolean)
+    .join(", ");
+}
+
 // Facebook, Messenger and WhatsApp ignore price tags in a normal link preview, so the price and
 // stock lead the description: "৳2,500 (was ৳3,000) · In stock · Cash on delivery across Bangladesh. <text>"
 export function shareDescription(
