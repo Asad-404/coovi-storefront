@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useRef, useState } from "react";
+import { useRef, useState, type PointerEvent } from "react";
 import { useDialog } from "@/lib/useDialog";
 
 interface ProductImageGalleryProps {
@@ -15,21 +15,49 @@ export default function ProductImageGallery({ images, productName }: ProductImag
   const modalRef = useRef<HTMLDivElement>(null);
   useDialog(isModalOpen, () => setIsModalOpen(false), modalRef);
 
+  // The sharper copy for hover zoom, loaded on first hover so visitors who never zoom don't pay for it
+  const [zoomedImage, setZoomedImage] = useState<string | null>(null);
+  const zoomRef = useRef<HTMLDivElement>(null);
+
   const primaryImage = images[selectedIndex] ?? images[0];
+
+  // Zoom towards the pointer. Written straight to the element so moving the mouse doesn't re-render.
+  const moveZoom = (event: PointerEvent<HTMLDivElement>) => {
+    if (event.pointerType !== "mouse" || !zoomRef.current) return;
+    const { left, top, width, height } = event.currentTarget.getBoundingClientRect();
+    const x = ((event.clientX - left) / width) * 100;
+    const y = ((event.clientY - top) / height) * 100;
+    zoomRef.current.style.transformOrigin = `${x}% ${y}%`;
+  };
 
   return (
     <>
       <div className="flex flex-col gap-3">
-        <div className="relative aspect-3/4 overflow-hidden bg-mist">
+        <div
+          className="group/zoom relative aspect-3/4 overflow-hidden bg-mist"
+          onPointerEnter={(event) => {
+            moveZoom(event);
+            if (event.pointerType === "mouse") setZoomedImage(primaryImage);
+          }}
+          onPointerMove={moveZoom}
+        >
           {primaryImage ? (
-            <Image
-              src={primaryImage}
-              alt={productName}
-              fill
-              priority
-              sizes="(max-width: 1024px) 100vw, 700px"
-              className="object-cover"
-            />
+            <div
+              ref={zoomRef}
+              className="absolute inset-0 transition-transform duration-300 group-hover/zoom:scale-200"
+            >
+              <Image
+                src={primaryImage}
+                alt={productName}
+                fill
+                priority
+                sizes="(max-width: 1024px) 100vw, 700px"
+                className="object-cover"
+              />
+              {zoomedImage === primaryImage && (
+                <Image src={primaryImage} alt="" fill sizes="1400px" className="object-cover" />
+              )}
+            </div>
           ) : (
             <div className="flex h-full items-center justify-center text-zinc-500">No image</div>
           )}
