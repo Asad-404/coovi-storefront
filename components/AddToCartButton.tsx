@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { MAX_ITEM_QUANTITY, useCartStore } from "@/lib/cartStore";
-import { trackAddToCart } from "@/lib/metaPixel";
 
 interface AddToCartButtonProps {
   product: {
@@ -36,7 +35,6 @@ export default function AddToCartButton({ product, inStock, maxQuantity, preorde
       },
       quantity
     );
-    trackAddToCart({ productId: product._id, price: product.price }, quantity);
     setAdded(true);
     setTimeout(() => setAdded(false), 2000);
   }

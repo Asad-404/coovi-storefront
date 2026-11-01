@@ -6,7 +6,6 @@ import { useState } from "react";
 import { Product } from "@/lib/types";
 import { isAvailable, isOnSale, isPreorder } from "@/lib/utils";
 import { useCartStore } from "@/lib/cartStore";
-import { trackAddToCart } from "@/lib/metaPixel";
 import PriceTag from "@/components/PriceTag";
 
 export default function ProductCard({ product, eager = false }: { product: Product; eager?: boolean }) {
@@ -25,7 +24,6 @@ export default function ProductCard({ product, eager = false }: { product: Produ
       price: product.price,
       image: primaryImage ?? "",
     });
-    trackAddToCart({ productId: product._id, price: product.price });
     setAdded(true);
     setTimeout(() => setAdded(false), 1800);
   }
