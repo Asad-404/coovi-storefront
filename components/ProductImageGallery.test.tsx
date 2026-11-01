@@ -4,9 +4,21 @@ import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import ProductImageGallery from "./ProductImageGallery";
 
 vi.mock("next/image", () => ({
-  default: ({ src, alt, sizes }: { src: string; alt: string; sizes?: string }) => (
+  default: ({
+    src,
+    alt,
+    sizes,
+    loading,
+    fetchPriority,
+  }: {
+    src: string;
+    alt: string;
+    sizes?: string;
+    loading?: "eager" | "lazy";
+    fetchPriority?: "high" | "low" | "auto";
+  }) => (
     // eslint-disable-next-line @next/next/no-img-element
-    <img src={src} alt={alt} data-sizes={sizes} />
+    <img src={src} alt={alt} data-sizes={sizes} loading={loading} fetchPriority={fetchPriority} />
   ),
 }));
 
@@ -33,6 +45,32 @@ function setup(images = ["/one.jpg", "/two.jpg"]) {
 }
 
 const sharpCopies = (container: HTMLElement) => container.querySelectorAll('img[data-sizes="1400px"]');
+
+describe("ProductImageGallery main photo loading", () => {
+  function expectHighPriority(src: string) {
+    const main = screen.getByAltText("Renu");
+    expect(main.getAttribute("src")).toBe(src);
+    expect(main.getAttribute("loading")).toBe("eager");
+    expect(main.getAttribute("fetchpriority")).toBe("high");
+  }
+
+  it("requests the main photo eagerly at high priority, also after picking a thumbnail", () => {
+    setup();
+    expectHighPriority("/one.jpg");
+
+    fireEvent.click(screen.getByRole("button", { name: "Show image 2" }));
+    expectHighPriority("/two.jpg");
+  });
+
+  it("keeps high priority off the thumbnails and the zoom copy", () => {
+    const { box } = setup();
+    pointer("pointerEnter", box, "mouse", 150, 150);
+
+    const others = Array.from(document.querySelectorAll("img")).filter((img) => img.alt !== "Renu");
+    expect(others).toHaveLength(3);
+    others.forEach((img) => expect(img.getAttribute("fetchpriority")).toBeNull());
+  });
+});
 
 describe("ProductImageGallery hover zoom", () => {
   it("zooms towards the mouse as it moves", () => {
