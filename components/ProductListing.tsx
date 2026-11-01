@@ -48,8 +48,9 @@ export default async function ProductListing({ search, sort, page, onSale, empty
       ) : (
         <>
           <div className="grid grid-cols-2 gap-x-4 gap-y-10 sm:gap-x-[30px] md:grid-cols-3">
-            {data.data.map((product) => (
-              <ProductCard key={product._id} product={product} />
+            {/* The top row is above the fold, and any of its photos can be the page's largest paint */}
+            {data.data.map((product, index) => (
+              <ProductCard key={product._id} product={product} eager={index < 3} />
             ))}
           </div>
 

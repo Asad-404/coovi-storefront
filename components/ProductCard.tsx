@@ -9,7 +9,7 @@ import { useCartStore } from "@/lib/cartStore";
 import { trackAddToCart } from "@/lib/metaPixel";
 import PriceTag from "@/components/PriceTag";
 
-export default function ProductCard({ product }: { product: Product }) {
+export default function ProductCard({ product, eager = false }: { product: Product; eager?: boolean }) {
   const addItem = useCartStore((state) => state.addItem);
   const [added, setAdded] = useState(false);
   const primaryImage = product.images[0];
@@ -40,6 +40,7 @@ export default function ProductCard({ product }: { product: Product }) {
                 src={primaryImage}
                 alt={product.name}
                 fill
+                loading={eager ? "eager" : undefined}
                 sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 360px"
                 className="object-cover"
               />
