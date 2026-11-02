@@ -1,10 +1,11 @@
+import { Suspense } from "react";
 import Link from "next/link";
 import CartBadge from "@/components/CartBadge";
 import Logo from "@/components/Logo";
 import SearchBar from "@/components/SearchBar";
 import MobileMenu from "@/components/MobileMenu";
+import { Announcement, AnnouncementFallback, ChatLink, ChatLinkFallback } from "@/components/HeaderSettings";
 import { getShopSettings } from "@/lib/api";
-import { whatsappUrl } from "@/lib/site";
 
 const navLinks = [
   { href: "/", label: "Home" },
@@ -13,28 +14,20 @@ const navLinks = [
   { href: "/track-order", label: "Track order" },
 ];
 
-export default async function Header() {
-  // Owner-editable from the admin Settings page; falls back to the old values if the API is down
-  const settings = await getShopSettings();
+export default function Header() {
+  // Owner-editable from the admin Settings page; falls back to the old values if the API is down.
+  // Not awaited: the header is above every loading skeleton, so waiting here would hold back the
+  // whole page while the API wakes up. Only the two pieces that need the settings wait for them.
+  const settings = getShopSettings();
 
   return (
     <>
       <div className="hidden border-b border-zinc-100 bg-white text-sm text-zinc-700 md:block">
         <div className="mx-auto flex h-9 max-w-292.5 items-center justify-between px-4">
           <p>Cash on delivery across Bangladesh</p>
-          <a
-            href={whatsappUrl(undefined, settings.whatsappNumber)}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-2 font-semibold hover:text-brand"
-          >
-            Chat:
-            <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[#25d366] text-white">
-              <svg viewBox="0 0 24 24" className="h-3 w-3" fill="currentColor" aria-hidden="true">
-                <path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm5.2 14.1c-.2.6-1.3 1.2-1.8 1.2-.5.1-1 .2-3.3-.7-2.8-1.2-4.6-4-4.7-4.2-.1-.2-1.1-1.5-1.1-2.8s.7-2 .9-2.3c.2-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.8 2c.1.2.1.4 0 .5l-.3.5-.4.4c-.1.2-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1 2.1 1.3 2.4 1.5.3.1.5.1.6-.1l.9-1.1c.2-.3.4-.2.6-.1l1.9.9c.3.1.5.2.5.3.1.1.1.6-.1 1.1Z" />
-              </svg>
-            </span>
-          </a>
+          <Suspense fallback={<ChatLinkFallback />}>
+            <ChatLink settings={settings} />
+          </Suspense>
         </div>
       </div>
 
@@ -70,11 +63,9 @@ export default async function Header() {
         </div>
       </header>
 
-      {settings.announcementActive && settings.announcementText && (
-        <Link href="/saree" className="block bg-brand py-3.5 text-center text-sm font-semibold text-white hover:bg-brand-dark">
-          {settings.announcementText}
-        </Link>
-      )}
+      <Suspense fallback={<AnnouncementFallback />}>
+        <Announcement settings={settings} />
+      </Suspense>
     </>
   );
 }
