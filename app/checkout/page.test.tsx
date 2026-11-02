@@ -46,6 +46,43 @@ beforeEach(() => {
 });
 afterEach(cleanup);
 
+describe("CheckoutPage live prices", () => {
+  const live = (price: number) =>
+    ({ slug: "jamdani", price, stock: 5, inStock: true }) as Awaited<ReturnType<typeof getProductBySlug>>;
+
+  it("moves the cart to a higher price and says so before the order", async () => {
+    vi.mocked(getProductBySlug).mockResolvedValue(live(2500));
+    await renderLoaded();
+    expect(await screen.findByText('"Jamdani" changed from ৳2,000 to ৳2,500')).toBeTruthy();
+    expect(useCartStore.getState().items[0].price).toBe(2500);
+    fireEvent.click(outside());
+    expect(placeOrder().textContent).toBe("Place order for ৳2,630");
+  });
+
+  it("does the same for a lower price", async () => {
+    vi.mocked(getProductBySlug).mockResolvedValue(live(1500));
+    await renderLoaded();
+    expect(await screen.findByText('"Jamdani" changed from ৳2,000 to ৳1,500')).toBeTruthy();
+    expect(useCartStore.getState().items[0].price).toBe(1500);
+  });
+
+  it("shows no note when the price is unchanged", async () => {
+    vi.mocked(getProductBySlug).mockResolvedValue(live(2000));
+    await renderLoaded();
+    await waitFor(() => expect(getProductBySlug).toHaveBeenCalled());
+    await waitFor(() => expect(placeOrder()).toBeTruthy());
+    expect(screen.queryByText(/changed from/)).toBeNull();
+    expect(useCartStore.getState().items[0].price).toBe(2000);
+  });
+
+  it("keeps the cart price when the lookup fails", async () => {
+    await renderLoaded();
+    await waitFor(() => expect(getProductBySlug).toHaveBeenCalled());
+    expect(useCartStore.getState().items[0].price).toBe(2000);
+    expect(screen.queryByText(/changed from/)).toBeNull();
+  });
+});
+
 describe("CheckoutPage delivery area", () => {
   it("starts with no area chosen and no total, showing both fees", async () => {
     await renderLoaded();
