@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Hind_Siliguri, Nunito, Tiro_Bangla } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -12,16 +13,32 @@ const nunito = Nunito({
   weight: ["900"],
 });
 
-// Headings and saree names: one weight only, so never pair it with a bold class
+// Only the ৳ sign, cut from Hind Siliguri (licence in fonts/OFL.txt), so a price does not pull a whole
+// Bengali font file. One file per weight that prices use. Keep adjustFontFallback off: its fallback face
+// has no unicode-range, and being next in the stack it would take every other character.
+const taka = localFont({
+  variable: "--font-taka",
+  src: [
+    { path: "./fonts/taka-400.woff2", weight: "400" },
+    { path: "./fonts/taka-500.woff2", weight: "500" },
+    { path: "./fonts/taka-600.woff2", weight: "600" },
+    { path: "./fonts/taka-700.woff2", weight: "700" },
+  ],
+  declarations: [{ prop: "unicode-range", value: "U+09F3" }],
+  adjustFontFallback: false,
+});
+
+// Headings and saree names: one weight only, so never pair it with a bold class.
+// Only Latin is preloaded; the Bengali files stay in the CSS and load when a page shows Bengali text.
 const tiroBangla = Tiro_Bangla({
   variable: "--font-tiro-bangla",
-  subsets: ["bengali", "latin"],
+  subsets: ["latin"],
   weight: "400",
 });
 
 const hindSiliguri = Hind_Siliguri({
   variable: "--font-hind-siliguri",
-  subsets: ["bengali", "latin"],
+  subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
 });
 
@@ -52,7 +69,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${hindSiliguri.variable} ${tiroBangla.variable} ${nunito.variable} h-full antialiased`}
+      className={`${taka.variable} ${hindSiliguri.variable} ${tiroBangla.variable} ${nunito.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col">
         <Header />

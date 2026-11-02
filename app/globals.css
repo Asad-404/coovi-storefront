@@ -16,8 +16,9 @@
   --color-haze: #d5e2ec;
   --color-haze-deep: #afc8da;
   --color-ink: #0f1b33;
-  --font-sans: var(--font-hind-siliguri), system-ui, sans-serif;
-  --font-display: var(--font-tiro-bangla), Georgia, serif;
+  /* --font-taka covers only the ৳ sign (unicode-range), so it goes first and everything else falls through */
+  --font-sans: var(--font-taka), var(--font-hind-siliguri), system-ui, sans-serif;
+  --font-display: var(--font-taka), var(--font-tiro-bangla), Georgia, serif;
   --font-logo: var(--font-nunito), system-ui, sans-serif;
 
   /* Named sizes for headings and saree names. Pick from these instead of one-off text-[Npx] values. */
