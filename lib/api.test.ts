@@ -1,6 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import {
-  CACHE_SECONDS,
   getAllProducts,
   getDeliveryOptions,
   getFirstProducts,
@@ -13,6 +12,7 @@ import {
   OrderNotFoundError,
   postOrder,
   serverHeaders,
+  SETTINGS_CACHE_SECONDS,
 } from "./api";
 
 const API_URL = "http://localhost:5000/api";
@@ -272,11 +272,11 @@ describe("getShopSettings", () => {
     announcementActive: false,
   };
 
-  it("returns the saved settings and caches them for a minute", async () => {
+  it("returns the saved settings and caches them for five minutes", async () => {
     respond({ success: true, data: saved });
     await expect(getShopSettings()).resolves.toEqual(saved);
     expect(requestedUrl()).toBe(`${API_URL}/settings`);
-    expect((requestInit() as RequestInit & { next?: { revalidate: number } }).next).toEqual({ revalidate: CACHE_SECONDS });
+    expect((requestInit() as RequestInit & { next?: { revalidate: number } }).next).toEqual({ revalidate: SETTINGS_CACHE_SECONDS });
   });
 
   it("fills a missing field from the defaults", async () => {
