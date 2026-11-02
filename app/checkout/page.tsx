@@ -25,6 +25,7 @@ const AREA_OPTIONS: { value: DeliveryArea; label: string; hint: string }[] = [
 export default function CheckoutPage() {
   const items = useCartStore((state) => state.items);
   const clearCart = useCartStore((state) => state.clearCart);
+  const updatePrice = useCartStore((state) => state.updatePrice);
   const router = useRouter();
 
   const [form, setForm] = useState({
@@ -44,8 +45,9 @@ export default function CheckoutPage() {
   const [delivery, setDelivery] = useState<DeliveryOptions | null>(null);
   const [stockIssues, setStockIssues] = useState<string[]>([]);
   const [preorderNotes, setPreorderNotes] = useState<string[]>([]);
+  const [priceNotes, setPriceNotes] = useState<string[]>([]);
 
-  // Delivery fees and live stock both come from the API — the browser's copy
+  // Delivery fees, live prices and live stock all come from the API — the browser's copy
   // of either could be stale or spoofed
   useEffect(() => {
     let active = true;
@@ -65,10 +67,16 @@ export default function CheckoutPage() {
       if (!active) return;
       const issues: string[] = [];
       const notes: string[] = [];
+      const changedPrices: string[] = [];
       results.forEach((result, i) => {
         if (result.status !== "fulfilled") return;
         const product = result.value;
         const item = items[i];
+        // The cart keeps the price from when the item was added, but the API charges today's price
+        if (product.price !== item.price) {
+          updatePrice(item.productId, product.price);
+          changedPrices.push(`"${item.name}" changed from ${formatPrice(item.price)} to ${formatPrice(product.price)}`);
+        }
         // Short on stock but taking pre-orders: the API turns the line into a pre-order
         if (product.inStock && product.allowPreorder && product.stock < item.quantity) {
           notes.push(`"${item.name}": ${preorderText(product.preorderDays).toLowerCase()}`);
@@ -82,12 +90,14 @@ export default function CheckoutPage() {
       });
       setStockIssues(issues);
       setPreorderNotes(notes);
+      // Updating a price runs this again, and that second run finds no change, so keep what is already shown
+      if (changedPrices.length > 0) setPriceNotes((shown) => [...shown, ...changedPrices]);
     });
 
     return () => {
       active = false;
     };
-  }, [items]);
+  }, [items, updatePrice]);
 
   const subtotal = cartTotal(items);
   // Shown for the chosen area; the API charges the same amount for that area
@@ -353,6 +363,14 @@ export default function CheckoutPage() {
             <ul role="status" className="mt-4 flex list-disc flex-col gap-1 rounded-sm border border-amber-300 bg-amber-50 p-3 pl-8 text-sm text-amber-800">
               {stockIssues.map((issue) => (
                 <li key={issue}>{issue}</li>
+              ))}
+            </ul>
+          )}
+
+          {priceNotes.length > 0 && (
+            <ul role="status" className="mt-4 flex list-disc flex-col gap-1 rounded-sm border border-amber-300 bg-amber-50 p-3 pl-8 text-sm text-amber-800">
+              {priceNotes.map((note) => (
+                <li key={note}>{note}</li>
               ))}
             </ul>
           )}

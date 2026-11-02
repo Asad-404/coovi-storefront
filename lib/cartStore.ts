@@ -11,6 +11,7 @@ interface CartStore {
   addItem: (item: Omit<CartItem, "quantity">, quantity?: number) => void;
   removeItem: (productId: string) => void;
   updateQuantity: (productId: string, quantity: number) => void;
+  updatePrice: (productId: string, price: number) => void;
   clearCart: () => void;
 }
 
@@ -47,6 +48,11 @@ export const useCartStore = create<CartStore>()(
               : state.items.map((i) =>
                   i.productId === productId ? { ...i, quantity: capped(quantity) } : i
                 ),
+        })),
+
+      updatePrice: (productId, price) =>
+        set((state) => ({
+          items: state.items.map((i) => (i.productId === productId ? { ...i, price } : i)),
         })),
 
       clearCart: () => set({ items: [] }),

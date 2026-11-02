@@ -49,6 +49,16 @@ describe("useCartStore", () => {
     expect(items()).toEqual([{ ...soap, quantity: MAX_ITEM_QUANTITY }]);
   });
 
+  it("updates the price of one item only", () => {
+    useCartStore.getState().addItem(soap);
+    useCartStore.getState().addItem(oil);
+    useCartStore.getState().updatePrice("p1", 999);
+    expect(items()).toEqual([
+      { ...soap, price: 999, quantity: 1 },
+      { ...oil, quantity: 1 },
+    ]);
+  });
+
   it("removes an item", () => {
     useCartStore.getState().addItem(soap);
     useCartStore.getState().addItem(oil);
