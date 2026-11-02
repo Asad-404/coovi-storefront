@@ -15,6 +15,10 @@ export const BROWSER_TIMEOUT_MS = 30_000;
 // within this time; checkout always re-checks prices and stock on the API.
 export const CACHE_SECONDS = 60;
 
+// Shop settings rarely change, but the header needs them on every page, and a page refreshes as often
+// as its shortest fetch. A longer time here spares fixed pages like About a refresh every minute.
+export const SETTINGS_CACHE_SECONDS = 300;
+
 // Lets the API tell this storefront's server apart from shoppers (see coovi-api rateLimiters.ts).
 // STOREFRONT_API_KEY is server-only: it has no NEXT_PUBLIC_ prefix, so it is never sent to browsers.
 export const STOREFRONT_KEY_HEADER = "x-coovi-storefront-key";
@@ -34,8 +38,8 @@ export function serverHeaders(clientIp?: string): Record<string, string> {
 }
 
 // Shared fetch options for public catalogue data: cached on the server, ignored by browsers
-function catalogueInit(): RequestInit {
-  return { headers: serverHeaders(), next: { revalidate: CACHE_SECONDS }, signal: timeoutSignal() };
+function catalogueInit(revalidate = CACHE_SECONDS): RequestInit {
+  return { headers: serverHeaders(), next: { revalidate }, signal: timeoutSignal() };
 }
 
 // AbortSignal.timeout() rejects fetch with a TimeoutError; a manual abort
@@ -178,11 +182,11 @@ export const DEFAULT_SHOP_SETTINGS: ShopSettings = {
   announcementActive: true,
 };
 
-// Shop settings from the admin Settings page, cached like the catalogue (CACHE_SECONDS). Never throws: the header is on every
+// Shop settings from the admin Settings page, cached for SETTINGS_CACHE_SECONDS. Never throws: the header is on every
 // page, so if the API is down the shop falls back to the defaults instead of showing an error.
 export async function getShopSettings(): Promise<ShopSettings> {
   try {
-    const res = await fetch(`${API_URL}/settings`, catalogueInit());
+    const res = await fetch(`${API_URL}/settings`, catalogueInit(SETTINGS_CACHE_SECONDS));
 
     if (!res.ok) return DEFAULT_SHOP_SETTINGS;
 
