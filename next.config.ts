@@ -32,8 +32,12 @@ const nextConfig: NextConfig = {
     return [{ source: "/(.*)", headers: securityHeaders }];
   },
   async redirects() {
-    // The collection used to live at /shop; keep old links and search results working
-    return [{ source: "/shop", destination: "/saree", permanent: true }];
+    // The collection used to live at /shop, and search results at "/?search=..." (the search word
+    // carries over by itself); keep old links and search results working
+    return [
+      { source: "/shop", destination: "/saree", permanent: true },
+      { source: "/", has: [{ type: "query", key: "search", value: ".+" }], destination: "/saree", permanent: false },
+    ];
   },
   images: {
     remotePatterns: [

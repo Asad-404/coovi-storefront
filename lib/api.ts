@@ -22,6 +22,9 @@ export const CLIENT_IP_HEADER = "x-coovi-client-ip";
 
 const isServer = () => typeof window === "undefined";
 
+// True while `next build` is rendering pages, when there is no saved copy of a page to fall back on
+export const isBuildPhase = () => process.env.NEXT_PHASE === "phase-production-build";
+
 function timeoutSignal(): AbortSignal {
   return AbortSignal.timeout(isServer() ? SERVER_TIMEOUT_MS : BROWSER_TIMEOUT_MS);
 }
