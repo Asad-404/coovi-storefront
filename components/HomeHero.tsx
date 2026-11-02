@@ -90,7 +90,8 @@ export default function HomeHero({ images }: { images: string[] }) {
                       alt=""
                       fill
                       loading="eager"
-                      sizes="(max-width: 1024px) 45vw, 22vw"
+                      // The panel's height decides the size: a 3:4 photo fills 600 px at 450 px wide
+                      sizes="(min-width: 1024px) 450px, (min-width: 640px) 36vw, 45vw"
                       className="object-cover"
                     />
                     <span

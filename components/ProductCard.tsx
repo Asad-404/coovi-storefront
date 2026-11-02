@@ -42,14 +42,14 @@ export default function ProductCard({ product, eager = false }: { product: Produ
                 sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 360px"
                 className="object-cover"
               />
-              {/* Second photo is stacked and faded in with CSS, so it is already loaded when the pointer arrives */}
+              {/* Second photo is stacked and faded in with CSS, so it is already loaded when the pointer arrives. Hidden without a mouse, so phones never download it */}
               {secondaryImage && (
                 <Image
                   src={secondaryImage}
                   alt=""
                   fill
                   sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 360px"
-                  className="object-cover opacity-0 transition-opacity duration-500 group-hover/image:opacity-100"
+                  className="hidden object-cover opacity-0 transition-opacity duration-500 pointer-fine:block group-hover/image:opacity-100"
                 />
               )}
             </>
