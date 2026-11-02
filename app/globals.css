@@ -16,13 +16,21 @@
   --color-haze: #d5e2ec;
   --color-haze-deep: #afc8da;
   --color-ink: #0f1b33;
+  /* Saree names on the all sarees and new arrivals cards */
+  --color-name-ink: #2c2d33;
   /* --font-taka covers only the ৳ sign and --font-solaiman-lipi only Bengali (unicode-range), so they go first and everything else falls through */
   --font-sans: var(--font-taka), var(--font-solaiman-lipi), var(--font-hind-siliguri), system-ui, sans-serif;
   --font-display: var(--font-taka), var(--font-solaiman-lipi), var(--font-tiro-bangla), Georgia, serif;
   --font-logo: var(--font-nunito), system-ui, sans-serif;
+  /* Inter has no Bengali letters and SolaimanLipi is left out on purpose: Bangla here is the device's own font */
+  --font-card-name: var(--font-inter), sans-serif;
 
   /* Named sizes for headings and saree names. Pick from these instead of one-off text-[Npx] values. */
   --text-nav: 0.9375rem; /* 15px: navigation and tab labels */
+  --text-card-name-sm: clamp(0.8125rem, 0.749rem + 0.2033vw, 0.875rem); /* 13-14px: saree card name on phones */
+  --text-card-name-sm--line-height: 1.3;
+  --text-card-name: 0.9375rem; /* 15px: saree card name on desktop */
+  --text-card-name--line-height: 1.3;
   --text-title-sm: 1.75rem; /* 28px: hero headline on phones */
   --text-title-md: 2rem; /* 32px: English-only product name on phones */
   --text-title: 2.5rem; /* 40px: Bangla product name on phones, English-only on desktop */

@@ -24,15 +24,10 @@ export default function NewArrivalCard({ product }: { product: Product }) {
       </Link>
 
       <p className="mt-3 text-xs text-zinc-500">{product.category}</p>
-      <h3 className="mt-1 flex flex-col text-ink">
-        {product.nameBn && (
-          <span lang="bn" className="truncate text-xl leading-relaxed">
-            {product.nameBn}
-          </span>
-        )}
-        <span className={`truncate ${product.nameBn ? "text-xs text-zinc-600" : "text-sm text-zinc-700"}`}>
-          {product.name}
-        </span>
+      <h3 className="mt-1 truncate font-card-name text-card-name-sm font-semibold text-name-ink md:text-card-name">
+        {product.nameBn && <span lang="bn">{product.nameBn}</span>}
+        {product.nameBn && " – "}
+        {product.name}
       </h3>
       <PriceTag product={product} className="mt-2 justify-start text-base font-bold text-zinc-700" />
 

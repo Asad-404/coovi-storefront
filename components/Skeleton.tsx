@@ -18,9 +18,8 @@ export function ProductCardSkeleton() {
   return (
     <div className="flex flex-col">
       <Skeleton className="aspect-3/4" />
-      <div className="flex flex-col items-center gap-1 px-1 pt-3">
-        <Skeleton className="h-7 w-3/4 sm:h-8" />
-        <Skeleton className="h-5 w-1/2" />
+      <div className="flex flex-col items-center px-1 pt-3">
+        <Skeleton className="my-1 h-5 w-3/4" />
         <Skeleton className="h-5 w-1/3" />
       </div>
       {/* ProductCard only reveals this button on hover where there is a mouse, but keeps its space */}
