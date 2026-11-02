@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { SITE_NAME, SITE_URL, pageOpenGraph, whatsappUrl } from "@/lib/site";
 import JsonLd from "@/components/JsonLd";
-import { getDeliveryOptions, getProductBySlug, getProducts, getShopSettings } from "@/lib/api";
+import { getAllProducts, getDeliveryOptions, getProductBySlug, getProducts, getShopSettings } from "@/lib/api";
 import {
   describeDeliveryFees,
   discountPercent,
@@ -23,6 +23,17 @@ import ProductCard from "@/components/ProductCard";
 import PriceTag from "@/components/PriceTag";
 
 type Props = PageProps<"/products/[slug]">;
+
+// Saves each product's page at build time so its first visitor never waits on a sleeping API. Products
+// added after a deploy, or all of them if the API can't be reached, are saved on their first visit.
+export async function generateStaticParams() {
+  try {
+    const products = await getAllProducts();
+    return products.map((product) => ({ slug: product.slug }));
+  } catch {
+    return [];
+  }
+}
 
 export async function generateMetadata(props: Props): Promise<Metadata> {
   const { slug } = await props.params;
