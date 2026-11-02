@@ -23,7 +23,8 @@ Set these in `.env.local`:
 |---|---|---|
 | `NEXT_PUBLIC_API_URL` | `http://localhost:5000/api` | Base URL of the Coovi API |
 | `NEXT_PUBLIC_SITE_URL` | `http://localhost:3000` | Public site URL, used for metadata, the sitemap and WhatsApp share links |
-| `NEXT_PUBLIC_WHATSAPP_NUMBER` | `8801700000000` (placeholder) | Shop WhatsApp number, digits in international format; used by every WhatsApp link |
+| `NEXT_PUBLIC_WHATSAPP_NUMBER` | `8801700000000` (placeholder) | Fallback WhatsApp number, digits in international format, used until shop settings load from the API. The real number is set on the admin Settings page |
+| `STOREFRONT_API_KEY` | none | Server-only secret, equal to `STOREFRONT_API_KEY` on the API; gives this storefront's server its own rate limit |
 
 ## Scripts
 
@@ -63,14 +64,14 @@ GitHub Actions (`.github/workflows/ci.yml`) runs on every pull request and on pu
 ## Project structure
 
 ```
-app/          Routes: home (in the (home) route group), shop, sale,
+app/          Routes: home (in the (home) route group), saree, sale,
               products/[slug], cart, checkout,
               order-confirmation/[orderNumber], track-order,
               track-order/[orderNumber], about, contact, policy pages.
               Each route has its own loading.tsx, built from components/Skeleton.tsx
 components/   UI components (cart drawer, filters, product card, gallery, ...)
 lib/
-  api.ts        API client (fetch with an 8s timeout)
+  api.ts        API client (fetch with a 60s timeout on the server, 30s in the browser)
   cartStore.ts  Zustand guest cart, persisted to localStorage as "coovi-cart"
   types.ts      Shared types for products, cart items and orders
   utils.ts      Formatting helpers
@@ -82,4 +83,4 @@ The cart lives only in the browser. At checkout the storefront sends the custome
 
 ## Deployment
 
-Any Next.js host works. Run `pnpm build` and `pnpm start`, or deploy to [Vercel](https://vercel.com). Set both environment variables in production. Product images are allowed from `res.cloudinary.com` (photos uploaded in the admin), `images.pexels.com`, `images.unsplash.com` and `picsum.photos` (see `next.config.ts`).
+Any Next.js host works. Run `pnpm build` and `pnpm start`, or deploy to [Vercel](https://vercel.com). Set the environment variables above in production. Product images are allowed from `res.cloudinary.com` (photos uploaded in the admin), `images.pexels.com`, `images.unsplash.com` and `picsum.photos` (see `next.config.ts`).
