@@ -1,9 +1,8 @@
 import Link from "next/link";
-import { redirect } from "next/navigation";
 import type { Metadata } from "next";
 import { SITE_DESCRIPTION, SITE_NAME, SITE_TAGLINE, SITE_URL, pageOpenGraph } from "@/lib/site";
 import JsonLd from "@/components/JsonLd";
-import { getProducts } from "@/lib/api";
+import { getProducts, isBuildPhase } from "@/lib/api";
 import ProductCard from "@/components/ProductCard";
 import NewArrivalCard from "@/components/NewArrivalCard";
 import HomeHero from "@/components/HomeHero";
@@ -38,18 +37,14 @@ const siteStructuredData = [
   },
 ];
 
-export default async function Home(props: PageProps<"/">) {
-  const { search } = await props.searchParams;
-  // Old search links pointed at "/?search=..."; the search results live on /saree now
-  if (typeof search === "string" && search) {
-    redirect(`/saree?search=${encodeURIComponent(search)}`);
-  }
-
+export default async function Home() {
   let products = null;
   try {
     products = await getProducts({ limit: 12 });
-  } catch {
-    products = null;
+  } catch (error) {
+    // This page is saved and refreshed in the background. Failing a refresh keeps the last good copy
+    // instead of saving this error for everyone; a build has no copy yet, so it shows the message.
+    if (!isBuildPhase()) throw error;
   }
 
   const newArrivals = products ? products.data.slice(0, 10) : [];

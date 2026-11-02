@@ -9,6 +9,7 @@ import {
   getProducts,
   getShopSettings,
   DEFAULT_SHOP_SETTINGS,
+  isBuildPhase,
   OrderNotFoundError,
   postOrder,
   serverHeaders,
@@ -63,6 +64,15 @@ describe("serverHeaders", () => {
     vi.stubEnv("STOREFRONT_API_KEY", "secret");
     vi.stubGlobal("window", {});
     expect(serverHeaders("203.0.113.7")).toEqual({});
+  });
+});
+
+describe("isBuildPhase", () => {
+  it("is true only while next build is running", () => {
+    vi.stubEnv("NEXT_PHASE", "phase-production-build");
+    expect(isBuildPhase()).toBe(true);
+    vi.stubEnv("NEXT_PHASE", "phase-production-server");
+    expect(isBuildPhase()).toBe(false);
   });
 });
 
