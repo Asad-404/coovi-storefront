@@ -8,6 +8,7 @@ import {
   isPreorder,
   joinAddress,
   preorderText,
+  stockText,
   shareDescription,
   shareImages,
 } from "./utils";
@@ -98,6 +99,23 @@ describe("preorderText", () => {
   it("names the wait, falling back to 15 days", () => {
     expect(preorderText(20)).toBe("Pre-order, ships in about 20 days");
     expect(preorderText()).toBe("Pre-order, ships in about 15 days");
+  });
+});
+
+describe("stockText", () => {
+  it("counts what is in stock", () => {
+    expect(stockText({ inStock: true, stock: 5 })).toBe("In stock (5 available)");
+  });
+
+  it("offers a pre-order when stock ran out and pre-orders are on", () => {
+    expect(stockText({ inStock: true, stock: 0, allowPreorder: true, preorderDays: 10 })).toBe(
+      "Pre-order, ships in about 10 days"
+    );
+  });
+
+  it("says out of stock otherwise", () => {
+    expect(stockText({ inStock: true, stock: 0 })).toBe("Out of stock");
+    expect(stockText({ inStock: false, stock: 5 })).toBe("Out of stock");
   });
 });
 

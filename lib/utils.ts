@@ -29,6 +29,13 @@ export function preorderText(days?: number): string {
   return `Pre-order, ships in about ${days ?? 15} days`;
 }
 
+export function stockText(
+  product: Pick<Product, "inStock" | "stock" | "allowPreorder" | "preorderDays">,
+): string {
+  if (isAvailable(product)) return `In stock (${product.stock} available)`;
+  return isPreorder(product) ? preorderText(product.preorderDays) : "Out of stock";
+}
+
 // "৳70 in Dhaka city and ৳130 everywhere else in Bangladesh"
 export function describeDeliveryFees(zones: Record<DeliveryArea, number>): string {
   return `${formatPrice(zones.inside_dhaka)} in Dhaka city and ${formatPrice(zones.outside_dhaka)} everywhere else in Bangladesh`;

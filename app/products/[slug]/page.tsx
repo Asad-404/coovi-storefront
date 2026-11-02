@@ -4,23 +4,12 @@ import type { Metadata } from "next";
 import { SITE_NAME, SITE_URL, pageOpenGraph, whatsappUrl } from "@/lib/site";
 import JsonLd from "@/components/JsonLd";
 import { getAllProducts, getDeliveryOptions, getProductBySlug, getProducts, getShopSettings } from "@/lib/api";
-import {
-  describeDeliveryFees,
-  discountPercent,
-  isAvailable,
-  isOnSale,
-  isPreorder,
-  preorderText,
-  shareDescription,
-  shareImages,
-} from "@/lib/utils";
+import { describeDeliveryFees, isAvailable, isPreorder, shareDescription, shareImages } from "@/lib/utils";
 import type { Product } from "@/lib/types";
 import Accordion from "@/components/Accordion";
-import AddToCartButton from "@/components/AddToCartButton";
+import { LiveAddToCart, LivePrice, LiveProductProvider, LiveProductTabs, LiveStock } from "@/components/LiveProduct";
 import ProductImageGallery from "@/components/ProductImageGallery";
-import ProductTabs from "@/components/ProductTabs";
 import ProductCard from "@/components/ProductCard";
-import PriceTag from "@/components/PriceTag";
 
 type Props = PageProps<"/products/[slug]">;
 
@@ -82,16 +71,10 @@ export default async function ProductDetailPage(props: Props) {
   const title = product.nameBn ? `${product.nameBn} – ${product.name}` : product.name;
   const available = isAvailable(product);
   const preorder = isPreorder(product);
-  const stockText = available
-    ? `In stock (${product.stock} available)`
-    : preorder
-      ? preorderText(product.preorderDays)
-      : "Out of stock";
 
   const details = [
     { label: "Category", value: product.category },
     ...(product.size ? [{ label: "Size", value: product.size }] : []),
-    { label: "Availability", value: stockText },
   ];
 
   const productUrl = `${SITE_URL}/products/${product.slug}`;
@@ -132,127 +115,130 @@ export default async function ProductDetailPage(props: Props) {
   return (
     <main className="w-full">
       <JsonLd data={structuredData} />
-      <section className="bg-zinc-50">
-        <div className="mx-auto max-w-[1170px] px-4 pb-14">
-          <nav className="py-4 text-xs text-zinc-600" aria-label="Breadcrumb">
-            <Link href="/" className="text-ink hover:text-brand">Home</Link>
-            <span className="mx-2 text-zinc-300">/</span>
-            <Link href="/saree" className="text-ink hover:text-brand">Saree</Link>
-            <span className="mx-2 text-zinc-300">/</span>
-            <span>{title}</span>
-          </nav>
+      {/* The key starts fresh when moving between products, which reuse this same page */}
+      <LiveProductProvider
+        key={product.slug}
+        product={{
+          slug: product.slug,
+          price: product.price,
+          compareAtPrice: product.compareAtPrice,
+          stock: product.stock,
+          inStock: product.inStock,
+          allowPreorder: product.allowPreorder,
+          preorderDays: product.preorderDays,
+        }}
+      >
+        <section className="bg-zinc-50">
+          <div className="mx-auto max-w-[1170px] px-4 pb-14">
+            <nav className="py-4 text-xs text-zinc-600" aria-label="Breadcrumb">
+              <Link href="/" className="text-ink hover:text-brand">Home</Link>
+              <span className="mx-2 text-zinc-300">/</span>
+              <Link href="/saree" className="text-ink hover:text-brand">Saree</Link>
+              <span className="mx-2 text-zinc-300">/</span>
+              <span>{title}</span>
+            </nav>
 
-          <div className="grid gap-8 lg:grid-cols-[1.65fr_1fr] lg:gap-12">
-            <ProductImageGallery images={product.images} productName={product.name} />
+            <div className="grid gap-8 lg:grid-cols-[1.65fr_1fr] lg:gap-12">
+              <ProductImageGallery images={product.images} productName={product.name} />
 
-            <div className="flex flex-col gap-4">
-              <h1 className="flex flex-col gap-1 text-ink">
-                {product.nameBn && (
-                  <span lang="bn" className="text-title leading-tight sm:text-title-xl">
-                    {product.nameBn}
+              <div className="flex flex-col gap-4">
+                <h1 className="flex flex-col gap-1 text-ink">
+                  {product.nameBn && (
+                    <span lang="bn" className="text-title leading-tight sm:text-title-xl">
+                      {product.nameBn}
+                    </span>
+                  )}
+                  <span className={product.nameBn ? "font-sans text-lg text-zinc-600" : "text-title-md leading-tight sm:text-title"}>
+                    {product.name}
                   </span>
-                )}
-                <span className={product.nameBn ? "font-sans text-lg text-zinc-600" : "text-title-md leading-tight sm:text-title"}>
-                  {product.name}
-                </span>
-              </h1>
+                </h1>
 
-              <div className="flex flex-wrap items-center gap-3">
-                <PriceTag product={product} className="text-xl font-medium text-ink" />
-                {isOnSale(product) && (
-                  <span className="rounded-sm bg-accent px-2.5 py-1 text-xs font-bold text-white">
-                    Save {discountPercent(product)}%
-                  </span>
-                )}
-              </div>
-
-              <dl className="grid grid-cols-[80px_1fr] gap-x-4 gap-y-3 py-2 text-sm">
-                <dt className="font-semibold text-ink">Category:</dt>
-                <dd className="text-zinc-600">{product.category}</dd>
-                {product.size && (
-                  <>
-                    <dt className="font-semibold text-ink">Size:</dt>
-                    <dd className="text-zinc-600">{product.size}</dd>
-                  </>
-                )}
-                <dt className="font-semibold text-ink">Stock:</dt>
-                <dd className={available ? "text-green-700" : preorder ? "text-amber-700" : "text-red-600"}>
-                  {stockText}
-                </dd>
-              </dl>
-
-              {product.description && <p className="text-sm leading-6 text-zinc-600">{product.description}</p>}
-
-              <div className="mt-2">
-                <AddToCartButton
-                  product={{
-                    _id: product._id,
-                    slug: product.slug,
-                    name: product.name,
-                    price: product.price,
-                    image: product.images[0] ?? "",
-                  }}
-                  inStock={available || preorder}
-                  maxQuantity={product.stock}
-                  preorder={preorder}
-                />
-              </div>
-
-              <a
-                href={whatsappUrl(`Hi! I'm interested in ${product.name} - ${productUrl}`, settings.whatsappNumber)}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="btn h-12 border border-green-600 text-green-700 hover:bg-green-600 hover:text-white"
-              >
-                Ask on WhatsApp
-              </a>
-
-              <div className="rounded-sm border border-frost bg-white p-4">
-                <p className="text-sm font-semibold text-ink">Pay on delivery, risk nothing</p>
-                <p className="mt-1 text-sm text-zinc-600">
-                  Order with just your name, phone and address. You pay the rider in cash when your saree arrives.
-                </p>
-              </div>
-
-              <div className="mt-2 border-t border-zinc-200">
-                <Accordion title="Delivery charge">
-                  {delivery !== null
-                    ? `Delivery costs ${describeDeliveryFees(delivery.zones)}. It is added at checkout.`
-                    : "The delivery charge is shown at checkout."}
-                </Accordion>
-                <Accordion title="Payment">
-                  Cash on delivery only. No online payment is needed to place an order.
-                </Accordion>
-                <Accordion title="Check before you pay">
-                  Please open the parcel and check the saree in front of the delivery person before you pay. For any
-                  problem, message us on WhatsApp or read our{" "}
-                  <Link href="/return-policy" className="underline hover:text-brand">
-                    return and exchange policy
-                  </Link>
-                  .
-                </Accordion>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="mx-auto max-w-[1170px] px-4">
-        <ProductTabs description={product.description} descriptionBn={product.descriptionBn} details={details} />
-
-        {related.length > 0 && (
-          <div className="pb-16 pt-6">
-            <h2 className="mb-6 text-xl text-zinc-700">Related products</h2>
-            <div className="grid grid-cols-2 gap-x-4 gap-y-10 sm:gap-x-[30px] md:grid-cols-3">
-              {related.map((item, index) => (
-                <div key={item._id} className={index === 2 ? "hidden md:block" : undefined}>
-                  <ProductCard product={item} />
+                <div className="flex flex-wrap items-center gap-3">
+                  <LivePrice />
                 </div>
-              ))}
+
+                <dl className="grid grid-cols-[80px_1fr] gap-x-4 gap-y-3 py-2 text-sm">
+                  <dt className="font-semibold text-ink">Category:</dt>
+                  <dd className="text-zinc-600">{product.category}</dd>
+                  {product.size && (
+                    <>
+                      <dt className="font-semibold text-ink">Size:</dt>
+                      <dd className="text-zinc-600">{product.size}</dd>
+                    </>
+                  )}
+                  <dt className="font-semibold text-ink">Stock:</dt>
+                  <LiveStock />
+                </dl>
+
+                {product.description && <p className="text-sm leading-6 text-zinc-600">{product.description}</p>}
+
+                <div className="mt-2">
+                  <LiveAddToCart
+                    product={{
+                      _id: product._id,
+                      slug: product.slug,
+                      name: product.name,
+                      image: product.images[0] ?? "",
+                    }}
+                  />
+                </div>
+
+                <a
+                  href={whatsappUrl(`Hi! I'm interested in ${product.name} - ${productUrl}`, settings.whatsappNumber)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn h-12 border border-green-600 text-green-700 hover:bg-green-600 hover:text-white"
+                >
+                  Ask on WhatsApp
+                </a>
+
+                <div className="rounded-sm border border-frost bg-white p-4">
+                  <p className="text-sm font-semibold text-ink">Pay on delivery, risk nothing</p>
+                  <p className="mt-1 text-sm text-zinc-600">
+                    Order with just your name, phone and address. You pay the rider in cash when your saree arrives.
+                  </p>
+                </div>
+
+                <div className="mt-2 border-t border-zinc-200">
+                  <Accordion title="Delivery charge">
+                    {delivery !== null
+                      ? `Delivery costs ${describeDeliveryFees(delivery.zones)}. It is added at checkout.`
+                      : "The delivery charge is shown at checkout."}
+                  </Accordion>
+                  <Accordion title="Payment">
+                    Cash on delivery only. No online payment is needed to place an order.
+                  </Accordion>
+                  <Accordion title="Check before you pay">
+                    Please open the parcel and check the saree in front of the delivery person before you pay. For any
+                    problem, message us on WhatsApp or read our{" "}
+                    <Link href="/return-policy" className="underline hover:text-brand">
+                      return and exchange policy
+                    </Link>
+                    .
+                  </Accordion>
+                </div>
+              </div>
             </div>
           </div>
-        )}
-      </section>
+        </section>
+
+        <section className="mx-auto max-w-[1170px] px-4">
+          <LiveProductTabs description={product.description} descriptionBn={product.descriptionBn} details={details} />
+
+          {related.length > 0 && (
+            <div className="pb-16 pt-6">
+              <h2 className="mb-6 text-xl text-zinc-700">Related products</h2>
+              <div className="grid grid-cols-2 gap-x-4 gap-y-10 sm:gap-x-[30px] md:grid-cols-3">
+                {related.map((item, index) => (
+                  <div key={item._id} className={index === 2 ? "hidden md:block" : undefined}>
+                    <ProductCard product={item} />
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </section>
+      </LiveProductProvider>
     </main>
   );
 }

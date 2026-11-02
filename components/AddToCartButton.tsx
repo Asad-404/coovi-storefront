@@ -19,10 +19,12 @@ interface AddToCartButtonProps {
 
 export default function AddToCartButton({ product, inStock, maxQuantity, preorder = false }: AddToCartButtonProps) {
   const addItem = useCartStore((state) => state.addItem);
-  const [quantity, setQuantity] = useState(1);
+  const [chosenQuantity, setQuantity] = useState(1);
   const [added, setAdded] = useState(false);
 
   const limit = preorder ? MAX_ITEM_QUANTITY : Math.max(1, Math.min(maxQuantity, MAX_ITEM_QUANTITY));
+  // The limit can drop after the shopper has chosen, when the live stock arrives
+  const quantity = Math.min(chosenQuantity, limit);
 
   function handleAdd() {
     addItem(
@@ -44,7 +46,7 @@ export default function AddToCartButton({ product, inStock, maxQuantity, preorde
       <div className="flex h-13 items-center border border-zinc-300 bg-white">
         <button
           type="button"
-          onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+          onClick={() => setQuantity(Math.max(1, quantity - 1))}
           disabled={!inStock || quantity <= 1}
           aria-label="Decrease quantity"
           className="h-full w-10 text-lg text-zinc-600 hover:text-brand disabled:text-zinc-300"
@@ -56,7 +58,7 @@ export default function AddToCartButton({ product, inStock, maxQuantity, preorde
         </span>
         <button
           type="button"
-          onClick={() => setQuantity((q) => Math.min(limit, q + 1))}
+          onClick={() => setQuantity(Math.min(limit, quantity + 1))}
           disabled={!inStock || quantity >= limit}
           aria-label="Increase quantity"
           className="h-full w-10 text-lg text-zinc-600 hover:text-brand disabled:text-zinc-300"
