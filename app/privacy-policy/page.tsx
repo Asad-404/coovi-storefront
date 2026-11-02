@@ -45,11 +45,13 @@ export default function PrivacyPolicyPage() {
           ),
         },
         {
-          heading: "Your cart",
+          heading: "Saved on your device",
           body: (
             <p>
               Items in your cart are saved in your own browser so they are still there when you come back. This stays
-              on your device and is not sent to us until you place an order.
+              on your device and is not sent to us until you place an order. After you place or track an order, your
+              phone number is also kept in a cookie on your device for one week, so you can reopen that order&apos;s page
+              without typing it again. It is used only for that order&apos;s page.
             </p>
           ),
         },
