@@ -5,7 +5,6 @@ import PriceTag from "@/components/PriceTag";
 
 export default function NewArrivalCard({ product }: { product: Product }) {
   const image = product.images[0];
-  const title = product.nameBn ? `${product.nameBn} - ${product.name}` : product.name;
 
   return (
     <article className="flex flex-col rounded-sm border border-frost bg-white p-2.5">
@@ -25,7 +24,16 @@ export default function NewArrivalCard({ product }: { product: Product }) {
       </Link>
 
       <p className="mt-3 text-xs text-zinc-500">{product.category}</p>
-      <h3 className="mt-1 truncate text-sm text-zinc-700">{title}</h3>
+      <h3 className="mt-1 flex flex-col text-ink">
+        {product.nameBn && (
+          <span lang="bn" className="truncate font-bangla text-xl leading-relaxed">
+            {product.nameBn}
+          </span>
+        )}
+        <span className={`truncate ${product.nameBn ? "text-xs text-zinc-600" : "text-sm text-zinc-700"}`}>
+          {product.name}
+        </span>
+      </h3>
       <PriceTag product={product} className="mt-2 justify-start text-base font-bold text-zinc-700" />
 
       <Link
