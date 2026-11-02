@@ -29,20 +29,21 @@ const taka = localFont({
 });
 
 // Headings and English saree names: one weight only, so never pair it with a bold class.
-// Only Latin is preloaded; the Bengali files stay in the CSS and load when a page shows Bengali text.
+// Only Latin is preloaded; SolaimanLipi comes first in the stack, so its Bengali files never load.
 const tiroBangla = Tiro_Bangla({
   variable: "--font-tiro-bangla",
   subsets: ["latin"],
   weight: "400",
 });
 
-// Bangla saree names (licence in fonts/SolaimanLipi-LICENSE.txt): one weight only, so never pair it with a bold
-// class. Not preloaded, so the file loads only when a page shows Bengali text. Keep adjustFontFallback off, as for taka.
+// All Bengali text (licence in fonts/SolaimanLipi-LICENSE.txt): one weight only, so the browser fakes bold Bengali.
+// Not preloaded, so the file loads only when a page shows Bengali text; the range skips ৳ so a price alone never pulls it.
+// Keep adjustFontFallback off, as for taka.
 const solaimanLipi = localFont({
   variable: "--font-solaiman-lipi",
   src: "./fonts/solaiman-lipi.woff2",
   weight: "400",
-  declarations: [{ prop: "unicode-range", value: "U+0964-0965, U+0980-09FF, U+200C-200D" }],
+  declarations: [{ prop: "unicode-range", value: "U+0964-0965, U+0980-09F2, U+09F4-09FF, U+200C-200D" }],
   preload: false,
   adjustFontFallback: false,
 });

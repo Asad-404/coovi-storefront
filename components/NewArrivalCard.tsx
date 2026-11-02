@@ -26,7 +26,7 @@ export default function NewArrivalCard({ product }: { product: Product }) {
       <p className="mt-3 text-xs text-zinc-500">{product.category}</p>
       <h3 className="mt-1 flex flex-col text-ink">
         {product.nameBn && (
-          <span lang="bn" className="truncate font-bangla text-xl leading-relaxed">
+          <span lang="bn" className="truncate text-xl leading-relaxed">
             {product.nameBn}
           </span>
         )}

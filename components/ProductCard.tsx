@@ -75,7 +75,7 @@ export default function ProductCard({ product, eager = false }: { product: Produ
         <div className="flex flex-col items-center gap-1 px-1 pt-3 text-center">
           <h3 className="flex flex-col gap-0.5 text-ink transition-colors group-hover:text-brand">
             {product.nameBn && (
-              <span lang="bn" className="font-bangla text-xl leading-snug sm:text-2xl">
+              <span lang="bn" className="font-display text-xl leading-snug sm:text-2xl">
                 {product.nameBn}
               </span>
             )}

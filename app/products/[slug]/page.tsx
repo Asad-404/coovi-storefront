@@ -148,7 +148,7 @@ export default async function ProductDetailPage(props: Props) {
             <div className="flex flex-col gap-4">
               <h1 className="flex flex-col gap-1 text-ink">
                 {product.nameBn && (
-                  <span lang="bn" className="font-bangla text-title leading-tight sm:text-title-xl">
+                  <span lang="bn" className="text-title leading-tight sm:text-title-xl">
                     {product.nameBn}
                   </span>
                 )}
