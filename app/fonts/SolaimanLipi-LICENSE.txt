@@ -1,0 +1,7 @@
+SolaimanLipi, version 1.6.1, by Solaiman Karim (http://www.ekushey.org).
+File: solaiman-lipi.woff2, converted to WOFF2 from SolaimanLipi_20-04-07.ttf on
+https://omicronlab.com/bangla-fonts.html with no change to the font's contents.
+
+Licence notice, as carried inside the font's own name table:
+
+This Font Software is licensed under the SIL Open Font License, Version 1.0. No modification of the license is permitted, only verbatim copy is allowed. This license and a FAQ is also available at: http://scripts.sil.org/OFL

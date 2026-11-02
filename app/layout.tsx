@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Hind_Siliguri, Nunito, Tiro_Bangla } from "next/font/google";
+import { Hind_Siliguri, Inter, Nunito, Tiro_Bangla } from "next/font/google";
 import localFont from "next/font/local";
 import "./globals.css";
 import Header from "@/components/Header";
@@ -28,12 +28,31 @@ const taka = localFont({
   adjustFontFallback: false,
 });
 
-// Headings and saree names: one weight only, so never pair it with a bold class.
-// Only Latin is preloaded; the Bengali files stay in the CSS and load when a page shows Bengali text.
+// Headings: one weight only, so never pair it with a bold class.
+// Only Latin is preloaded; SolaimanLipi comes first in the stack, so its Bengali files never load.
 const tiroBangla = Tiro_Bangla({
   variable: "--font-tiro-bangla",
   subsets: ["latin"],
   weight: "400",
+});
+
+// Saree names on the all sarees and new arrivals cards only
+const inter = Inter({
+  variable: "--font-inter",
+  subsets: ["latin"],
+  weight: "600",
+});
+
+// All Bengali text (licence in fonts/SolaimanLipi-LICENSE.txt): one weight only, so the browser fakes bold Bengali.
+// Not preloaded, so the file loads only when a page shows Bengali text; the range skips ৳ so a price alone never pulls it.
+// Keep adjustFontFallback off, as for taka.
+const solaimanLipi = localFont({
+  variable: "--font-solaiman-lipi",
+  src: "./fonts/solaiman-lipi.woff2",
+  weight: "400",
+  declarations: [{ prop: "unicode-range", value: "U+0964-0965, U+0980-09F2, U+09F4-09FF, U+200C-200D" }],
+  preload: false,
+  adjustFontFallback: false,
 });
 
 const hindSiliguri = Hind_Siliguri({
@@ -69,7 +88,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${taka.variable} ${hindSiliguri.variable} ${tiroBangla.variable} ${nunito.variable} h-full antialiased`}
+      className={`${taka.variable} ${hindSiliguri.variable} ${tiroBangla.variable} ${solaimanLipi.variable} ${inter.variable} ${nunito.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col">
         <Header />

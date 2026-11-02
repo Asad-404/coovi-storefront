@@ -72,16 +72,11 @@ export default function ProductCard({ product, eager = false }: { product: Produ
           )}
         </div>
 
-        <div className="flex flex-col items-center gap-1 px-1 pt-3 text-center">
-          <h3 className="flex flex-col gap-0.5 text-ink transition-colors group-hover:text-brand">
-            {product.nameBn && (
-              <span lang="bn" className="font-display text-xl leading-snug sm:text-2xl">
-                {product.nameBn}
-              </span>
-            )}
-            <span className={product.nameBn ? "text-sm text-zinc-600" : "font-display text-lg leading-snug sm:text-xl"}>
-              {product.name}
-            </span>
+        <div className="flex flex-col items-center px-1 pt-3 text-center">
+          <h3 className="py-1 font-card-name text-card-name-sm font-semibold text-name-ink md:text-card-name">
+            {product.nameBn && <span lang="bn">{product.nameBn}</span>}
+            {product.nameBn && " – "}
+            {product.name}
           </h3>
           <PriceTag product={product} className="justify-center text-sm text-ink" />
         </div>
