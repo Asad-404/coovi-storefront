@@ -1,9 +1,9 @@
 import Link from "next/link";
 import { cookies, headers } from "next/headers";
-import { notFound, redirect } from "next/navigation";
-import { getOrderByNumber, OrderNotFoundError } from "@/lib/api";
+import { redirect } from "next/navigation";
 import { clientIpFrom } from "@/lib/clientIp";
 import { ORDER_PHONE_COOKIE } from "@/lib/orderAccess";
+import { getOrderOrNotFound } from "@/lib/orderLookup";
 import OrderStatusTracker from "@/components/OrderStatusTracker";
 import OrderSummary from "@/components/OrderSummary";
 
@@ -16,15 +16,9 @@ export default async function TrackedOrderPage(props: Props) {
   const phoneValue = (await cookies()).get(ORDER_PHONE_COOKIE)?.value;
   if (!phoneValue) redirect("/track-order");
 
-  let order;
-  try {
-    // Pass the shopper's address so the API's lookup limit applies per shopper, not per storefront server
-    order = await getOrderByNumber(orderNumber, phoneValue, clientIpFrom(await headers()));
-  } catch (error) {
-    // Only a real miss means "check your details"; the API being down or busy goes to the error page
-    if (error instanceof OrderNotFoundError) notFound();
-    throw error;
-  }
+  // Pass the shopper's address so the API's lookup limit applies per shopper, not per storefront server.
+  // Only a real miss means "check your details"; the API being down or busy goes to the error page.
+  const order = await getOrderOrNotFound(orderNumber, phoneValue, clientIpFrom(await headers()));
 
   return (
     <main className="mx-auto flex w-full max-w-3xl flex-col gap-6 px-4 py-12 sm:px-6">
