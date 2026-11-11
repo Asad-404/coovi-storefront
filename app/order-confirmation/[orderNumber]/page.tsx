@@ -6,9 +6,21 @@ import { getOrderByNumber } from "@/lib/api";
 import { clientIpFrom } from "@/lib/clientIp";
 import { ORDER_PHONE_COOKIE } from "@/lib/orderAccess";
 import { openOrder } from "../actions";
+import OrderStatusTracker from "@/components/OrderStatusTracker";
 import OrderSummary from "@/components/OrderSummary";
+import type { Order } from "@/lib/types";
 
 type Props = PageProps<"/order-confirmation/[orderNumber]">;
+
+// Shoppers come back to this page later, so the heading follows the order's current status
+const HEADINGS: Record<Order["status"], string> = {
+  Pending: "Order placed!",
+  Processing: "Order confirmed",
+  Shipped: "Order on the way",
+  Delivered: "Order delivered",
+  Cancelled: "Order cancelled",
+  Returned: "Order returned",
+};
 
 export async function generateMetadata(props: Props): Promise<Metadata> {
   const { orderNumber } = await props.params;
@@ -74,25 +86,42 @@ export default async function OrderConfirmationPage(props: Props) {
     notFound();
   }
 
+  // Cancelled and Returned orders left the normal path, so they get a neutral mark instead of a green tick
+  const stopped = order.status === "Cancelled" || order.status === "Returned";
+
   return (
     <main className="mx-auto w-full max-w-3xl px-4 pb-16 sm:px-6">
       <div className="flex flex-col items-center gap-3 py-12 text-center">
-        <div aria-hidden="true" className="flex h-16 w-16 items-center justify-center rounded-full bg-green-100 text-3xl text-green-700">
-          ✓
+        <div
+          aria-hidden="true"
+          className={`flex h-16 w-16 items-center justify-center rounded-full text-3xl ${
+            stopped ? "bg-zinc-100 text-zinc-500" : "bg-green-100 text-green-700"
+          }`}
+        >
+          {stopped ? "✕" : "✓"}
         </div>
         <h1 className="text-3xl text-zinc-900">
-          Order placed!
+          {HEADINGS[order.status]}
         </h1>
         <p className="text-zinc-600">
-          Thank you, {order.customerName.split(" ")[0]}! We will call you at{" "}
-          <span className="font-medium">{order.phone}</span> to confirm.
+          Thank you, {order.customerName.split(" ")[0]}!
+          {/* The confirmation call only makes sense before the order is confirmed */}
+          {order.status === "Pending" && (
+            <>
+              {" "}We will call you at{" "}
+              <span className="font-medium">{order.phone}</span> to confirm.
+            </>
+          )}
         </p>
         <p className="rounded-sm bg-zinc-100 px-4 py-1 font-mono text-sm text-zinc-700">
           {order.orderNumber}
         </p>
       </div>
 
-      <OrderSummary order={order} showStatus />
+      <div className="flex flex-col gap-6">
+        <OrderStatusTracker status={order.status} />
+        <OrderSummary order={order} />
+      </div>
 
       <div className="mt-8 text-center">
         <Link
