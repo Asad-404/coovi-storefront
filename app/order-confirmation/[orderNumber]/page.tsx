@@ -1,10 +1,9 @@
 import Link from "next/link";
 import { cookies, headers } from "next/headers";
-import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { getOrderByNumber } from "@/lib/api";
 import { clientIpFrom } from "@/lib/clientIp";
 import { ORDER_PHONE_COOKIE } from "@/lib/orderAccess";
+import { getOrderOrNotFound } from "@/lib/orderLookup";
 import { openOrder } from "../actions";
 import OrderStatusTracker from "@/components/OrderStatusTracker";
 import OrderSummary from "@/components/OrderSummary";
@@ -78,13 +77,10 @@ export default async function OrderConfirmationPage(props: Props) {
     );
   }
 
-  let order;
-  try {
-    // Pass the shopper's address so the API's lookup limit applies per shopper, not per storefront server
-    order = await getOrderByNumber(orderNumber, phoneValue, clientIpFrom(await headers()));
-  } catch {
-    notFound();
-  }
+  // Pass the shopper's address so the API's lookup limit applies per shopper, not per storefront server.
+  // An unknown order or the wrong phone shows the not-found page; a timeout or the API being down or
+  // busy reaches this route's error.tsx, which offers a retry instead of saying the order does not exist.
+  const order = await getOrderOrNotFound(orderNumber, phoneValue, clientIpFrom(await headers()));
 
   // Cancelled and Returned orders left the normal path, so they get a neutral mark instead of a green tick
   const stopped = order.status === "Cancelled" || order.status === "Returned";
