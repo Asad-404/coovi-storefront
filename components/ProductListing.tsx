@@ -3,6 +3,7 @@ import { getFirstProducts } from "@/lib/api";
 import ProductCard from "@/components/ProductCard";
 import ProductFilters from "@/components/ProductFilters";
 import LoadMoreButton from "@/components/LoadMoreButton";
+import ProductListingError from "@/components/ProductListingError";
 
 interface ProductListingProps {
   search?: string;
@@ -24,17 +25,7 @@ export default async function ProductListing({ search, sort, page, onSale, empty
   }
 
   if (!data) {
-    return (
-      <div className="mx-auto max-w-md border border-amber-300 bg-amber-50 p-6 text-center text-amber-800">
-        <p className="font-medium">Could not load products.</p>
-        {process.env.NODE_ENV === "development" && (
-          <p className="mt-1 text-sm">
-            Is the backend running? Start it with{" "}
-            <code className="bg-amber-100 px-1.5 py-0.5 font-mono text-xs">cd coovi-api && pnpm dev</code>
-          </p>
-        )}
-      </div>
-    );
+    return <ProductListingError />;
   }
 
   return (
