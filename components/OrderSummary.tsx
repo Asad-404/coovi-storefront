@@ -3,7 +3,7 @@ import type { Order } from "@/lib/types";
 import { formatPrice, preorderText } from "@/lib/utils";
 
 // The items, totals and delivery address of an order, shared by the confirmation and tracking pages
-export default function OrderSummary({ order, showStatus = false }: { order: Order; showStatus?: boolean }) {
+export default function OrderSummary({ order }: { order: Order }) {
   return (
     <div className="rounded-sm border border-zinc-200">
       <ul className="flex flex-col divide-y divide-zinc-200">
@@ -64,11 +64,6 @@ export default function OrderSummary({ order, showStatus = false }: { order: Ord
       </div>
 
       <div className="border-t border-zinc-200 p-4 text-sm text-zinc-500">
-        {showStatus && (
-          <p>
-            <span className="font-medium">Status:</span> {order.status}
-          </p>
-        )}
         <p>
           <span className="font-medium">Delivering to:</span> {order.address}
           {order.district ? `, ${order.district}` : ""}
