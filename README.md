@@ -43,15 +43,16 @@ Set these in `.env.local`:
 
 Tests use [Vitest](https://vitest.dev) and live next to the code they cover as `*.test.ts(x)`. The default environment is Node; files that need browser APIs opt in with a `// @vitest-environment jsdom` comment at the top (see `lib/cartStore.test.ts`).
 
-Covered today, at 100% line and branch coverage:
+The `lib/` helpers currently have 100% line and branch coverage:
 
 - `lib/api.ts`: request URLs and query params, error and timeout handling, and that orders send only product IDs and quantities
 - `lib/cartStore.ts`: cart actions, `localStorage` persistence, totals and counts
 - `lib/utils.ts`: price formatting
 - `lib/site.ts`: site URL, Open Graph and WhatsApp link helpers
 - `lib/useDialog.ts`: Escape, focus trap, scroll lock and focus return for dialogs
+- `lib/orderAccess.ts`, `lib/orderLookup.ts` and `lib/clientIp.ts`: order-number/phone validation, tracking paths, cookie-backed lookup and client-IP forwarding
 
-Component tests use [React Testing Library](https://testing-library.com/docs/react-testing-library/intro/); `components/CartDrawer.test.tsx` covers the cart drawer's dialog behaviour. Other components and pages are not tested yet.
+Component and route tests use [React Testing Library](https://testing-library.com/docs/react-testing-library/intro/). Current coverage includes the cart drawer, header, product tabs and image gallery, order-status tracker, checkout, order-confirmation actions/errors, and product-listing errors. Other components and pages are not tested yet.
 
 ## Continuous integration
 
