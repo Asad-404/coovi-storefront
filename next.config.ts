@@ -46,6 +46,9 @@ const nextConfig: NextConfig = {
     ];
   },
   images: {
+    // Cloudinary serves pre-optimized images (f_auto, q_auto, w_400, w_1000) so the
+    // Lightsail container never spends CPU or RAM resizing on the fly.
+    unoptimized: true,
     remotePatterns: [
       {
         protocol: "https",

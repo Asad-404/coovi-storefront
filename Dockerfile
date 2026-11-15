@@ -6,6 +6,15 @@ WORKDIR /app
 ARG DOCKER_BUILD=true
 ENV DOCKER_BUILD=$DOCKER_BUILD
 
+# NEXT_PUBLIC_* variables are baked into the JS bundle at build time.
+# They are passed as --build-arg from GitHub Actions (never from .env.production).
+ARG NEXT_PUBLIC_API_URL
+ARG NEXT_PUBLIC_SITE_URL
+ARG NEXT_PUBLIC_WHATSAPP_NUMBER
+ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
+ENV NEXT_PUBLIC_SITE_URL=$NEXT_PUBLIC_SITE_URL
+ENV NEXT_PUBLIC_WHATSAPP_NUMBER=$NEXT_PUBLIC_WHATSAPP_NUMBER
+
 RUN corepack enable && corepack prepare pnpm@latest --activate
 
 COPY package.json pnpm-lock.yaml ./
