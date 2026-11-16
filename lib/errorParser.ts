@@ -1,4 +1,5 @@
-import { AppError, ApiErrorResponse, ErrorCode } from './errors';
+import { AppError, ErrorCode } from './errors';
+import type { ApiErrorResponse, LegacyErrorResponse } from './errors';
 
 /**
  * Check if error is a timeout error
@@ -59,24 +60,25 @@ export async function parseApiResponseError(
   response: Response
 ): Promise<AppError> {
   try {
-    const data = await response.json() as ApiErrorResponse;
+    const data = (await response.json()) as ApiErrorResponse | LegacyErrorResponse;
 
     // Structured error from backend
-    if (data && !data.success && data.error) {
+    if (data && 'error' in data && data.error) {
+      const structured = data as ApiErrorResponse;
       return new AppError({
-        message: data.error.message,
-        code: (data.error.code as ErrorCode) || ErrorCode.UNKNOWN_ERROR,
+        message: structured.error.message,
+        code: (structured.error.code as ErrorCode) || ErrorCode.UNKNOWN_ERROR,
         statusCode: response.status,
-        correlationId: data.error.correlationId,
-        context: data.error.context,
+        correlationId: structured.error.correlationId,
+        context: structured.error.context,
         isRetryable: response.status >= 500 && response.status < 600,
       });
     }
 
     // Legacy error format
-    if (data && 'message' in data) {
+    if (data && 'message' in data && typeof data.message === 'string') {
       return new AppError({
-        message: (data as any).message,
+        message: data.message,
         code: mapStatusToErrorCode(response.status),
         statusCode: response.status,
         isRetryable: response.status >= 500 && response.status < 600,
@@ -100,26 +102,17 @@ export async function parseApiResponseError(
  */
 function mapStatusToErrorCode(status: number): ErrorCode {
   switch (status) {
-    case 400:
-      return ErrorCode.VALIDATION_ERROR;
-    case 401:
-      return ErrorCode.AUTHENTICATION_ERROR;
-    case 403:
-      return ErrorCode.AUTHORIZATION_ERROR;
-    case 404:
-      return ErrorCode.NOT_FOUND;
-    case 422:
-      return ErrorCode.BUSINESS_ERROR;
-    case 429:
-      return ErrorCode.RATE_LIMIT_EXCEEDED;
-    case 500:
-      return ErrorCode.INTERNAL_ERROR;
+    case 400: return ErrorCode.VALIDATION_ERROR;
+    case 401: return ErrorCode.AUTHENTICATION_ERROR;
+    case 403: return ErrorCode.AUTHORIZATION_ERROR;
+    case 404: return ErrorCode.NOT_FOUND;
+    case 422: return ErrorCode.BUSINESS_ERROR;
+    case 429: return ErrorCode.RATE_LIMIT_EXCEEDED;
+    case 500: return ErrorCode.INTERNAL_ERROR;
     case 502:
     case 503:
-    case 504:
-      return ErrorCode.EXTERNAL_SERVICE_ERROR;
-    default:
-      return ErrorCode.UNKNOWN_ERROR;
+    case 504: return ErrorCode.EXTERNAL_SERVICE_ERROR;
+    default:  return ErrorCode.UNKNOWN_ERROR;
   }
 }
 
@@ -137,7 +130,7 @@ export function getErrorMessage(
 /**
  * Log error to console (in development) or error tracking service (in production)
  */
-export function logError(error: AppError, context?: Record<string, any>): void {
+export function logError(error: AppError, context?: Record<string, unknown>): void {
   const errorLog = {
     ...error.toJSON(),
     additionalContext: context,
@@ -150,13 +143,6 @@ export function logError(error: AppError, context?: Record<string, any>): void {
   } else {
     // In production, send to error tracking service (Sentry, etc.)
     console.error('[AppError]', JSON.stringify(errorLog));
-
-    // TODO: Send to Sentry when integrated
-    // Sentry.captureException(error, {
-    //   contexts: {
-    //     custom: errorLog,
-    //   },
-    // });
   }
 }
 
@@ -182,5 +168,5 @@ export function getErrorCodeMessage(code: ErrorCode): string {
     [ErrorCode.UNKNOWN_ERROR]: 'An unexpected error occurred.',
   };
 
-  return messages[code] || messages[ErrorCode.UNKNOWN_ERROR];
+  return messages[code] ?? messages[ErrorCode.UNKNOWN_ERROR];
 }

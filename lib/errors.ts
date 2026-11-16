@@ -9,9 +9,18 @@ export interface ApiErrorResponse {
     correlationId?: string;
     timestamp?: string;
     details?: string;
-    context?: Record<string, any>;
+    context?: Record<string, unknown>;
     stack?: string;
   };
+}
+
+/**
+ * Legacy error response format (older API responses without structured error)
+ */
+export interface LegacyErrorResponse {
+  success?: boolean;
+  message?: string;
+  errors?: string[];
 }
 
 /**
@@ -48,7 +57,7 @@ export class AppError extends Error {
   public readonly statusCode?: number;
   public readonly correlationId?: string;
   public readonly timestamp: string;
-  public readonly context?: Record<string, any>;
+  public readonly context?: Record<string, unknown>;
   public readonly isRetryable: boolean;
 
   constructor({
@@ -63,7 +72,7 @@ export class AppError extends Error {
     code: ErrorCode;
     statusCode?: number;
     correlationId?: string;
-    context?: Record<string, any>;
+    context?: Record<string, unknown>;
     isRetryable?: boolean;
   }) {
     super(message);
@@ -75,9 +84,13 @@ export class AppError extends Error {
     this.context = context;
     this.isRetryable = isRetryable;
 
-    // Maintains proper stack trace for where error was thrown
-    if (Error.captureStackTrace) {
-      Error.captureStackTrace(this, this.constructor);
+    // Maintains proper stack trace for where error was thrown (V8 only).
+    // Guarded because captureStackTrace is not part of the standard Error type.
+    const ErrorCtor = Error as unknown as {
+      captureStackTrace?: (target: object, ctor?: Function) => void;
+    };
+    if (ErrorCtor.captureStackTrace) {
+      ErrorCtor.captureStackTrace(this, this.constructor);
     }
   }
 
@@ -101,7 +114,7 @@ export class AppError extends Error {
   /**
    * Convert to JSON for logging
    */
-  toJSON(): Record<string, any> {
+  toJSON(): Record<string, unknown> {
     return {
       name: this.name,
       message: this.message,
