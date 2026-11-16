@@ -87,7 +87,7 @@ export class AppError extends Error {
     // Maintains proper stack trace for where error was thrown (V8 only).
     // Guarded because captureStackTrace is not part of the standard Error type.
     const ErrorCtor = Error as unknown as {
-      captureStackTrace?: (target: object, ctor?: Function) => void;
+      captureStackTrace?: (target: object, ctor?: () => void) => void;
     };
     if (ErrorCtor.captureStackTrace) {
       ErrorCtor.captureStackTrace(this, this.constructor);
