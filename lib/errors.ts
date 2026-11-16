@@ -86,9 +86,9 @@ export class AppError extends Error {
 
     // Maintains proper stack trace for where error was thrown (V8 only).
     // Guarded because captureStackTrace is not part of the standard Error type.
-    // captureStackTrace is a V8 extension — not in the standard lib.
-    // Cast narrowly to avoid both `any` and the `Function` lint rule.
-    const capture = (Error as Record<string, unknown>)['captureStackTrace'];
+    // captureStackTrace is a V8 extension not in the standard lib.
+    // Double-cast through unknown to satisfy strict TypeScript.
+    const capture = (Error as unknown as Record<string, unknown>)['captureStackTrace'];
     if (typeof capture === 'function') {
       (capture as (t: object, c: () => void) => void)(this, this.constructor as () => void);
     }
