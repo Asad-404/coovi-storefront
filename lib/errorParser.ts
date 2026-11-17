@@ -2,6 +2,16 @@ import { AppError, ErrorCode } from './errors';
 import type { ApiErrorResponse, LegacyErrorResponse } from './errors';
 
 /**
+ * Sentry scope interface for type safety
+ */
+interface SentryScope {
+  setLevel: (level: 'error' | 'warning' | 'info') => void;
+  setFingerprint: (fingerprint: string[]) => void;
+  setContext: (name: string, context: Record<string, unknown>) => void;
+  setTag: (key: string, value: string | number) => void;
+}
+
+/**
  * Check if error is a timeout error
  */
 function isTimeoutError(error: unknown): boolean {
@@ -142,10 +152,13 @@ export function logError(error: AppError, context?: Record<string, unknown>): vo
     console.error('[AppError]', errorLog);
   } else {
     // In production, send to Sentry
-    if (typeof window !== 'undefined' && (window as any).Sentry) {
-      const Sentry = (window as any).Sentry;
+    if (typeof window !== 'undefined' && (window as Window & { Sentry?: unknown }).Sentry) {
+      const Sentry = (window as Window & { Sentry?: unknown }).Sentry as {
+        withScope: (callback: (scope: SentryScope) => void) => void;
+        captureException: (error: Error) => void;
+      };
 
-      Sentry.withScope((scope: any) => {
+      Sentry.withScope((scope: SentryScope) => {
         // Set error level based on status code
         scope.setLevel(error.statusCode && error.statusCode >= 500 ? 'error' : 'warning');
 
