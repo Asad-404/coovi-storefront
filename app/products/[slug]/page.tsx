@@ -21,6 +21,7 @@ import ProductImageGallery from "@/components/ProductImageGallery";
 import ProductTabs from "@/components/ProductTabs";
 import ProductCard from "@/components/ProductCard";
 import PriceTag from "@/components/PriceTag";
+import { AppError, ErrorCode } from "@/lib/errors";
 
 type Props = PageProps<"/products/[slug]">;
 
@@ -67,7 +68,7 @@ export default async function ProductDetailPage(props: Props) {
     product = await getProductBySlug(slug);
   } catch (error) {
     // Only call notFound() for actual 404s; let other errors bubble to error.tsx
-    if (error instanceof Error && error.message.includes("status 404")) {
+    if (error instanceof AppError && error.code === ErrorCode.NOT_FOUND) {
       notFound();
     }
     throw error;

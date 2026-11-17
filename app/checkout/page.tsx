@@ -9,6 +9,8 @@ import { getDeliveryOptions, getProductBySlug, postOrder } from "@/lib/api";
 import { orderPagePath } from "@/lib/orderAccess";
 import { formatPrice, isAvailable, isPreorder, joinAddress, preorderText } from "@/lib/utils";
 import { rememberOrderPhone } from "@/app/order-confirmation/actions";
+import { getErrorMessage, logError } from "@/lib/errorParser";
+import { AppError } from "@/lib/errors";
 
 const inputClass =
   "w-full rounded-sm border border-zinc-300 bg-white px-3 py-2 text-zinc-900 placeholder-zinc-500 focus:border-brand";
@@ -56,8 +58,14 @@ export default function CheckoutPage() {
       .then((options) => {
         if (active) setDelivery(options);
       })
-      .catch(() => {
-        if (active) setError("Could not load the delivery fee — please refresh the page");
+      .catch((err) => {
+        if (active) {
+          const message = getErrorMessage(err, "Could not load the delivery fee — please refresh the page");
+          setError(message);
+          if (err instanceof AppError) {
+            logError(err, { context: 'checkout_delivery_options' });
+          }
+        }
       });
 
     // One lookup per cart item: a single product-list page would miss anything
@@ -160,7 +168,11 @@ export default function CheckoutPage() {
       clearCart();
       router.push(orderPagePath(order.orderNumber));
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Your order could not be placed. Check your connection and try again.");
+      const message = getErrorMessage(err, "Your order could not be placed. Check your connection and try again.");
+      setError(message);
+      if (err instanceof AppError) {
+        logError(err, { context: 'checkout_submit', orderData: { itemCount: items.length, area } });
+      }
       setSubmitting(false);
     }
   }
