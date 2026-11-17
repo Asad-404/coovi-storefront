@@ -164,7 +164,12 @@ export default function CheckoutPage() {
       // Order number + phone together act as the guest's credentials on the
       // confirmation page; the phone goes in a cookie, not in the link
       // If this fails the order page simply asks for the phone again
-      await rememberOrderPhone(order.orderNumber, form.phone).catch(() => false);
+      await rememberOrderPhone(order.orderNumber, form.phone).catch((error) => {
+        if (error instanceof AppError) {
+          logError(error, { context: 'checkout_remember_phone', orderNumber: order.orderNumber });
+        }
+        return false;
+      });
       clearCart();
       router.push(orderPagePath(order.orderNumber));
     } catch (err) {

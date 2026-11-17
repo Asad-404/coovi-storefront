@@ -22,6 +22,7 @@ import ProductTabs from "@/components/ProductTabs";
 import ProductCard from "@/components/ProductCard";
 import PriceTag from "@/components/PriceTag";
 import { AppError, ErrorCode } from "@/lib/errors";
+import { logError } from "@/lib/errorParser";
 
 type Props = PageProps<"/products/[slug]">;
 
@@ -31,7 +32,10 @@ export async function generateStaticParams() {
   try {
     const products = await getAllProducts();
     return products.map((product) => ({ slug: product.slug }));
-  } catch {
+  } catch (error) {
+    if (error instanceof AppError) {
+      logError(error, { context: 'generate_static_params' });
+    }
     return [];
   }
 }
@@ -55,7 +59,10 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
         "product:availability": isAvailable(product) ? "in stock" : isPreorder(product) ? "preorder" : "out of stock",
       },
     };
-  } catch {
+  } catch (error) {
+    if (error instanceof AppError) {
+      logError(error, { context: 'generate_metadata', slug });
+    }
     return { title: "Product not found" };
   }
 }

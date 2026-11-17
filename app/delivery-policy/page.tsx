@@ -4,6 +4,8 @@ import PolicyPage from "@/components/PolicyPage";
 import { getDeliveryOptions } from "@/lib/api";
 import { pageOpenGraph } from "@/lib/site";
 import { describeDeliveryFees } from "@/lib/utils";
+import { logError } from "@/lib/errorParser";
+import { AppError } from "@/lib/errors";
 
 export const metadata: Metadata = {
   title: "Delivery and payment",
@@ -15,7 +17,12 @@ export const metadata: Metadata = {
 export const revalidate = 3600;
 
 export default async function DeliveryPolicyPage() {
-  const delivery = await getDeliveryOptions().catch(() => null);
+  const delivery = await getDeliveryOptions().catch((error) => {
+    if (error instanceof AppError) {
+      logError(error, { context: 'delivery_policy_page' });
+    }
+    return null;
+  });
 
   return (
     <PolicyPage
