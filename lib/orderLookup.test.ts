@@ -33,7 +33,7 @@ describe("getOrderOrNotFound", () => {
 
   it("shows the not-found page for an unknown order or the wrong phone", async () => {
     respond(404);
-    await expect(getOrderOrNotFound("K7M3QX", "01700000000")).rejects.toBe(NOT_FOUND);
+    await expect(getOrderOrNotFound("K7M3QX", "01700000000")).rejects.toThrow("NEXT_NOT_FOUND");
     expect(notFound).toHaveBeenCalledOnce();
   });
 
@@ -45,13 +45,13 @@ describe("getOrderOrNotFound", () => {
 
   it("passes a timeout on to the error page", async () => {
     fetchMock.mockRejectedValueOnce(new DOMException("timed out", "TimeoutError"));
-    await expect(getOrderOrNotFound("K7M3QX", "01712345678")).rejects.toThrow("Request timed out");
+    await expect(getOrderOrNotFound("K7M3QX", "01712345678")).rejects.toThrow("Request timeout");
     expect(notFound).not.toHaveBeenCalled();
   });
 
   it("passes a network failure on to the error page", async () => {
     fetchMock.mockRejectedValueOnce(new TypeError("fetch failed"));
-    await expect(getOrderOrNotFound("K7M3QX", "01712345678")).rejects.toThrow("fetch failed");
+    await expect(getOrderOrNotFound("K7M3QX", "01712345678")).rejects.toThrow("Network error");
     expect(notFound).not.toHaveBeenCalled();
   });
 });
