@@ -4,6 +4,8 @@ import ProductCard from "@/components/ProductCard";
 import ProductFilters from "@/components/ProductFilters";
 import LoadMoreButton from "@/components/LoadMoreButton";
 import ProductListingError from "@/components/ProductListingError";
+import { logError } from "@/lib/errorParser";
+import { AppError } from "@/lib/errors";
 
 interface ProductListingProps {
   search?: string;
@@ -20,7 +22,10 @@ export default async function ProductListing({ search, sort, page, onSale, empty
   let data = null;
   try {
     data = await getFirstProducts({ search, sort, onSale }, 12 * page);
-  } catch {
+  } catch (error) {
+    if (error instanceof AppError) {
+      logError(error, { context: 'product_listing', search, sort, page, onSale });
+    }
     data = null;
   }
 

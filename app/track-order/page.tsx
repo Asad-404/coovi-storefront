@@ -4,6 +4,8 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { normalizeOrderNumber, orderTrackingPath } from "@/lib/orderAccess";
 import { rememberTrackingPhone } from "@/app/order-confirmation/actions";
+import { logError } from "@/lib/errorParser";
+import { AppError } from "@/lib/errors";
 
 const inputClass =
   "w-full rounded-sm border border-zinc-300 bg-white px-3 py-2 text-zinc-900 placeholder-zinc-500 focus:border-brand";
@@ -24,7 +26,12 @@ export default function TrackOrderPage() {
     // Order numbers are stored upper-case (6 characters, e.g. K7M3QX) and matched exactly
     const orderNumber = normalizeOrderNumber(form.orderNumber);
     // The phone goes in a cookie for that order's tracking page, never in the link
-    const remembered = await rememberTrackingPhone(orderNumber, form.phone).catch(() => false);
+    const remembered = await rememberTrackingPhone(orderNumber, form.phone).catch((error) => {
+      if (error instanceof AppError) {
+        logError(error, { context: 'track_order_remember_phone', orderNumber });
+      }
+      return false;
+    });
     if (!remembered) {
       setError("We could not check that order. Check the order number and phone number, then try again.");
       setSubmitting(false);

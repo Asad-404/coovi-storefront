@@ -1,5 +1,7 @@
 import { DeliveryArea, DeliveryOptions, Order, Product, ShopSettings } from "./types";
 import { WHATSAPP_NUMBER } from "./site";
+import { parseApiError, parseApiResponseError } from "./errorParser";
+import { AppError, ErrorCode } from "./errors";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5000/api";
 
@@ -45,15 +47,6 @@ function catalogueInit(revalidate = CACHE_SECONDS): RequestInit {
   return { headers: serverHeaders(), next: { revalidate }, signal: timeoutSignal() };
 }
 
-// AbortSignal.timeout() rejects fetch with a TimeoutError; a manual abort
-// rejects with an AbortError. Both mean the request never completed.
-function isTimeoutError(error: unknown): boolean {
-  return (
-    error instanceof Error &&
-    (error.name === "TimeoutError" || error.name === "AbortError")
-  );
-}
-
 export interface ProductsResponse {
   data: Product[];
   pagination: {
@@ -91,7 +84,7 @@ export async function getProducts(options: ProductQuery = {}): Promise<ProductsR
     const res = await fetch(`${API_URL}/products${queryString ? `?${queryString}` : ""}`, catalogueInit());
 
     if (!res.ok) {
-      throw new Error(`API request failed with status ${res.status}`);
+      throw await parseApiResponseError(res);
     }
 
     const json = await res.json();
@@ -100,10 +93,7 @@ export async function getProducts(options: ProductQuery = {}): Promise<ProductsR
       pagination: json.pagination,
     };
   } catch (error) {
-    if (isTimeoutError(error)) {
-      throw new Error("Request timed out. Please check your connection and try again.");
-    }
-    throw error;
+    throw parseApiError(error);
   }
 }
 
@@ -141,16 +131,13 @@ export async function getProductBySlug(slug: string): Promise<Product> {
     const res = await fetch(`${API_URL}/products/${encodeURIComponent(slug)}`, catalogueInit());
 
     if (!res.ok) {
-      throw new Error(`API request failed with status ${res.status}`);
+      throw await parseApiResponseError(res);
     }
 
     const json = await res.json();
     return json.data as Product;
   } catch (error) {
-    if (isTimeoutError(error)) {
-      throw new Error("Request timed out. Please check your connection and try again.");
-    }
-    throw error;
+    throw parseApiError(error);
   }
 }
 
@@ -160,20 +147,20 @@ export async function getDeliveryOptions(): Promise<DeliveryOptions> {
     const res = await fetch(`${API_URL}/orders/delivery-fee`, catalogueInit());
 
     if (!res.ok) {
-      throw new Error(`API request failed with status ${res.status}`);
+      throw await parseApiResponseError(res);
     }
 
     const json = await res.json();
     // An API from before delivery areas sends only one flat fee
     if (!json.data?.zones || !Array.isArray(json.data.districts)) {
-      throw new Error("Delivery fees are not available right now");
+      throw new AppError({
+        message: "Delivery fees are not available right now",
+        code: ErrorCode.BUSINESS_ERROR,
+      });
     }
     return { zones: json.data.zones, districts: json.data.districts };
   } catch (error) {
-    if (isTimeoutError(error)) {
-      throw new Error("Request timed out. Please check your connection and try again.");
-    }
-    throw error;
+    throw parseApiError(error);
   }
 }
 
@@ -224,16 +211,17 @@ export async function getOrderByNumber(orderNumber: string, phone: string, clien
     }
 
     if (!res.ok) {
-      throw new Error(`API request failed with status ${res.status}`);
+      throw await parseApiResponseError(res);
     }
 
     const json = await res.json();
     return json.data as Order;
   } catch (error) {
-    if (isTimeoutError(error)) {
-      throw new Error("Request timed out. Please check your connection and try again.");
+    // Don't wrap OrderNotFoundError
+    if (error instanceof OrderNotFoundError) {
+      throw error;
     }
-    throw error;
+    throw parseApiError(error);
   }
 }
 
@@ -260,14 +248,18 @@ export async function postOrder(order: OrderInput): Promise<Order> {
     });
 
     const json = await res.json();
+
+    // Check both res.ok and json.success - API might return 200 with success: false
     if (!res.ok || !json.success) {
-      throw new Error(json.message ?? "Failed to place order");
+      throw new AppError({
+        message: json.message ?? "Failed to place order",
+        code: ErrorCode.BUSINESS_ERROR,
+        statusCode: res.status,
+      });
     }
+
     return json.data as Order;
   } catch (error) {
-    if (isTimeoutError(error)) {
-      throw new Error("Request timed out. Please check your connection and try again.");
-    }
-    throw error;
+    throw parseApiError(error);
   }
 }

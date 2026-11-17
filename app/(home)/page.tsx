@@ -8,6 +8,8 @@ import NewArrivalCard from "@/components/NewArrivalCard";
 import HomeHero from "@/components/HomeHero";
 import PromoBanner from "@/components/PromoBanner";
 import WhyCoovi from "@/components/WhyCoovi";
+import { logError } from "@/lib/errorParser";
+import { AppError } from "@/lib/errors";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/" },
@@ -44,6 +46,9 @@ export default async function Home() {
   } catch (error) {
     // This page is saved and refreshed in the background. Failing a refresh keeps the last good copy
     // instead of saving this error for everyone; a build has no copy yet, so it shows the message.
+    if (error instanceof AppError) {
+      logError(error, { context: 'home_page_products', isBuildPhase: isBuildPhase() });
+    }
     if (!isBuildPhase()) throw error;
   }
 

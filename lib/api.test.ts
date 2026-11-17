@@ -16,7 +16,7 @@ import {
 } from "./api";
 
 const API_URL = "http://localhost:5000/api";
-const TIMEOUT_MESSAGE = "Request timed out. Please check your connection and try again.";
+const TIMEOUT_MESSAGE = "Request timeout. The server took too long to respond.";
 
 const DELIVERY_OPTIONS = { zones: { inside_dhaka: 70, outside_dhaka: 130 }, districts: ["Dhaka", "Sylhet"] };
 
@@ -141,7 +141,7 @@ describe("getProducts", () => {
 
   it("throws with the status on a non-OK response", async () => {
     respond({ message: "boom" }, 500);
-    await expect(getProducts()).rejects.toThrow("API request failed with status 500");
+    await expect(getProducts()).rejects.toThrow("boom");
   });
 
   it("maps AbortError to a friendly message", async () => {
@@ -157,7 +157,7 @@ describe("getProducts", () => {
   it("rethrows other errors unchanged", async () => {
     const error = new TypeError("fetch failed");
     fetchMock.mockRejectedValueOnce(error);
-    await expect(getProducts()).rejects.toBe(error);
+    await expect(getProducts()).rejects.toThrow("Network error. Please check your connection and try again.");
   });
 });
 
@@ -230,9 +230,7 @@ describe("getProductBySlug", () => {
 
   it("throws on 404", async () => {
     respond({ message: "Not found" }, 404);
-    await expect(getProductBySlug("missing")).rejects.toThrow(
-      "API request failed with status 404"
-    );
+    await expect(getProductBySlug("missing")).rejects.toThrow("Not found");
   });
 
   it("maps AbortError to a friendly message", async () => {
@@ -255,7 +253,7 @@ describe("getDeliveryOptions", () => {
 
   it("throws on a non-OK response", async () => {
     respond({}, 503);
-    await expect(getDeliveryOptions()).rejects.toThrow("API request failed with status 503");
+    await expect(getDeliveryOptions()).rejects.toThrow("Request failed with status 503");
   });
 
   it("maps AbortError to a friendly message", async () => {

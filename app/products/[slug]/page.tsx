@@ -21,6 +21,8 @@ import ProductImageGallery from "@/components/ProductImageGallery";
 import ProductTabs from "@/components/ProductTabs";
 import ProductCard from "@/components/ProductCard";
 import PriceTag from "@/components/PriceTag";
+import { AppError, ErrorCode } from "@/lib/errors";
+import { logError } from "@/lib/errorParser";
 
 type Props = PageProps<"/products/[slug]">;
 
@@ -30,7 +32,10 @@ export async function generateStaticParams() {
   try {
     const products = await getAllProducts();
     return products.map((product) => ({ slug: product.slug }));
-  } catch {
+  } catch (error) {
+    if (error instanceof AppError) {
+      logError(error, { context: 'generate_static_params' });
+    }
     return [];
   }
 }
@@ -54,7 +59,10 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
         "product:availability": isAvailable(product) ? "in stock" : isPreorder(product) ? "preorder" : "out of stock",
       },
     };
-  } catch {
+  } catch (error) {
+    if (error instanceof AppError) {
+      logError(error, { context: 'generate_metadata', slug });
+    }
     return { title: "Product not found" };
   }
 }
@@ -67,7 +75,7 @@ export default async function ProductDetailPage(props: Props) {
     product = await getProductBySlug(slug);
   } catch (error) {
     // Only call notFound() for actual 404s; let other errors bubble to error.tsx
-    if (error instanceof Error && error.message.includes("status 404")) {
+    if (error instanceof AppError && error.code === ErrorCode.NOT_FOUND) {
       notFound();
     }
     throw error;

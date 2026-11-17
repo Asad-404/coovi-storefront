@@ -9,6 +9,8 @@ import { getDeliveryOptions, getProductBySlug, postOrder } from "@/lib/api";
 import { orderPagePath } from "@/lib/orderAccess";
 import { formatPrice, isAvailable, isPreorder, joinAddress, preorderText } from "@/lib/utils";
 import { rememberOrderPhone } from "@/app/order-confirmation/actions";
+import { getErrorMessage, logError } from "@/lib/errorParser";
+import { AppError } from "@/lib/errors";
 
 const inputClass =
   "w-full rounded-sm border border-zinc-300 bg-white px-3 py-2 text-zinc-900 placeholder-zinc-500 focus:border-brand";
@@ -56,8 +58,14 @@ export default function CheckoutPage() {
       .then((options) => {
         if (active) setDelivery(options);
       })
-      .catch(() => {
-        if (active) setError("Could not load the delivery fee — please refresh the page");
+      .catch((err) => {
+        if (active) {
+          const message = getErrorMessage(err, "Could not load the delivery fee — please refresh the page");
+          setError(message);
+          if (err instanceof AppError) {
+            logError(err, { context: 'checkout_delivery_options' });
+          }
+        }
       });
 
     // One lookup per cart item: a single product-list page would miss anything
@@ -156,11 +164,20 @@ export default function CheckoutPage() {
       // Order number + phone together act as the guest's credentials on the
       // confirmation page; the phone goes in a cookie, not in the link
       // If this fails the order page simply asks for the phone again
-      await rememberOrderPhone(order.orderNumber, form.phone).catch(() => false);
+      await rememberOrderPhone(order.orderNumber, form.phone).catch((error) => {
+        if (error instanceof AppError) {
+          logError(error, { context: 'checkout_remember_phone', orderNumber: order.orderNumber });
+        }
+        return false;
+      });
       clearCart();
       router.push(orderPagePath(order.orderNumber));
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Your order could not be placed. Check your connection and try again.");
+      const message = getErrorMessage(err, "Your order could not be placed. Check your connection and try again.");
+      setError(message);
+      if (err instanceof AppError) {
+        logError(err, { context: 'checkout_submit', orderData: { itemCount: items.length, area } });
+      }
       setSubmitting(false);
     }
   }

@@ -1,6 +1,8 @@
 import type { MetadataRoute } from "next";
 import { getAllProducts } from "@/lib/api";
 import { SITE_URL } from "@/lib/site";
+import { logError } from "@/lib/errorParser";
+import { AppError } from "@/lib/errors";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = SITE_URL;
@@ -76,7 +78,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     return [...staticPages, ...productPages];
   } catch (error) {
     // If API is down, return static pages only
-    console.error("Failed to fetch products for sitemap:", error);
+    if (error instanceof AppError) {
+      logError(error, { context: 'sitemap_generation' });
+    } else {
+      console.error("Failed to fetch products for sitemap:", error);
+    }
     return staticPages;
   }
 }
