@@ -141,9 +141,91 @@ export function logError(error: AppError, context?: Record<string, unknown>): vo
   if (process.env.NODE_ENV === 'development') {
     console.error('[AppError]', errorLog);
   } else {
-    // In production, send to error tracking service (Sentry, etc.)
-    console.error('[AppError]', JSON.stringify(errorLog));
+    // In production, send to Sentry
+    if (typeof window !== 'undefined' && (window as any).Sentry) {
+      const Sentry = (window as any).Sentry;
+
+      Sentry.withScope((scope: any) => {
+        // Set error level based on status code
+        scope.setLevel(error.statusCode && error.statusCode >= 500 ? 'error' : 'warning');
+
+        // Set correlation ID as fingerprint for grouping
+        if (error.correlationId) {
+          scope.setFingerprint([error.code, error.correlationId]);
+        }
+
+        // Add context without sensitive data
+        scope.setContext('error_details', {
+          code: error.code,
+          statusCode: error.statusCode,
+          isRetryable: error.isRetryable,
+          timestamp: error.timestamp,
+        });
+
+        // Add safe context data (no PII)
+        if (context) {
+          scope.setContext('additional_context', sanitizeContext(context));
+        }
+
+        // Set tags for filtering
+        scope.setTag('error_code', error.code);
+        if (error.statusCode) {
+          scope.setTag('status_code', error.statusCode);
+        }
+
+        // Capture the error
+        Sentry.captureException(error);
+      });
+    } else {
+      // Fallback to console if Sentry not initialized
+      console.error('[AppError]', JSON.stringify(errorLog));
+    }
   }
+}
+
+/**
+ * Sanitize context to remove sensitive data before logging
+ */
+function sanitizeContext(context: Record<string, unknown>): Record<string, unknown> {
+  const sanitized: Record<string, unknown> = {};
+
+  // List of keys that might contain sensitive data
+  const sensitiveKeys = [
+    'phone', 'customerName', 'address', 'email',
+    'password', 'token', 'apiKey', 'secret',
+    'street', 'flat', 'thana', 'district', 'notes',
+    'items', 'form', 'orderData'
+  ];
+
+  for (const [key, value] of Object.entries(context)) {
+    const lowerKey = key.toLowerCase();
+
+    // Skip sensitive keys
+    if (sensitiveKeys.some(sensitive => lowerKey.includes(sensitive))) {
+      // Only log existence or count, not actual data
+      if (Array.isArray(value)) {
+        sanitized[key] = `[${value.length} items]`;
+      } else if (typeof value === 'object' && value !== null) {
+        sanitized[key] = '[object]';
+      } else {
+        sanitized[key] = '[redacted]';
+      }
+      continue;
+    }
+
+    // Safe to log these values
+    if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
+      sanitized[key] = value;
+    } else if (Array.isArray(value)) {
+      sanitized[key] = `[${value.length} items]`;
+    } else if (value === null || value === undefined) {
+      sanitized[key] = value;
+    } else {
+      sanitized[key] = '[object]';
+    }
+  }
+
+  return sanitized;
 }
 
 /**
