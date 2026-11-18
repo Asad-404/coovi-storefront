@@ -27,7 +27,13 @@ const securityHeaders = [
   { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=()" },
 ];
 
+// When DOCKER_BUILD=true (set by the Dockerfile build arg), emit a standalone
+// server bundle so the production image only needs node server.js to start.
+// Vercel builds never set this var, so the Vercel deployment is unaffected.
+const isDockerBuild = process.env.DOCKER_BUILD === "true";
+
 const nextConfig: NextConfig = {
+  ...(isDockerBuild && { output: "standalone" }),
   async headers() {
     return [{ source: "/(.*)", headers: securityHeaders }];
   },
@@ -40,6 +46,9 @@ const nextConfig: NextConfig = {
     ];
   },
   images: {
+    // Cloudinary serves pre-optimized images (f_auto, q_auto, w_400, w_1000) so the
+    // Lightsail container never spends CPU or RAM resizing on the fly.
+    unoptimized: true,
     remotePatterns: [
       {
         protocol: "https",
